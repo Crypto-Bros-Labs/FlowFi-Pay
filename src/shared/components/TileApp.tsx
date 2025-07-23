@@ -1,13 +1,17 @@
 import React, { type ReactNode } from 'react';
 
 interface TileAppProps {
-    title: string; // Obligatorio
+    title: string;
     subtitle?: string;
-    leading?: ReactNode; // Icon o imagen
-    trailing?: ReactNode; // Componente React
+    leading?: ReactNode;
+    trailing?: ReactNode;
     onClick?: () => void;
     disabled?: boolean;
     className?: string;
+    titleSize?: 'xs' | 'sm' | 'base' | 'lg' | 'xl';
+    subtitleSize?: 'xs' | 'sm' | 'base' | 'lg' | 'xl';
+    titleClassName?: string;
+    subtitleClassName?: string;
 }
 
 const TileApp: React.FC<TileAppProps> = ({
@@ -17,9 +21,24 @@ const TileApp: React.FC<TileAppProps> = ({
     trailing,
     onClick,
     disabled = false,
-    className = ""
+    className = "",
+    titleSize = "sm",
+    subtitleSize = "xs",
+    titleClassName = "",
+    subtitleClassName = "",
 }) => {
     const isClickable = !!onClick && !disabled;
+
+    const getSizeClass = (size: string) => {
+        switch (size) {
+            case 'xs': return 'text-xs';
+            case 'sm': return 'text-sm';
+            case 'base': return 'text-base';
+            case 'lg': return 'text-lg';
+            case 'xl': return 'text-xl';
+            default: return 'text-xs';
+        }
+    };
 
     const baseClasses = `
         w-full flex items-center justify-between
@@ -31,6 +50,15 @@ const TileApp: React.FC<TileAppProps> = ({
         ${disabled ? 'opacity-50' : ''}
         ${className}
     `;
+
+    // Clases por defecto solo si no se proporcionan clases personalizadas
+    const defaultTitleClasses = titleClassName
+        ? titleClassName
+        : `${getSizeClass(titleSize)} font-bold text-[#020F1E] truncate`;
+
+    const defaultSubtitleClasses = subtitleClassName
+        ? subtitleClassName
+        : `${getSizeClass(subtitleSize)} font-medium text-[#666666] truncate mt-0.5`;
 
     const content = (
         <>
@@ -45,11 +73,11 @@ const TileApp: React.FC<TileAppProps> = ({
 
                 {/* Title + Subtitle */}
                 <div className="flex-1 min-w-0">
-                    <div className="text-sm font-bold text-[#020F1E] truncate">
+                    <div className={defaultTitleClasses}>
                         {title}
                     </div>
                     {subtitle && (
-                        <div className="text-xs font-medium text-[#666666] truncate mt-0.5">
+                        <div className={defaultSubtitleClasses}>
                             {subtitle}
                         </div>
                     )}

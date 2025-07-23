@@ -5,7 +5,7 @@ interface DescriptionAppProps {
     description?: string;
 }
 
-const DescriptionApp: React.FC<DescriptionAppProps> = ({ title = 'Hola', description = 'Mensaje ejemplo' }) => {
+const DescriptionApp: React.FC<DescriptionAppProps> = ({ title = 'Hola', description }) => {
     return (
         <>
             {/* Título */}

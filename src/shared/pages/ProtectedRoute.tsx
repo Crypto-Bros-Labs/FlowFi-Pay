@@ -28,7 +28,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     }
 
     if (!requireAuth && isAuthenticated && isSignup) {
-        return <Navigate to="/select-token" replace />;
+        return <Navigate to="/main" replace />;
     }
 
     if (!requireAuth && isAuthenticated && !isSignup) {

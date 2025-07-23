@@ -39,8 +39,8 @@ const AppHeader: React.FC<AppHeaderProps> = ({
 
     return (
         <div className="flex items-center justify-between p-4">
-            {/* Lado izquierdo */}
-            <div className="flex items-center">
+            {/* Lado izquierdo - Siempre ocupa espacio */}
+            <div className="flex items-center w-10">
                 {shouldShowBackButton && (
                     <button
                         onClick={handleBack}
@@ -64,8 +64,8 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 <h1 className="text-lg font-semibold text-center flex-1 mx-4 text-gray-900">{title}</h1>
             )}
 
-            {/* Lado derecho */}
-            <div className="flex items-center gap-2">
+            {/* Lado derecho - Siempre ocupa el mismo espacio */}
+            <div className="flex items-center gap-2 w-10 justify-end">
                 {rightActions.map((action, index) => (
                     <button
                         key={index}
@@ -75,8 +75,6 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                         <action.icon className="w-6 h-6" />
                     </button>
                 ))}
-                {/* Spacer si no hay acciones a la derecha */}
-                {rightActions.length === 0 && <div className="w-10"></div>}
             </div>
         </div>
     );

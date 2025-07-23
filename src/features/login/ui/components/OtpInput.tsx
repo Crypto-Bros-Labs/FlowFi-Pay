@@ -42,7 +42,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
                         onPaste={handlePaste}
                         disabled={isLoading}
                         className={`
-                            w-1/4 h-12 md:h-14 text-lg md:text-xl font-medium text-center border-2 rounded-lg 
+                            w-1/4 h-18 md:h-20 text-lg md:text-xl font-medium text-center border-2 rounded-lg 
                             focus:outline-none focus:ring-2 transition-colors duration-200
                             ${hasError
                                 ? 'border-red-500 focus:ring-red-500 focus:border-red-500'

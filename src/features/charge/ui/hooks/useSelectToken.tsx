@@ -189,21 +189,7 @@ export const useSelectToken = () => {
             tokenRepository.setSelectedToken(token);
             tokenRepository.setSelectedCurrency(currency);
 
-            navigate('/on-off-ramp')
-        } else {
-            console.warn('Token o currency no seleccionados');
-        }
-    };
-
-    const handleSell = () => {
-        const token = getSelectedToken();
-        const currency = getSelectedCurrency();
-
-        if (token && currency) {
-            tokenRepository.setSelectedToken(token);
-            tokenRepository.setSelectedCurrency(currency);
-
-            navigate('/on-off-ramp')
+            navigate('/set-amount');
         } else {
             console.warn('Token o currency no seleccionados');
         }
@@ -242,6 +228,5 @@ export const useSelectToken = () => {
 
         // Actions
         handleBuy,
-        handleSell
     };
 };

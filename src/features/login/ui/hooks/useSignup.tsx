@@ -166,7 +166,7 @@ export const useSignup = () => {
             );
 
             if (response) {
-                navigate('/select-token');
+                navigate('/main');
             } else {
                 setError('Error al crear los datos del usuario');
             }

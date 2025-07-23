@@ -4,11 +4,18 @@ interface QRCodeProps {
     data: string;
     size?: number;
     className?: string;
+    foregroundColor?: string;
+    backgroundColor?: string;
 }
 
-const QRCode: React.FC<QRCodeProps> = ({ data, size = 150, className = "" }) => {
-    // Usando QR Server API (alternativa a qrcode library)
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(data)}`;
+const QRCode: React.FC<QRCodeProps> = ({
+    data,
+    size = 150,
+    className = "",
+    foregroundColor = "000000",
+    backgroundColor = "ffffff"
+}) => {
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(data)}&color=${foregroundColor}&bgcolor=${backgroundColor}`;
 
     return (
         <div className={`flex justify-center ${className}`}>
@@ -20,7 +27,6 @@ const QRCode: React.FC<QRCodeProps> = ({ data, size = 150, className = "" }) => 
                     height={size}
                     className="block"
                     onError={(e) => {
-                        // Fallback en caso de error
                         (e.target as HTMLImageElement).src = `data:image/svg+xml;base64,${btoa(`
                             <svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
                                 <rect width="100%" height="100%" fill="#f3f4f6"/>

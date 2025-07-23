@@ -22,3 +22,8 @@ export const formatCurrency = (value: number, maxDecimals: number = 6): string =
 
     return result;
 };
+
+export const truncateLeft = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return '...' + text.slice(-(maxLength - 3));
+};

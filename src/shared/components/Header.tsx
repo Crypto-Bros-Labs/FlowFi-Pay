@@ -10,7 +10,7 @@ const Header: React.FC = () => {
     };
 
     const handleTryNow = () => {
-        navigate('/on-off-ramp');
+        navigate('/main');
     };
 
     return (
@@ -18,7 +18,7 @@ const Header: React.FC = () => {
             <div>
                 <Link to={'/'}>
                     <h1 className="text-lg md:text-3xl font-bold text-[#020F1E]">
-                        CB Flow POS
+                        FlowFi Pay
                     </h1>
                 </Link>
             </div>

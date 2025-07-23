@@ -3,6 +3,10 @@ import DescriptionApp from "../../../../shared/components/DescriptionApp";
 import SelectTile from "../../../../shared/components/SelectTile";
 import ButtonApp from "../../../../shared/components/ButtonApp";
 import { useSelectToken } from "../hooks/useSelectToken";
+import AppHeader from "../../../../shared/components/AppHeader";
+import { useAppBar } from "../../../../shared/hooks/useAppBar";
+import { BiHistory } from "react-icons/bi";
+import { IoPerson } from "react-icons/io5";
 
 const SelectTokenPage: React.FC = () => {
     const {
@@ -10,13 +14,14 @@ const SelectTokenPage: React.FC = () => {
         selectedToken,
         selectToken,
         handleBuy,
-        handleSell,
         isLoading,
     } = useSelectToken();
 
+    const { goToHistory, goToProfile } = useAppBar();
+
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center p-4">
+            <div className="flex flex-col h-full items-center justify-center p-4">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
                 <span className="ml-2 text-gray-500">Cargando...</span>
             </div>
@@ -25,9 +30,25 @@ const SelectTokenPage: React.FC = () => {
 
     return (
         <div className="flex flex-col h-full p-4">
+            <AppHeader
+
+                title="Tokens"
+                rightActions={[
+                    {
+                        icon: BiHistory,
+                        onClick: goToHistory,
+                        className: 'text-gray-700'
+                    },
+                    {
+                        icon: IoPerson,
+                        onClick: goToProfile,
+                        className: 'text-gray-700'
+                    },
+                ]} />
+
             {/* Header/Title Section */}
             <DescriptionApp
-                title='Selecciona tu token'
+                title='Selecciona tu token para cobrar'
             />
 
             {/* Contenedor con scroll para los tiles */}
@@ -73,25 +94,14 @@ const SelectTokenPage: React.FC = () => {
             </div>
 
             {/* Botones fixed en el bottom */}
-            <div className="flex gap-3 pt-4 pb-safe">
-                <div className="flex flex-col w-1/2">
-                    <ButtonApp
-                        text="Comprar"
-                        textSize="text-sm"
-                        paddingVertical="py-3"
-                        isMobile={true}
-                        onClick={handleBuy}
-                    />
-                </div>
-                <div className="flex flex-col w-1/2">
-                    <ButtonApp
-                        text="Vender"
-                        textSize="text-sm"
-                        paddingVertical="py-3"
-                        isMobile={true}
-                        onClick={handleSell}
-                    />
-                </div>
+            <div className="flex pt-4 pb-safe">
+                <ButtonApp
+                    text="Continuar"
+                    textSize="text-sm"
+                    paddingVertical="py-3"
+                    isMobile={true}
+                    onClick={handleBuy}
+                />
             </div>
         </div>
     );

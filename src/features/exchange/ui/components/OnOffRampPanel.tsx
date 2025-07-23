@@ -8,6 +8,7 @@ import ButtonApp from "../../../../shared/components/ButtonApp";
 import ModalWrapper from "../../../../shared/components/ModalWrapper";
 import BuyInfoPanel from "./BuyInfoPanel";
 import SellInfoPanel from "./SellInfoPanel";
+import { useAccountOptions } from "../../../../shared/hooks/useAccountOptions";
 
 interface OnOffRampPanelProps {
     isModal?: boolean;
@@ -30,14 +31,6 @@ const OnOffRampPanel: React.FC<OnOffRampPanelProps> = ({ isModal = false, isFlow
         selectedComponent,
         isLoading,
         onProviderSelect,
-        walletAddresses,
-        walletComboBoxOptions,
-        selectedWalletAddress,
-        onWalletSelect,
-        bankAccounts,
-        bankComboBoxOptions,
-        selectedBankAccount,
-        onBankSelect,
         showBuyInfoModal,
         showSellInfoModal,
         handleBuy,
@@ -51,7 +44,19 @@ const OnOffRampPanel: React.FC<OnOffRampPanelProps> = ({ isModal = false, isFlow
         canBuy,
     } = useOnOffRamp();
 
-    if (isLoading) {
+    const {
+        walletAddresses,
+        walletComboBoxOptions,
+        selectedWalletAddress,
+        onWalletSelect,
+        bankAccounts,
+        bankComboBoxOptions,
+        selectedBankAccount,
+        onBankSelect,
+        isAccountOptionsLoading,
+    } = useAccountOptions();
+
+    if (isLoading || isAccountOptionsLoading) {
         return (
             <div className="flex items-center justify-center p-4">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>

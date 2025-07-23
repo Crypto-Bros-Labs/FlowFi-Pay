@@ -29,7 +29,7 @@ const ButtonApp: React.FC<ButtonAppProps> = ({
     textSize = 'text-base',
     disabled = false,
     loading = false,
-    loadingText = 'Cargando...'
+    loadingText = 'Cargando...',
 }) => {
     const isDisabled = disabled || loading;
     const strokeClass = stroke ? `border-2 border-current` : '';
@@ -44,6 +44,7 @@ const ButtonApp: React.FC<ButtonAppProps> = ({
 
     return (
         <button
+
             className={`
                 ${paddingVertical} 
                 ${paddingHorizontal} 

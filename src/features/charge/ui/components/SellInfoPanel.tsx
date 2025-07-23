@@ -1,9 +1,9 @@
 import React from "react";
 import HeaderModal from "../../../../shared/components/HeaderModal";
-import InfoCard from "../../../../shared/components/InfoCard";
 import ButtonApp from "../../../../shared/components/ButtonApp";
 import QRCode from "../../../../shared/components/QRCode";
 import { useSellInfo } from "../hooks/useSellInfo";
+import TileApp from "../../../../shared/components/TileApp";
 
 interface SellInfoPanelProps {
     onClose?: () => void;
@@ -11,10 +11,7 @@ interface SellInfoPanelProps {
 
 const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose }) => {
     const {
-        walletData,
-        formattedAddress,
         qrData,
-        copyAddressToClipboard,
     } = useSellInfo();
 
     return (
@@ -22,7 +19,6 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose }) => {
 
             <HeaderModal
                 isModal={true}
-                isFlow={true}
                 onBack={onClose}
                 onClose={onClose}
             />
@@ -30,12 +26,12 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose }) => {
             {/* Título principal */}
             <div className="text-center mb-6">
                 <h1 className="text-2xl font-bold text-[#020F1E] mb-4">
-                    ¡Vende Crypto!
+                    ¡Realiza el pago!
                 </h1>
             </div>
 
             {/* QR Code */}
-            <div className="mb-6">
+            <div className="mb-15">
                 <QRCode
                     data={qrData}
                     size={150}
@@ -46,34 +42,49 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose }) => {
                 </p>
             </div>
 
-            {/* Cards de información */}
-            <div className="space-y-3 mb-6">
-                {/* Card dirección */}
-                <InfoCard
-                    title="Tu dirección"
-                    subtitle={formattedAddress}
-                    trailingIcon={
-                        <svg className="w-5 h-5 text-[#666666]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
+            <div className="mb-6">
+                <TileApp
+                    title="Monto"
+                    titleClassName="text-base text-[#666666]"
+                    trailing={
+                        <>
+                            <span className="text-base font-semibold text-[#020F1E]">$100</span>
+                        </>
                     }
-                    onTap={copyAddressToClipboard}
-                    onIconTap={copyAddressToClipboard}
+                    className="mb-3"
+                />
+
+                <TileApp
+                    title="Monto USDC"
+                    titleClassName="text-base text-[#666666]"
+                    trailing={
+                        <>
+                            <span className="text-base font-semibold text-[#020F1E]">5.60</span>
+                        </>
+                    }
+                    className="mb-3"
+                />
+
+                <TileApp
+                    title="Red"
+                    titleClassName="text-base text-[#666666]"
+                    trailing={
+                        <>
+                            <span className="text-base font-semibold text-[#020F1E]">Arbitrum</span>
+                        </>
+                    }
                 />
             </div>
 
-            {/* Leyenda */}
-            <div className="mb-6">
-                <p className="text-sm text-[#666666] text-center">
-                    Esta es tu dirección para venta de crypto aquí puedes mandar las siguientes monedas{' '}
-                    <span className="font-semibold">
-                        [{walletData.supportedTokens.join(', ')}]
-                    </span>
-                </p>
-            </div>
-
-            {/* Botón continuar */}
             <div className="mt-auto">
+                {/* Leyenda */}
+                <div className="mb-6 px-8">
+                    <p className="text-sm text-[#666666] text-center">
+                        Muestra este QR a tu cliente para completar el cobro
+                    </p>
+                </div>
+
+                {/* Botón continuar */}
                 <ButtonApp
                     text="Continuar"
                     textSize="text-sm"
@@ -82,7 +93,6 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose }) => {
                     onClick={onClose}
                 />
             </div>
-
         </div>
     );
 };

@@ -4,6 +4,9 @@ import InputApp from "../../../../shared/components/InputApp";
 import DescriptionApp from "../../../../shared/components/DescriptionApp";
 import { useSignup } from "../hooks/useSignup";
 import crypto from "/illustrations/crypto.png";
+import AppHeader from "../../../../shared/components/AppHeader";
+import { useAccountOptions } from "../../../../shared/hooks/useAccountOptions";
+import ComboBoxApp from "../../../../shared/components/ComboBoxApp";
 
 const SignUpPage: React.FC = () => {
     const {
@@ -23,17 +26,39 @@ const SignUpPage: React.FC = () => {
         handleUpdateUser,
     } = useSignup();
 
+    const {
+        bankAccounts,
+        bankComboBoxOptions,
+        selectedBankAccount,
+        onBankSelect,
+        isAccountOptionsLoading,
+    } = useAccountOptions();
+
+    if (isAccountOptionsLoading) {
+        return (
+            <div className="flex flex-1 flex-col h-full items-center justify-center p-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                <span className="ml-2 text-gray-500">Cargando...</span>
+            </div>
+        );
+    }
+
     return (
-        <div className="flex flex-col min-h-full p-4 overflow-y-auto">
+        <div className="flex flex-col min-h-full p-4">
+
+            <AppHeader
+                title="Crear cuenta"
+                showBackButton={false}
+            />
 
             {/* Imagen placeholder */}
-            <div className="w-30 h-30 mx-auto mb-6 flex items-center justify-center">
+            <div className="w-30 h-30 mx-auto mb-6 flex items-center justify-center mt-10">
                 <img src={crypto} alt="Crypto Icon" className="w-full h-full" />
             </div>
 
             <DescriptionApp
-                title='Crea tu cuenta CB'
-                description='Crea tu cuenta para comprar y vender cripto rapidamente'
+                title='Termina tu cuenta FlowFi'
+                description='Completa los siguientes campos para crear tu cuenta y cobrar facilmente.'
             />
 
             {/* Input de nombre */}
@@ -76,7 +101,7 @@ const SignUpPage: React.FC = () => {
                             onChange={(e) => handleCountryCodeChange(e.target.value)}
                             error={countryCodeError}
                             className="text-center"
-                            disabled={isLoading}
+                            disabled={true}
                         />
                     </div>
                     <div className="w-3/4">
@@ -92,6 +117,43 @@ const SignUpPage: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            <div className="mb-3 px-2">
+                <div className="text-sm font-bold text-[#020F1E] truncate mb-2">
+                    Agregar cuenta de banco
+                </div>
+
+                {bankAccounts && bankAccounts.length > 0 ? (
+                    <ComboBoxApp
+                        options={bankComboBoxOptions}
+                        selectedId={selectedBankAccount}
+                        onSelect={onBankSelect}
+                    />
+                ) : (
+                    <button
+                        type="button"
+                        onClick={() => console.log('Agregar banco')}
+                        className={`
+                        w-full p-2.5 flex items-center justify-center gap-3
+                        border border-[#666666] rounded-[10px]
+                        bg-white text-left
+                        transition-all duration-200 ease-in-out
+                        hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
+                        cursor-pointer
+                    `}
+                    >
+                        <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center">
+                            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                        </div>
+                        <span className="text-sm font-bold text-[#020F1E] mt-0.75">
+                            Agregar cuenta de banco
+                        </span>
+                    </button>
+                )}
+            </div>
+
 
             {/* Mensaje de error */}
             {error && (
@@ -116,7 +178,7 @@ const SignUpPage: React.FC = () => {
             )}
 
             {/* Botón continuar */}
-            <div className="mb-3 mt-auto">
+            <div className="mb-6 mt-auto">
                 <ButtonApp
                     text="Crear cuenta"
                     paddingVertical="py-2"

@@ -134,7 +134,7 @@ export const useOtp = ({ length = 4, onComplete }: UseOtpProps = {}) => {
                 const userData = userLocalService.getUserData();
 
                 if (userData.hasAllData) {
-                    navigate('/select-token');
+                    navigate('/main');
                 } else {
                     navigate('/signup');
                 }
