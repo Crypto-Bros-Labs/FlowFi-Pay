@@ -1,0 +1,146 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { createBankOptions, createWalletOptions } from "../utils/AccountComponents";
+import type { ComboBoxOption } from "../components/ComboBoxApp";
+
+interface WalletAddress {
+    id: string;
+    address: string;
+    network: string;
+}
+
+interface BankAccount {
+    id: string;
+    bankName: string;
+    accountNumber: string;
+}
+
+
+
+export const useAccountOptions = () => {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const navigate = useNavigate();
+
+    // wallet adress
+    const [walletAddresses, setWalletAddresses] = useState<WalletAddress[]>([]);
+    const [selectedWalletAddress, setSelectedWalletAddress] = useState<string>('');
+
+    const fetchWalletAddresses = async () => {
+        setIsLoading(true);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const mockAddresses: WalletAddress[] = [
+            {
+                id: 'addr-1',
+                address: '0x9Fc5b510185E7a218A2e5BDc8F7A14a2B8b90F123',
+                network: 'Starknet'
+            },
+            {
+                id: 'addr-2',
+                address: '0xA7b2C5d8F3e4B9c6D1E8f5A2B9C6d3E8F1A4B7C5',
+                network: 'Arbitrum'
+            },
+            {
+                id: 'addr-3',
+                address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
+                network: 'Arbitrum'
+            }
+        ];
+
+        setWalletAddresses(mockAddresses);
+
+        if (mockAddresses.length > 0) {
+            setSelectedWalletAddress(mockAddresses[0].id);
+        }
+        setIsLoading(false);
+    };
+
+    const handleAddWallet = () => {
+        navigate('/add-wallet');
+    };
+
+    // Convertir wallet addresses a ComboBoxOptions
+    const walletComboBoxOptions = createWalletOptions(
+        walletAddresses,
+        handleAddWallet
+    );
+
+    const handleWalletSelect = (option: ComboBoxOption) => {
+        if (option.id === 'add-wallet') {
+            console.log('Acción: Agregar nueva wallet');
+            return;
+        }
+        setSelectedWalletAddress(option.id as string);
+    };
+
+    // bank account
+    const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
+    const [selectedBankAccount, setSelectedBankAccount] = useState<string>('');
+
+    const fetchBankAccounts = async () => {
+        setIsLoading(true);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        const mockBankAccounts: BankAccount[] = [
+            {
+                id: 'bank-1',
+                bankName: 'BBVA',
+                accountNumber: '1234567890123456',
+            },
+            {
+                id: 'bank-2',
+                bankName: 'Santander',
+                accountNumber: '9876543210987654',
+            },
+            {
+                id: 'bank-3',
+                bankName: 'Banorte',
+                accountNumber: '5555444433332222',
+            }
+        ];
+
+        setBankAccounts(mockBankAccounts);
+
+        if (mockBankAccounts.length > 0) {
+            setSelectedBankAccount(mockBankAccounts[0].id);
+        }
+        setIsLoading(false);
+    };
+
+    const handleAddBank = () => {
+        navigate('/add-account');
+        // O abrir modal: setShowAddBankModal(true);
+    };
+
+    // Convertir bank accounts a ComboBoxOptions
+    const bankComboBoxOptions = createBankOptions(
+        bankAccounts,
+        handleAddBank)
+
+    const handleBankSelect = (option: ComboBoxOption) => {
+        if (option.id === 'add-bank') {
+            console.log('Acción: Agregar nuevo banco');
+            return;
+        }
+        setSelectedBankAccount(option.id as string);
+    };
+
+    useEffect(() => {
+
+        fetchWalletAddresses();
+        fetchBankAccounts();
+
+    }, []);
+
+    return {
+        isAccountOptionsLoading: isLoading,
+        walletAddresses,
+        walletComboBoxOptions,
+        selectedWalletAddress,
+        onWalletSelect: handleWalletSelect,
+        bankAccounts,
+        bankComboBoxOptions,
+        selectedBankAccount,
+        onBankSelect: handleBankSelect,
+    }
+}

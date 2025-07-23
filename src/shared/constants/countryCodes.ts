@@ -1,0 +1,23 @@
+// Códigos de países populares con sus formatos
+export const COUNTRY_CODES = {
+    '+1': { name: 'Estados Unidos/Canadá', format: /^\d{10}$/, maxLength: 10 },
+    '+52': { name: 'México', format: /^\d{10}$/, maxLength: 10 },
+    '+34': { name: 'España', format: /^\d{9}$/, maxLength: 9 },
+    '+44': { name: 'Reino Unido', format: /^\d{10}$/, maxLength: 10 },
+    '+33': { name: 'Francia', format: /^\d{9,10}$/, maxLength: 10 },
+    '+49': { name: 'Alemania', format: /^\d{10,11}$/, maxLength: 11 },
+    '+39': { name: 'Italia', format: /^\d{8,11}$/, maxLength: 11 },
+    '+55': { name: 'Brasil', format: /^\d{10,11}$/, maxLength: 11 },
+    '+54': { name: 'Argentina', format: /^\d{10}$/, maxLength: 10 },
+    '+57': { name: 'Colombia', format: /^\d{10}$/, maxLength: 10 },
+    '+51': { name: 'Perú', format: /^\d{9}$/, maxLength: 9 },
+    '+56': { name: 'Chile', format: /^\d{9}$/, maxLength: 9 },
+    '+86': { name: 'China', format: /^\d{11}$/, maxLength: 11 },
+    '+81': { name: 'Japón', format: /^\d{10,11}$/, maxLength: 11 },
+    '+82': { name: 'Corea del Sur', format: /^\d{9,10}$/, maxLength: 10 },
+    '+91': { name: 'India', format: /^\d{10}$/, maxLength: 10 },
+    '+61': { name: 'Australia', format: /^\d{9}$/, maxLength: 9 },
+    '+7': { name: 'Rusia', format: /^\d{10}$/, maxLength: 10 },
+    '+27': { name: 'Sudáfrica', format: /^\d{9}$/, maxLength: 9 },
+    '+20': { name: 'Egipto', format: /^\d{10}$/, maxLength: 10 },
+};
