@@ -46,13 +46,15 @@ const SelectTokenPage: React.FC = () => {
                     },
                 ]} />
 
-            {/* Header/Title Section */}
-            <DescriptionApp
-                title='Selecciona tu token para cobrar'
-            />
+            <div className="px-4">
+                {/* Header/Title Section */}
+                <DescriptionApp
+                    title='Selecciona tu token para cobrar'
+                />
+            </div>
 
             {/* Contenedor con scroll para los tiles */}
-            <div className="flex-1 overflow-y-auto py-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="flex-1 overflow-y-auto py-4 px-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 <div className="space-y-3">
                     {tokens.map((token) => (
                         <SelectTile

@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createBankOptions, createWalletOptions } from "../utils/AccountComponents";
 import type { ComboBoxOption } from "../components/ComboBoxApp";
+import bankRepository from "../../features/profile/data/repositories/bankRepository";
+import userRepository from "../../features/login/data/repositories/userRepository";
 
 interface WalletAddress {
     id: string;
@@ -79,32 +81,33 @@ export const useAccountOptions = () => {
 
     const fetchBankAccounts = async () => {
         setIsLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        try {
+            const userUuid = (await userRepository.getCurrentUserData())?.userUuid || 'default-uuid';
+            const response = await bankRepository.getBankAccounts(userUuid);
 
-        const mockBankAccounts: BankAccount[] = [
-            {
-                id: 'bank-1',
-                bankName: 'BBVA',
-                accountNumber: '1234567890123456',
-            },
-            {
-                id: 'bank-2',
-                bankName: 'Santander',
-                accountNumber: '9876543210987654',
-            },
-            {
-                id: 'bank-3',
-                bankName: 'Banorte',
-                accountNumber: '5555444433332222',
+            if (!response.success) {
+                console.error('Error fetching bank accounts:', response.error);
+                return;
             }
-        ];
 
-        setBankAccounts(mockBankAccounts);
+            if (response.success && response.data) {
+                const bankAccountsData = response.data.map((account) => ({
+                    id: account.userBankInformationUuid,
+                    bankName: account.bankName,
+                    accountNumber: account.clabe
+                }));
+                setBankAccounts(bankAccountsData);
 
-        if (mockBankAccounts.length > 0) {
-            setSelectedBankAccount(mockBankAccounts[0].id);
+                if (bankAccountsData.length > 0) {
+                    setSelectedBankAccount(bankAccountsData[0].id);
+                    userRepository.setBankAccountUuid(bankAccountsData[0].id);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching bank accounts:', error);
+        } finally {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
 
     const handleAddBank = () => {
@@ -123,6 +126,7 @@ export const useAccountOptions = () => {
             return;
         }
         setSelectedBankAccount(option.id as string);
+        userRepository.setBankAccountUuid(option.id as string);
     };
 
     useEffect(() => {
@@ -142,5 +146,6 @@ export const useAccountOptions = () => {
         bankComboBoxOptions,
         selectedBankAccount,
         onBankSelect: handleBankSelect,
+        handleAddBank,
     }
 }

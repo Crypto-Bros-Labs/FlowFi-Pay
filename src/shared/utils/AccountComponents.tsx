@@ -54,6 +54,7 @@ export const createBankOptions = (
                 <TileApp
                     title="Banco"
                     subtitle={bank.bankName}
+                    subtitleClassName="text-xs font-medium text-[#666666] truncate mt-0.5 max-w-[110px]"
                     leading={
                         <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                             <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

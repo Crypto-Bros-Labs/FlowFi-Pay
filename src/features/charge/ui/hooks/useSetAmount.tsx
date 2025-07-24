@@ -2,7 +2,8 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import tokenRepository from '../../data/repositories/tokenRepository';
 import type { Token } from '../../data/local/tokenLocalService';
 import sellRepository from '../../data/repositories/sellRepository';
-
+import userRepository from '../../../login/data/repositories/userRepository';
+import { useNavigate } from 'react-router-dom';
 
 interface Currency {
     symbol: string;
@@ -10,33 +11,69 @@ interface Currency {
     name: string;
 }
 
-
-
 export const useSetAmount = () => {
-    const [amountFiat, setAmountFiat] = useState<string>('1000');
+    const [amountFiat, setAmountFiat] = useState<string>('0');
     const [amountToken, setAmountToken] = useState<string>('0.00');
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isQuoteLoading, setIsQuoteLoading] = useState<boolean>(false);
+    const [quoteError, setQuoteError] = useState<string | null>(null);
     const [showSellInfoModal, setShowSellInfoModal] = useState<boolean>(false);
     const [isInitialized, setIsInitialized] = useState<boolean>(false);
     const [selectedToken, setSelectedToken] = useState<Token | null>(null);
+    const [kycUrl, setKycUrl] = useState<string | null>(null);
+    const [showKycModal, setShowKycModal] = useState<boolean>(false);
+    const [kycCompleted, setKycCompleted] = useState<boolean>(false);
+    const [showTimerModal, setShowTimerModal] = useState<boolean>(false);
+    const navigate = useNavigate();
 
-    // Mock data - reemplaza con tus datos reales
     const selectedCurrency: Currency = useMemo(() => ({
         symbol: '$',
         code: 'MXN',
         name: 'Peso Mexicano'
     }), []);
 
-    const fetchQuote = useCallback(async (amountFiat: string, token: Token) => {
-        try {
-            // Simular una llamada a la API para obtener la cotización
+    // Debounced quote fetching
+    const fetchQuote = useCallback(async (fiatAmount: string) => {
+        // No hacer quote si el amount es 0 o inválido
+        const numericAmount = parseFloat(fiatAmount);
+        if (!numericAmount || numericAmount <= 0) {
+            setAmountToken('0.00');
+            return;
         }
-        catch (error) {
-            console.error('Error fetching quote:', error);
-            throw new Error('Failed to fetch quote');
-        }
-    }, []);
 
+        setIsQuoteLoading(true);
+        setQuoteError(null);
+
+        try {
+            const response = await sellRepository.getQuote({
+                providerUuid: '237b0541-5521-4fda-8bba-05ee4d484795',
+                fromUuuid: selectedToken?.uuid || '',
+                toUuid: '92b61c69-a81f-475a-9bc7-37c85efc74c6',
+                amountFiat: fiatAmount
+            });
+
+            if (response.success && response.cryptoAmount) {
+                setAmountToken(response.cryptoAmount);
+            } else {
+                setQuoteError('Error obteniendo cotización');
+            }
+        } catch (error) {
+            console.error('Error fetching quote:', error);
+            setQuoteError('Error obteniendo cotización');
+        } finally {
+            setIsQuoteLoading(false);
+        }
+    }, [selectedToken?.uuid]);
+
+    useEffect(() => {
+        if (!isInitialized || !selectedToken) return;
+
+        const timeoutId = setTimeout(() => {
+            fetchQuote(amountFiat);
+        }, 500);
+
+        return () => clearTimeout(timeoutId);
+    }, [amountFiat, fetchQuote, isInitialized, selectedToken]);
 
     // Validar si el amount es válido
     const isValidAmount = useMemo(() => {
@@ -47,30 +84,26 @@ export const useSetAmount = () => {
     // Manejar la entrada de números
     const handleNumberPress = useCallback((number: string) => {
         setAmountFiat(prev => {
-            // Si el valor actual es '0', reemplazar con el nuevo número
             if (prev === '0') {
                 return number;
             }
 
-            // Verificar si ya hay un punto decimal
             if (number === '.' && prev.includes('.')) {
                 return prev;
             }
 
             // Limitar a 2 decimales después del punto
             if (prev.includes('.')) {
-                const [decimal] = prev.split('.');
+                const [, decimal] = prev.split('.');
                 if (decimal && decimal.length >= 2) {
                     return prev;
                 }
             }
 
-            // Agregar el número
             return prev + number;
         });
     }, []);
 
-    // Manejar el botón de borrar (delete)
     const handleDeletePress = useCallback(() => {
         setAmountFiat(prev => {
             if (prev.length <= 1) {
@@ -80,68 +113,116 @@ export const useSetAmount = () => {
         });
     }, []);
 
-    // Manejar el botón de limpiar (clear)
     const handleClearPress = useCallback(() => {
         setAmountFiat('0');
     }, []);
 
     const handleDecimalPress = useCallback(() => {
         setAmountFiat(prev => {
-            // Si ya hay un punto decimal, no hacer nada
             if (prev.includes('.')) {
                 return prev;
             }
-            // Si el valor actual es '0', reemplazar con '0.'
             if (prev === '0') {
                 return '0.';
             }
-            // Agregar el punto decimal
             return prev + '.';
         });
     }, []);
 
+    const retryQuote = useCallback(() => {
+        fetchQuote(amountFiat);
+    }, [fetchQuote, amountFiat]);
+
     // Manejar el botón continuar
     const handleContinue = useCallback(async () => {
-        if (!isValidAmount) return;
+        if (!isValidAmount || isQuoteLoading) return;
 
         setIsLoading(true);
         try {
-            // Aquí implementarías la lógica para continuar
             console.log('Amount Fiat:', amountFiat);
             console.log('Amount Token:', amountToken);
             console.log('Currency:', selectedCurrency);
             console.log('Token:', selectedToken);
 
-            // Simular una llamada async
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            const userUuid = (await userRepository.getCurrentUserData())?.userUuid || 'default-uuid';
+            const bankAccountUuid = (await userRepository.getBankAccountUuid()) || 'default-bank-account';
 
-            openSellModal();
+            const response = await sellRepository.createOffRamp({
+                userUuid: userUuid,
+                providerUuid: '237b0541-5521-4fda-8bba-05ee4d484795',
+                tokenNetworkUuid: selectedToken?.uuid || 'default-network',
+                fiatCurrencyUuid: '92b61c69-a81f-475a-9bc7-37c85efc74c6',
+                userBankInformationUuid: bankAccountUuid,
+                amountFiat: parseFloat(amountFiat) || 0,
+            })
+
+            if (response.kycUrl !== null) {
+                setKycUrl(response.kycUrl);
+                setShowKycModal(true);
+            } else if (response.success && response.kycUrl === null) {
+                console.log('Off-ramp created successfully, no KYC required');
+                sellRepository.setAmountFiat(amountFiat);
+                sellRepository.setAmountToken(amountToken);
+                openSellModal();
+            } else {
+                console.error('Error creating off-ramp:', response);
+                setQuoteError('Error al crear off-ramp');
+            }
 
         } catch (error) {
             console.error('Error processing amount:', error);
         } finally {
             setIsLoading(false);
         }
-    }, [amountFiat, amountToken, selectedCurrency, selectedToken, isValidAmount]);
+    }, [amountFiat, amountToken, selectedCurrency, selectedToken, isValidAmount, isQuoteLoading]);
+
+    const handleKycComplete = useCallback(() => {
+        setShowKycModal(false);
+        setKycCompleted(true);
+        setKycUrl(null);
+        // Proceder al siguiente paso
+        openTimerModal();
+    }, []);
+
+    // ✅ Manejar cancelación de KYC
+    const handleKycCancel = useCallback(() => {
+        setShowKycModal(false);
+        setKycUrl(null);
+        // Opcional: mostrar mensaje de que el KYC es requerido
+        setQuoteError('KYC es requerido para continuar');
+    }, []);
+
+    const handleContinueTransaction = () => {
+        closeSellModal();
+        navigate('/history');
+    }
 
     const openSellModal = () => setShowSellInfoModal(true);
     const closeSellModal = () => setShowSellInfoModal(false);
+    const openTimerModal = () => setShowTimerModal(true);
+    const closeTimerModal = () => setShowTimerModal(false);
 
     useEffect(() => {
         const initializeData = () => {
             const token = tokenRepository.getSelectedToken();
-            const initialAmountToken = sellRepository.getAmountToken() || '0.00';
-            const initialAmountFiat = sellRepository.getAmountFiat() || '1000';
+            const initialAmountToken = sellRepository.getAmountToken();
+            const initialAmountFiat = sellRepository.getAmountFiat();
 
             setSelectedToken(token);
-            setIsInitialized(true);
             setAmountToken(initialAmountToken);
-            setAmountFiat(initialAmountFiat);
+
+            // ✅ Solo setear si hay un valor guardado, sino usar '0'
+            if (initialAmountFiat && initialAmountFiat !== '0') {
+                setAmountFiat(initialAmountFiat);
+            } else {
+                setAmountFiat('0');
+            }
+
+            setIsInitialized(true);
         };
 
         initializeData();
     }, []);
-
 
     return {
         amountFiat,
@@ -149,6 +230,9 @@ export const useSetAmount = () => {
         selectedCurrency,
         selectedToken,
         isLoading,
+        isQuoteLoading,
+        quoteError,
+        retryQuote,
         handleNumberPress,
         handleDeletePress,
         handleClearPress,
@@ -158,5 +242,14 @@ export const useSetAmount = () => {
         showSellInfoModal,
         openSellModal,
         closeSellModal,
+        kycUrl,
+        showKycModal,
+        kycCompleted,
+        handleKycComplete,
+        handleKycCancel,
+        showTimerModal,
+        openTimerModal,
+        closeTimerModal,
+        handleContinueTransaction
     };
 };

@@ -7,11 +7,14 @@ import TileApp from "../../../../shared/components/TileApp";
 
 interface SellInfoPanelProps {
     onClose?: () => void;
+    onContinue?: () => void;
 }
 
-const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose }) => {
+const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose, onContinue }) => {
     const {
         qrData,
+        selectedToken,
+        amounts,
     } = useSellInfo();
 
     return (
@@ -48,18 +51,18 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose }) => {
                     titleClassName="text-base text-[#666666]"
                     trailing={
                         <>
-                            <span className="text-base font-semibold text-[#020F1E]">$100</span>
+                            <span className="text-base font-semibold text-[#020F1E]">{amounts?.amountFiat}</span>
                         </>
                     }
                     className="mb-3"
                 />
 
                 <TileApp
-                    title="Monto USDC"
+                    title={`Monto ${selectedToken?.symbol}`}
                     titleClassName="text-base text-[#666666]"
                     trailing={
                         <>
-                            <span className="text-base font-semibold text-[#020F1E]">5.60</span>
+                            <span className="text-base font-semibold text-[#020F1E]">{amounts?.amountToken}</span>
                         </>
                     }
                     className="mb-3"
@@ -70,7 +73,7 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose }) => {
                     titleClassName="text-base text-[#666666]"
                     trailing={
                         <>
-                            <span className="text-base font-semibold text-[#020F1E]">Arbitrum</span>
+                            <span className="text-base font-semibold text-[#020F1E]">{selectedToken?.network}</span>
                         </>
                     }
                 />
@@ -90,7 +93,7 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose }) => {
                     textSize="text-sm"
                     paddingVertical="py-2"
                     isMobile={true}
-                    onClick={onClose}
+                    onClick={onContinue}
                 />
             </div>
         </div>

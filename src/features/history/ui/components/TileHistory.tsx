@@ -2,7 +2,7 @@ import React from 'react';
 import { FaClock } from 'react-icons/fa';
 import { IoCheckmarkCircleOutline, IoCloseCircleOutline } from 'react-icons/io5';
 
-type TransactionStatus = 'completed' | 'pending' | 'canceled';
+export type TransactionStatus = 'completed' | 'pending' | 'canceled';
 
 interface TileHistoryProps {
     status: TransactionStatus;

@@ -29,6 +29,14 @@ class UserRepository {
     async getCurrentUserData() {
         return userLocalService.getUserData();
     }
+
+    async setBankAccountUuid(bankAccountUuid: string): Promise<void> {
+        userLocalService.setBankAccountUuid(bankAccountUuid);
+    }
+
+    async getBankAccountUuid(): Promise<string | null> {
+        return userLocalService.getBankAccountUuid();
+    }
 }
 
 export default new UserRepository();

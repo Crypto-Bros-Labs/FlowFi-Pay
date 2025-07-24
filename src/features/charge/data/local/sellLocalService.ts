@@ -30,7 +30,10 @@ const useSellLocalService = create<SellLocalState>()(
         (set) => ({
             // Initial state
             offRampData: null,
-            amounts: null,
+            amounts: {
+                amountFiat: '1000',
+                amountToken: '0.00'
+            },
             sellData: null,
 
             // Actions

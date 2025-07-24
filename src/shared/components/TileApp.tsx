@@ -54,11 +54,11 @@ const TileApp: React.FC<TileAppProps> = ({
     // Clases por defecto solo si no se proporcionan clases personalizadas
     const defaultTitleClasses = titleClassName
         ? titleClassName
-        : `${getSizeClass(titleSize)} font-bold text-[#020F1E] truncate`;
+        : `${getSizeClass(titleSize)} font-bold text-[#020F1E] truncate max-w-[50%]`;
 
     const defaultSubtitleClasses = subtitleClassName
         ? subtitleClassName
-        : `${getSizeClass(subtitleSize)} font-medium text-[#666666] truncate mt-0.5`;
+        : `${getSizeClass(subtitleSize)} font-medium text-[#666666] truncate mt-0.5 max-w-[50%]`;
 
     const content = (
         <>

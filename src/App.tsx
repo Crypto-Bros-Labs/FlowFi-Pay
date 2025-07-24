@@ -5,13 +5,13 @@ import SignUpPage from './features/login/ui/pages/SignUpPage';
 import OtpPage from './features/login/ui/pages/OtpPage';
 import OnOffRampPage from './features/exchange/ui/pages/OnOffRampPage';
 import ProtectedRoute from './shared/pages/ProtectedRoute';
-import AddAccountPage from './features/exchange/ui/pages/AddAccountPage';
-import AddWalletPage from './features/exchange/ui/pages/AddWalletPage';
 import SetAmountPage from './features/charge/ui/pages/SetAmountPage';
 import HistoryPage from './features/history/ui/pages/HistoryPage';
 import ProfilePage from './features/profile/ui/pages/ProfilePage';
 import MainPage from './features/charge/ui/pages/MainPage';
 import SelectTokenPage from './features/charge/ui/pages/SelectTokenPage';
+import AddAccountPage from './features/profile/ui/pages/AddAccountPage';
+import AddWalletPage from './features/profile/ui/pages/AddWalletPage';
 
 
 function App() {

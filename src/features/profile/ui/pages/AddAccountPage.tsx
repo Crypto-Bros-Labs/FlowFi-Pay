@@ -4,6 +4,7 @@ import DescriptionApp from "../../../../shared/components/DescriptionApp";
 import InputApp from "../../../../shared/components/InputApp";
 import ButtonApp from "../../../../shared/components/ButtonApp";
 import { useAddAccount } from "../hooks/useAddAccount";
+import AppHeader from "../../../../shared/components/AppHeader";
 
 const AddAccountPage: React.FC = () => {
     const {
@@ -21,10 +22,11 @@ const AddAccountPage: React.FC = () => {
 
     return (
         <div className="flex flex-col h-full p-4">
+            <AppHeader title="Agregar Cuenta" />
 
             {/* Imagen placeholder */}
-            <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-6 flex items-center justify-center">
-                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-20 h-20 bg-blue-50 rounded-full mx-auto mb-6 mt-6 flex items-center justify-center border-2 border-blue-100">
+                <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H7a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
             </div>
@@ -53,10 +55,11 @@ const AddAccountPage: React.FC = () => {
                     Banco
                 </label>
                 <ComboBoxApp
+                    disabled={true}
                     options={bankOptions}
                     selectedComponent={selectedBankComponent}
                     onSelect={handleBankSelect}
-                    placeholder={<span className="text-gray-500">Selecciona un banco</span>}
+                    placeholder={<span className="text-gray-500">Completa tu CLABE</span>}
                 />
             </div>
 

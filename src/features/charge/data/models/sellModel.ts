@@ -23,4 +23,6 @@ export interface QuoteData {
 }
 
 export interface QuoteResponse {
+    fiatAmount: number,
+    cryptoAmount: number,
 }
