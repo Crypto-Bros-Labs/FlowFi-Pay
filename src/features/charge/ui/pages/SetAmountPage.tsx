@@ -80,6 +80,7 @@ const SetAmountPage: React.FC = () => {
                         {selectedToken?.iconUrl && (
                             <img
                                 src={selectedToken.iconUrl}
+
                                 alt={selectedToken.symbol}
                                 className="w-6 h-6 mr-2 flex-shrink-0"
                             />

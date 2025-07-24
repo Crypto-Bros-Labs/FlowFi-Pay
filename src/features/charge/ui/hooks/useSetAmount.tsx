@@ -3,6 +3,7 @@ import tokenRepository from '../../data/repositories/tokenRepository';
 import type { Token } from '../../data/local/tokenLocalService';
 import sellRepository from '../../data/repositories/sellRepository';
 
+
 interface Currency {
     symbol: string;
     code: string;
@@ -18,7 +19,6 @@ export const useSetAmount = () => {
     const [showSellInfoModal, setShowSellInfoModal] = useState<boolean>(false);
     const [isInitialized, setIsInitialized] = useState<boolean>(false);
     const [selectedToken, setSelectedToken] = useState<Token | null>(null);
-
 
     // Mock data - reemplaza con tus datos reales
     const selectedCurrency: Currency = useMemo(() => ({
@@ -141,6 +141,7 @@ export const useSetAmount = () => {
 
         initializeData();
     }, []);
+
 
     return {
         amountFiat,

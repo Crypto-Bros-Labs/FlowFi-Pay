@@ -24,6 +24,7 @@ class TokenRepository {
                 symbol: token.symbol || '',
                 network: token.network || '',
                 iconUrl: token.imageUrl || '/mxnb.svg',
+
             }));
             tokenLocalService.setTokens(tokens);
 
