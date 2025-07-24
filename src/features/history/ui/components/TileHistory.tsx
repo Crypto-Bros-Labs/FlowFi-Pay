@@ -87,7 +87,7 @@ const TileHistory: React.FC<TileHistoryProps> = ({
                         <h3 className="text-base font-semibold text-gray-900">
                             {config.title}
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-xs text-gray-500 mt-1">
                             {subtitle}
                         </p>
                     </div>

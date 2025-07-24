@@ -153,12 +153,14 @@ export const useSetAmount = () => {
                 tokenNetworkUuid: selectedToken?.uuid || 'default-network',
                 fiatCurrencyUuid: '92b61c69-a81f-475a-9bc7-37c85efc74c6',
                 userBankInformationUuid: bankAccountUuid,
-                amountFiat: parseFloat(amountFiat) || 0,
+                amount: parseFloat(amountFiat) || 0,
             })
 
             if (response.kycUrl !== null) {
                 setKycUrl(response.kycUrl);
-                setShowKycModal(true);
+                if (response.kycUrl) {
+                    navigate(response.kycUrl);
+                }
             } else if (response.success && response.kycUrl === null) {
                 console.log('Off-ramp created successfully, no KYC required');
                 sellRepository.setAmountFiat(amountFiat);
@@ -174,7 +176,7 @@ export const useSetAmount = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [amountFiat, amountToken, selectedCurrency, selectedToken, isValidAmount, isQuoteLoading]);
+    }, [isValidAmount, isQuoteLoading, amountFiat, amountToken, selectedCurrency, selectedToken, navigate]);
 
     const handleKycComplete = useCallback(() => {
         setShowKycModal(false);
