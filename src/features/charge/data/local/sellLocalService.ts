@@ -58,7 +58,9 @@ const useSellLocalService = create<SellLocalState>()(
             },
             partialize: (state) => ({
                 offRampData: state.offRampData,
-                amounts: state.amounts
+                amounts: state.amounts,
+                sellData: state.sellData
+
             } as SellLocalState), // Persist only the necessary state,
             version: 1,
         }
@@ -67,7 +69,9 @@ const useSellLocalService = create<SellLocalState>()(
 
 class SellLocalService {
     private useStore = useSellLocalService;
-    private store = this.useStore.getState();
+    private get store() {
+        return this.useStore.getState();
+    }
 
     getOffRampData(): OffRampData | null {
         return this.store.offRampData;
@@ -121,11 +125,19 @@ class SellLocalService {
     }
 
     setSellData(data: SellData | null): void {
+        console.log('🔄 SellLocalService.setSellData llamado con:', data);
         this.store.setSellData(data);
+
+        // Verificar que se guardó
+        const verification = this.getSellData();
+        console.log('✅ Verificación después de guardar:', verification);
     }
 
     getSellData(): SellData | null {
-        return this.store.sellData;
+        const data = this.store.sellData;
+        console.log('📖 getSellData retorna:', data);
+        return data;
+
     }
 
     setUserUuid(userUuid: string): void {
@@ -138,7 +150,8 @@ class SellLocalService {
             tokenNetworkUuid: offRampData.tokenNetworkUuid ?? "",
             fiatCurrencyUuid: offRampData.fiatCurrencyUuid ?? "",
             userBankInformationUuid: offRampData.userBankInformationUuid ?? "",
-            amountFiat: offRampData.amountFiat
+            amount: offRampData.amount
+
         });
     }
 
@@ -152,7 +165,8 @@ class SellLocalService {
             tokenNetworkUuid: offRampData.tokenNetworkUuid ?? "",
             fiatCurrencyUuid: offRampData.fiatCurrencyUuid ?? "",
             userBankInformationUuid: offRampData.userBankInformationUuid ?? "",
-            amountFiat: offRampData.amountFiat
+            amount: offRampData.amount
+
         });
     }
 
@@ -166,7 +180,8 @@ class SellLocalService {
             tokenNetworkUuid,
             fiatCurrencyUuid: offRampData.fiatCurrencyUuid ?? "",
             userBankInformationUuid: offRampData.userBankInformationUuid ?? "",
-            amountFiat: offRampData.amountFiat
+            amount: offRampData.amount
+
         });
     }
 
@@ -180,7 +195,8 @@ class SellLocalService {
             tokenNetworkUuid: offRampData.tokenNetworkUuid ?? "",
             fiatCurrencyUuid,
             userBankInformationUuid: offRampData.userBankInformationUuid ?? "",
-            amountFiat: offRampData.amountFiat
+            amount: offRampData.amount
+
         });
     }
 
@@ -194,11 +210,12 @@ class SellLocalService {
             tokenNetworkUuid: offRampData.tokenNetworkUuid ?? "",
             fiatCurrencyUuid: offRampData.fiatCurrencyUuid ?? "",
             userBankInformationUuid,
-            amountFiat: offRampData.amountFiat
+            amount: offRampData.amount
         });
     }
 
-    setAmountFiatOffRamp(amountFiat: number): void {
+    setAmountFiatOffRamp(amount: number): void {
+
         const offRampData = this.store.offRampData;
         if (!offRampData) return;
         this.store.setOffRampData?.({
@@ -208,7 +225,8 @@ class SellLocalService {
             tokenNetworkUuid: offRampData.tokenNetworkUuid ?? "",
             fiatCurrencyUuid: offRampData.fiatCurrencyUuid ?? "",
             userBankInformationUuid: offRampData.userBankInformationUuid ?? "",
-            amountFiat
+            amount
+
         });
     }
 

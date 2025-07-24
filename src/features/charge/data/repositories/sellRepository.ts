@@ -6,11 +6,36 @@ class SellRepository {
     async createOffRamp(data: OffRampData): Promise<{ success: boolean, kycUrl: string | null }> {
         try {
             const response = await sellApiService.createOffRamp(data);
+            console.log('📨 API R<<<<<<< charge-flow
+16
+ 
+esponse completa:', response);
+
             if (response.details === "SUCCESS") {
-                sellLocalService.setSellData({
+                const sellData = {
                     kycUrl: response.kycUrl,
                     destinationWalletAddress: response.destinationWalletAddress
-                });
+                };
+
+                console.log('💾 Intentando guardar:', sellData);
+
+                // Verificar antes de guardar
+                console.log('📝 Datos antes de guardar:', sellLocalService.getSellData());
+
+                sellLocalService.setSellData(sellData);
+
+                // Verificar después de guardar
+                console.log('✅ Datos después de guardar:', sellLocalService.getSellData());
+
+                // Verificar que realmente se guardó
+                const verification = sellLocalService.getSellData();
+                if (!verification) {
+                    console.error('❌ ERROR: Los datos NO se guardaron correctamente');
+                } else {
+                    console.log('✅ CONFIRMADO: Datos guardados correctamente:', verification);
+                }
+
+
                 return { success: true, kycUrl: null };
             }
 
