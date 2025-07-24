@@ -1,5 +1,7 @@
-import { useState, useCallback, useMemo } from 'react';
-import usdc from '/usdc.png';
+import { useState, useCallback, useMemo, useEffect } from 'react';
+import tokenRepository from '../../data/repositories/tokenRepository';
+import type { Token } from '../../data/local/tokenLocalService';
+import sellRepository from '../../data/repositories/sellRepository';
 
 interface Currency {
     symbol: string;
@@ -7,17 +9,16 @@ interface Currency {
     name: string;
 }
 
-interface Token {
-    symbol: string;
-    name: string;
-    imageUrl: string;
-    price: number; // Precio en USD o la moneda base
-}
+
 
 export const useSetAmount = () => {
     const [amountFiat, setAmountFiat] = useState<string>('1000');
+    const [amountToken, setAmountToken] = useState<string>('0.00');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [showSellInfoModal, setShowSellInfoModal] = useState<boolean>(false);
+    const [isInitialized, setIsInitialized] = useState<boolean>(false);
+    const [selectedToken, setSelectedToken] = useState<Token | null>(null);
+
 
     // Mock data - reemplaza con tus datos reales
     const selectedCurrency: Currency = useMemo(() => ({
@@ -26,21 +27,16 @@ export const useSetAmount = () => {
         name: 'Peso Mexicano'
     }), []);
 
-    const selectedToken: Token = useMemo(() => ({
-        symbol: 'USDC',
-        name: 'USD Coin',
-        imageUrl: usdc,
-        price: 20.15
-    }), []);
+    const fetchQuote = useCallback(async (amountFiat: string, token: Token) => {
+        try {
+            // Simular una llamada a la API para obtener la cotización
+        }
+        catch (error) {
+            console.error('Error fetching quote:', error);
+            throw new Error('Failed to fetch quote');
+        }
+    }, []);
 
-    // Calcular el amount en token basado en el fiat
-    const amountToken = useMemo(() => {
-        const fiatValue = parseFloat(amountFiat) || 0;
-        if (fiatValue === 0) return '0.00';
-
-        const tokenAmount = fiatValue / selectedToken.price;
-        return tokenAmount.toFixed(6); // 6 decimales para crypto
-    }, [amountFiat, selectedToken.price]);
 
     // Validar si el amount es válido
     const isValidAmount = useMemo(() => {
@@ -130,6 +126,21 @@ export const useSetAmount = () => {
 
     const openSellModal = () => setShowSellInfoModal(true);
     const closeSellModal = () => setShowSellInfoModal(false);
+
+    useEffect(() => {
+        const initializeData = () => {
+            const token = tokenRepository.getSelectedToken();
+            const initialAmountToken = sellRepository.getAmountToken() || '0.00';
+            const initialAmountFiat = sellRepository.getAmountFiat() || '1000';
+
+            setSelectedToken(token);
+            setIsInitialized(true);
+            setAmountToken(initialAmountToken);
+            setAmountFiat(initialAmountFiat);
+        };
+
+        initializeData();
+    }, []);
 
     return {
         amountFiat,

@@ -77,9 +77,9 @@ const SetAmountPage: React.FC = () => {
 
                     {/* Token Amount */}
                     <div className="flex items-center justify-center px-4">
-                        {selectedToken?.imageUrl && (
+                        {selectedToken?.iconUrl && (
                             <img
-                                src={selectedToken.imageUrl}
+                                src={selectedToken.iconUrl}
                                 alt={selectedToken.symbol}
                                 className="w-6 h-6 mr-2 flex-shrink-0"
                             />

@@ -3,7 +3,7 @@ import type { TokenData, ProviderData } from "../models/tokenModel";
 
 class TokenService {
     async getTokens(): Promise<TokenData[]> {
-        const response = await axiosInstance.get('/token?page=0&size=10');
+        const response = await axiosInstance.get('/token');
         return response.data.data.content;
     }
 
