@@ -32,6 +32,7 @@ export const useSellInfo = () => {
     const generateQRData = () => {
         // Para Ethereum, el formato estándar es ethereum:address
         return `${walletData?.destinationWalletAddress}`;
+
     };
 
 

@@ -6,7 +6,10 @@ class SellRepository {
     async createOffRamp(data: OffRampData): Promise<{ success: boolean, kycUrl: string | null }> {
         try {
             const response = await sellApiService.createOffRamp(data);
-            console.log('📨 API Response completa:', response);
+            console.log('📨 API R<<<<<<< charge-flow
+16
+ 
+esponse completa:', response);
 
             if (response.details === "SUCCESS") {
                 const sellData = {
@@ -31,6 +34,7 @@ class SellRepository {
                 } else {
                     console.log('✅ CONFIRMADO: Datos guardados correctamente:', verification);
                 }
+
 
                 return { success: true, kycUrl: null };
             }

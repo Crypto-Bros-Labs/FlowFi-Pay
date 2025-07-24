@@ -141,6 +141,7 @@ const HistoryPage: React.FC = () => {
 
                 {/* ✅ Loading state */}
                 {isLoading && !isRefreshing && (
+
                     <div className="flex items-center justify-center py-8">
                         <div className="text-center">
                             <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
@@ -165,6 +166,7 @@ const HistoryPage: React.FC = () => {
                         >
                             Recargar
                         </button>
+
                     </div>
                 )}
 
@@ -175,6 +177,7 @@ const HistoryPage: React.FC = () => {
                         status={parseTransactionStatus(transaction.status)}
                         amount={Number(transaction.cryptoAmount)}
                         subtitle={formatDateRelative(transaction.createdAt)}
+
                     />
                 ))}
             </div>

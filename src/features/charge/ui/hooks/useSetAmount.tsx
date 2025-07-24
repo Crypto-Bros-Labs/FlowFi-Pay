@@ -72,6 +72,7 @@ export const useSetAmount = () => {
             fetchQuote(amountFiat);
         }, 500);
 
+
         return () => clearTimeout(timeoutId);
     }, [amountFiat, fetchQuote, isInitialized, selectedToken]);
 
@@ -154,6 +155,7 @@ export const useSetAmount = () => {
                 fiatCurrencyUuid: '92b61c69-a81f-475a-9bc7-37c85efc74c6',
                 userBankInformationUuid: bankAccountUuid,
                 amount: parseFloat(amountFiat) || 0,
+
             })
 
             if (response.kycUrl !== null) {
@@ -161,6 +163,7 @@ export const useSetAmount = () => {
                 if (response.kycUrl) {
                     navigate(response.kycUrl);
                 }
+
             } else if (response.success && response.kycUrl === null) {
                 console.log('Off-ramp created successfully, no KYC required');
                 sellRepository.setAmountFiat(amountFiat);
@@ -177,6 +180,7 @@ export const useSetAmount = () => {
             setIsLoading(false);
         }
     }, [isValidAmount, isQuoteLoading, amountFiat, amountToken, selectedCurrency, selectedToken, navigate]);
+
 
     const handleKycComplete = useCallback(() => {
         setShowKycModal(false);

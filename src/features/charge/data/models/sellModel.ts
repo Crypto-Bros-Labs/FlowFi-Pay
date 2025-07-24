@@ -13,6 +13,7 @@ export interface OffRampData {
     fiatCurrencyUuid: string,
     userBankInformationUuid: string,
     amount: number,
+
 }
 
 export interface QuoteData {

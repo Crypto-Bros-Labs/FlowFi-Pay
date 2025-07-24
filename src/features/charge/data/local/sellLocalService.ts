@@ -60,6 +60,7 @@ const useSellLocalService = create<SellLocalState>()(
                 offRampData: state.offRampData,
                 amounts: state.amounts,
                 sellData: state.sellData
+
             } as SellLocalState), // Persist only the necessary state,
             version: 1,
         }
@@ -136,6 +137,7 @@ class SellLocalService {
         const data = this.store.sellData;
         console.log('📖 getSellData retorna:', data);
         return data;
+
     }
 
     setUserUuid(userUuid: string): void {
@@ -149,6 +151,7 @@ class SellLocalService {
             fiatCurrencyUuid: offRampData.fiatCurrencyUuid ?? "",
             userBankInformationUuid: offRampData.userBankInformationUuid ?? "",
             amount: offRampData.amount
+
         });
     }
 
@@ -163,6 +166,7 @@ class SellLocalService {
             fiatCurrencyUuid: offRampData.fiatCurrencyUuid ?? "",
             userBankInformationUuid: offRampData.userBankInformationUuid ?? "",
             amount: offRampData.amount
+
         });
     }
 
@@ -177,6 +181,7 @@ class SellLocalService {
             fiatCurrencyUuid: offRampData.fiatCurrencyUuid ?? "",
             userBankInformationUuid: offRampData.userBankInformationUuid ?? "",
             amount: offRampData.amount
+
         });
     }
 
@@ -191,6 +196,7 @@ class SellLocalService {
             fiatCurrencyUuid,
             userBankInformationUuid: offRampData.userBankInformationUuid ?? "",
             amount: offRampData.amount
+
         });
     }
 
@@ -209,6 +215,7 @@ class SellLocalService {
     }
 
     setAmountFiatOffRamp(amount: number): void {
+
         const offRampData = this.store.offRampData;
         if (!offRampData) return;
         this.store.setOffRampData?.({
@@ -219,6 +226,7 @@ class SellLocalService {
             fiatCurrencyUuid: offRampData.fiatCurrencyUuid ?? "",
             userBankInformationUuid: offRampData.userBankInformationUuid ?? "",
             amount
+
         });
     }
 
