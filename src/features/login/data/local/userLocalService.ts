@@ -7,6 +7,7 @@ interface UserState {
     email: string | null;
     phone: string | null;
     fullName: string | null;
+    bankAccountUuid: string | null;
     setAuthData: (data: {
         userUuid: string;
         hasAllData: boolean;
@@ -33,6 +34,7 @@ const useUserStore = create<UserState>()(
             email: null,
             phone: null,
             fullName: null,
+            bankAccountUuid: null,
 
             setAuthData: (data) => set({
                 userUuid: data.userUuid,
@@ -100,6 +102,14 @@ class UserLocalService {
             phone: this.getState().phone || '',
             hasAllData: hasAllData
         });
+    }
+
+    setBankAccountUuid(bankAccountUuid: string): void {
+        this.getState().bankAccountUuid = bankAccountUuid;
+    }
+
+    getBankAccountUuid(): string | null {
+        return this.getState().bankAccountUuid;
     }
 
     clearUser(): void {

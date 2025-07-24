@@ -1,8 +1,9 @@
 export interface TokenData {
-    uuid: string;
-    name: string;
+    tokenNetworkUuid: string;
+    symbol: string;
     network: string;
     address: string;
+    imageUrl: string;
 }
 
 export interface ProviderData {

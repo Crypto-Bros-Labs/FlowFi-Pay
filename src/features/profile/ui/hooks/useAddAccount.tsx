@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import * as clabe from 'clabe-validator';
 import TileApp from '../../../../shared/components/TileApp';
 import type { ComboBoxOption } from '../../../../shared/components/ComboBoxApp';
-
+import bankRepository from '../../data/repositories/bankRepository';
+import userRepository from '../../../login/data/repositories/userRepository';
+import { useNavigate } from 'react-router-dom';
 interface Bank {
     id: string;
     name: string;
@@ -9,36 +12,15 @@ interface Bank {
 }
 
 export const useAddAccount = () => {
-    const [clabe, setClabe] = useState('');
+    const [clabeValue, setClabeValue] = useState('');
     const [selectedBankId, setSelectedBankId] = useState<string>('');
     const [banks, setBanks] = useState<Bank[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [autoDetectedBankName, setAutoDetectedBankName] = useState<string>('');
+    const navigate = useNavigate();
 
-    // Mock data de bancos mexicanos
-    useEffect(() => {
-        const fetchBanks = async () => {
-            // Simular carga de bancos
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            const mockBanks: Bank[] = [
-                { id: '012', name: 'BBVA México', code: '012' },
-                { id: '014', name: 'Santander', code: '014' },
-                { id: '072', name: 'Banorte', code: '072' },
-                { id: '002', name: 'Banamex', code: '002' },
-                { id: '019', name: 'Banco Azteca', code: '019' },
-                { id: '036', name: 'Inbursa', code: '036' },
-                { id: '106', name: 'Banco Ahorro Famsa', code: '106' },
-                { id: '137', name: 'Banco Afirme', code: '137' },
-            ];
-
-            setBanks(mockBanks);
-        };
-
-        fetchBanks();
-    }, []);
-
-    // Validar CLABE
+    // Validar CLABE usando clabe-validator
     const validateClabe = (clabeNumber: string): string => {
         if (!clabeNumber) return '';
 
@@ -55,50 +37,44 @@ export const useAddAccount = () => {
             return 'La CLABE no puede tener más de 18 dígitos';
         }
 
-        // Validar que los primeros 3 dígitos correspondan a un banco válido
-        const bankCode = cleanClabe.substring(0, 3);
-        const bankExists = banks.some(bank => bank.code === bankCode);
-
-        if (!bankExists && banks.length > 0) {
-            return 'Código de banco no válido en la CLABE';
-        }
-
-        // Algoritmo de validación de CLABE (dígito verificador)
-        const weights = [3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7, 1, 3, 7];
-        let sum = 0;
-
-        for (let i = 0; i < 17; i++) {
-            sum += parseInt(cleanClabe[i]) * weights[i];
-        }
-
-        const remainder = sum % 10;
-        const checkDigit = remainder === 0 ? 0 : 10 - remainder;
-        const providedCheckDigit = parseInt(cleanClabe[17]);
-
-        if (checkDigit !== providedCheckDigit) {
-            return 'CLABE inválida - dígito verificador incorrecto';
+        // ✅ Usar clabe-validator para validar
+        if (!clabe.clabe.validate(cleanClabe)) {
+            return 'CLABE inválida';
         }
 
         return '';
+    };
+
+    // ✅ Función para detectar banco automáticamente
+    const handleClabeComplete = (completeCLABE: string) => {
+        try {
+            const banksMap = clabe.clabe.banksMap as Record<string, { name: string }>;
+            const bankName = banksMap[completeCLABE.slice(0, 3)]?.name || 'Banco no encontrado';
+            setAutoDetectedBankName(bankName);
+
+        } catch (err) {
+            console.error('Error detecting bank:', err);
+            setError('No se pudo detectar el banco automáticamente');
+        }
     };
 
     // Manejar cambio en CLABE
     const handleClabeChange = (value: string) => {
         // Permitir solo números y limitar a 18 caracteres
         const cleanValue = value.replace(/\D/g, '').substring(0, 18);
-        setClabe(cleanValue);
+        setClabeValue(cleanValue);
 
         // Validar en tiempo real
         const validationError = validateClabe(cleanValue);
         setError(validationError);
 
-        // Auto-seleccionar banco basado en CLABE
-        if (cleanValue.length >= 3) {
-            const bankCode = cleanValue.substring(0, 3);
-            const matchingBank = banks.find(bank => bank.code === bankCode);
-            if (matchingBank) {
-                setSelectedBankId(matchingBank.id);
-            }
+        // ✅ Auto-detectar banco cuando CLABE esté completa
+        if (cleanValue.length === 18 && !validationError) {
+            handleClabeComplete(cleanValue);
+        } else if (cleanValue.length < 18) {
+            // Limpiar selección si CLABE no está completa
+            setSelectedBankId('');
+            setAutoDetectedBankName('');
         }
     };
 
@@ -116,13 +92,23 @@ export const useAddAccount = () => {
     const selectedBankComponent = () => {
         const selectedBank = banks.find(bank => bank.id === selectedBankId);
 
+        if (!selectedBank && autoDetectedBankName) {
+            return (
+                <TileApp
+                    title={autoDetectedBankName}
+                    titleClassName="text-sm font-medium text-gray-900"
+                />
+            );
+        }
+
         if (!selectedBank) {
-            return <span className="text-gray-500">Selecciona un banco</span>;
+            return <span className="text-gray-500">Completa tu CLABE</span>;
         }
 
         return (
             <TileApp
-                title={selectedBank.name}
+                title={autoDetectedBankName}
+                titleClassName="text-sm font-medium text-gray-900"
             />
         );
     };
@@ -130,6 +116,7 @@ export const useAddAccount = () => {
     // Manejar selección de banco
     const handleBankSelect = (option: ComboBoxOption) => {
         setSelectedBankId(option.id as string);
+        setAutoDetectedBankName(''); // Limpiar auto-detección al seleccionar manualmente
     };
 
     // Manejar envío del formulario
@@ -139,36 +126,41 @@ export const useAddAccount = () => {
 
         try {
             // Validar antes de enviar
-            const validationError = validateClabe(clabe);
+            const validationError = validateClabe(clabeValue);
             if (validationError) {
                 setError(validationError);
                 setIsLoading(false);
                 return;
             }
 
-            if (!selectedBankId) {
+            if (!selectedBankId && !autoDetectedBankName) {
                 setError('Selecciona un banco');
                 setIsLoading(false);
                 return;
             }
 
-            // Simular API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
 
-            const selectedBank = banks.find(bank => bank.id === selectedBankId);
+            const userUuid = (await userRepository.getCurrentUserData())?.userUuid || 'default-uuid';
+            const response = await bankRepository.addBankAccount({
+                userUuid,
+                clabe: clabeValue,
+                bankName: autoDetectedBankName,
+                country: 'MX',
+            })
 
-            console.log('Cuenta agregada:', {
-                clabe,
-                bank: selectedBank,
-                timestamp: new Date().toISOString()
-            });
-
-            // Simular éxito
-            alert(`Cuenta de ${selectedBank?.name} agregada exitosamente`);
+            if (response.success && response.data) {
+                console.log('Cuenta agregada:', response.data);
+                alert(`Cuenta de ${autoDetectedBankName} agregada exitosamente`);
+                navigate('/main');
+            } else {
+                setError(response.error || 'Error al agregar la cuenta');
+                return;
+            }
 
             // Limpiar formulario
-            setClabe('');
+            setClabeValue('');
             setSelectedBankId('');
+            setAutoDetectedBankName('');
             setError('');
 
         } catch (err) {
@@ -180,10 +172,10 @@ export const useAddAccount = () => {
     };
 
     // Formatear CLABE para mostrar (con espacios cada 4 dígitos)
-    const formattedClabe = clabe.replace(/(\d{4})(?=\d)/g, '$1 ');
+    const formattedClabe = clabeValue.replace(/(\d{4})(?=\d)/g, '$1 ');
 
     return {
-        clabe,
+        clabe: clabeValue,
         formattedClabe,
         handleClabeChange,
         selectedBankId,
@@ -193,6 +185,8 @@ export const useAddAccount = () => {
         handleAddAccount,
         isLoading,
         error,
-        isFormValid: clabe.length === 18 && !error && selectedBankId
+        isFormValid: clabeValue.length === 18 && !error && (selectedBankId || autoDetectedBankName),
+        setBanks,
+        autoDetectedBankName, // ✅ Exponer para usar en UI si es necesario
     };
 };

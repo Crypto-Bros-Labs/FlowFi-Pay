@@ -17,13 +17,14 @@ class TokenRepository {
 
             // 3. Update local state usando map
             const tokens = response.map(token => ({
-                id: '',
-                name: token.name || '',
-                uuid: token.uuid || '',
+                id: token.tokenNetworkUuid || '',
+                name: '',
+                uuid: token.tokenNetworkUuid || '',
                 address: token.address || '',
-                symbol: 'MXNB',
+                symbol: token.symbol || '',
                 network: token.network || '',
-                iconUrl: '/mxnb.svg',
+                iconUrl: token.imageUrl || '/mxnb.svg',
+
             }));
             tokenLocalService.setTokens(tokens);
 

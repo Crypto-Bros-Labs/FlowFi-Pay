@@ -8,6 +8,7 @@ import { useAppBar } from "../../../../shared/hooks/useAppBar";
 import { truncateLeft } from "../../../../shared/utils/numberUtils";
 import ModalWrapper from "../../../../shared/components/ModalWrapper";
 import SellInfoPanel from "../components/SellInfoPanel";
+import { KycModal } from "../../../../shared/components/KycModalProps";
 
 const SetAmountPage: React.FC = () => {
     const {
@@ -22,7 +23,13 @@ const SetAmountPage: React.FC = () => {
         handleContinue,
         isValidAmount,
         showSellInfoModal,
-        closeSellModal
+        closeSellModal,
+        isQuoteLoading,
+        kycUrl,
+        showKycModal,
+        handleKycComplete,
+        handleKycCancel,
+        handleContinueTransaction,
     } = useSetAmount();
 
     const { goToHistory, goToProfile } = useAppBar();
@@ -77,9 +84,10 @@ const SetAmountPage: React.FC = () => {
 
                     {/* Token Amount */}
                     <div className="flex items-center justify-center px-4">
-                        {selectedToken?.imageUrl && (
+                        {selectedToken?.iconUrl && (
                             <img
-                                src={selectedToken.imageUrl}
+                                src={selectedToken.iconUrl}
+
                                 alt={selectedToken.symbol}
                                 className="w-6 h-6 mr-2 flex-shrink-0"
                             />
@@ -87,6 +95,28 @@ const SetAmountPage: React.FC = () => {
                         <span className="text-xl text-gray-500 truncate max-w-[calc(100vw-8rem)] md:max-w-[calc(20vw-8rem)]">
                             {amountToken || '0.00'}
                         </span>
+                        {/* Inline Loading Spinner */}
+                        {isQuoteLoading && (
+                            <svg
+                                className="w-4 h-4 ml-2 animate-spin text-blue-600"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                />
+                                <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="m4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                />
+                            </svg>
+                        )}
                     </div>
                 </div>
             </div>
@@ -135,9 +165,20 @@ const SetAmountPage: React.FC = () => {
                     disabled={!isValidAmount || isLoading}
                 />
             </div>
+
+            {/* ✅ KYC Modal */}
+            {kycUrl && (
+                <KycModal
+                    isOpen={showKycModal}
+                    kycUrl={kycUrl}
+                    onComplete={handleKycComplete}
+                    onCancel={handleKycCancel}
+                />
+            )}
+
             {showSellInfoModal && (
                 <ModalWrapper onClose={closeSellModal}>
-                    <SellInfoPanel onClose={closeSellModal} />
+                    <SellInfoPanel onClose={closeSellModal} onContinue={handleContinueTransaction} />
                 </ModalWrapper>
             )}
         </div>

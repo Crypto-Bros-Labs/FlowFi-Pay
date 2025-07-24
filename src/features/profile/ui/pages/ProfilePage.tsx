@@ -18,6 +18,7 @@ const ProfilePage: React.FC = () => {
         selectedBankAccount,
         onBankSelect,
         isAccountOptionsLoading,
+        handleAddBank,
     } = useAccountOptions();
 
     if (isAccountOptionsLoading) {
@@ -65,6 +66,7 @@ const ProfilePage: React.FC = () => {
                         options={walletComboBoxOptions}
                         selectedId={selectedWalletAddress}
                         onSelect={onWalletSelect}
+                        disabled={true}
                     />
                 ) : (
                     <button
@@ -105,7 +107,7 @@ const ProfilePage: React.FC = () => {
                 ) : (
                     <button
                         type="button"
-                        onClick={() => console.log('Agregar banco')}
+                        onClick={handleAddBank}
                         className={`
                         w-full p-2.5 flex items-center justify-center gap-3
                         border border-[#666666] rounded-[10px]

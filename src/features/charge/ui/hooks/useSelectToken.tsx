@@ -106,9 +106,6 @@ export const useSelectToken = () => {
             const fetchedTokens = await fetchTokens();
             setTokens(fetchedTokens);
 
-            if (fetchedTokens.length > 0) {
-                setSelectedToken(fetchedTokens[0].id);
-            }
         } catch (error) {
             setTokensError(error instanceof Error ? error.message : 'Error loading tokens');
             console.error('Error fetching tokens:', error);
