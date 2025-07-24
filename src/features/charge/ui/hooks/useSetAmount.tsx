@@ -154,7 +154,7 @@ export const useSetAmount = () => {
                 tokenNetworkUuid: selectedToken?.uuid || 'default-network',
                 fiatCurrencyUuid: '92b61c69-a81f-475a-9bc7-37c85efc74c6',
                 userBankInformationUuid: bankAccountUuid,
-                amount: parseFloat(amountFiat) || 0,
+                amount: parseFloat(amountToken) || 0,
 
             })
 
