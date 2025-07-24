@@ -168,6 +168,7 @@ export const useSetAmount = () => {
                 console.log('Off-ramp created successfully, no KYC required');
                 sellRepository.setAmountFiat(amountFiat);
                 sellRepository.setAmountToken(amountToken);
+                tokenRepository.setSelectedToken(selectedToken);
                 openSellModal();
             } else {
                 console.error('Error creating off-ramp:', response);

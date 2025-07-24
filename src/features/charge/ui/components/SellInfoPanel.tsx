@@ -13,7 +13,6 @@ interface SellInfoPanelProps {
 const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose, onContinue }) => {
     const {
         qrData,
-        selectedToken,
         amounts,
     } = useSellInfo();
 
@@ -58,7 +57,7 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose, onContinue }) =>
                 />
 
                 <TileApp
-                    title={`Monto ${selectedToken?.symbol}`}
+                    title={`Monto USDC}`}
                     titleClassName="text-base text-[#666666]"
                     trailing={
                         <>
@@ -73,7 +72,7 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose, onContinue }) =>
                     titleClassName="text-base text-[#666666]"
                     trailing={
                         <>
-                            <span className="text-base font-semibold text-[#020F1E]">{selectedToken?.network}</span>
+                            <span className="text-base font-semibold text-[#020F1E]">Starknet</span>
                         </>
                     }
                 />

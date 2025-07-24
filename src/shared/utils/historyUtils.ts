@@ -24,6 +24,7 @@ export const parseTransactionStatus = (status: string): TransactionStatus => {
         'rejected': 'canceled',
         'error': 'canceled',
         'declined': 'canceled',
+        'crypto_not_received': 'canceled',
     };
 
     return statusMap[status.toLowerCase()] || 'pending'; // Default a pending

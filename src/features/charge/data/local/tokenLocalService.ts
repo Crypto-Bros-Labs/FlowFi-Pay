@@ -124,74 +124,78 @@ const useTokenLocalService = create<TokenLocalState>()(
 );
 
 class TokenLocalService {
-    private store = useTokenLocalService;
+    private useStore = useTokenLocalService;
+
+    private get store() {
+        return this.useStore.getState();
+    }
 
     // Provider methods
     setProviders(providers: Provider[]) {
-        this.store.setState({ providers });
+        this.store.setProviders(providers || []);
     }
 
     getProviders(): Provider[] {
-        return this.store.getState().providers;
+        return this.store.providers || [];
     }
 
     setSelectedProvider(provider: Provider | null) {
-        this.store.setState({ selectedProvider: provider });
+        this.store.setSelectedProvider(provider);
     }
 
     getSelectedProvider(): Provider | null {
-        return this.store.getState().selectedProvider;
+        return this.store.selectedProvider;
     }
 
     // Token methods
     setTokens(tokens: Token[]) {
-        this.store.setState({ tokens });
+        this.store.setTokens(tokens);
     }
 
     getTokens(): Token[] {
-        return this.store.getState().tokens;
+        return this.store.tokens;
     }
 
     setSelectedToken(token: Token | null) {
-        this.store.setState({ selectedToken: token });
+        this.store.setSelectedToken(token);
     }
 
     getSelectedToken(): Token | null {
-        return this.store.getState().selectedToken;
+        return this.store.selectedToken;
     }
 
     // Currency methods
     setCurrencies(currencies: Currency[]) {
-        this.store.setState({ currencies });
+        this.store.setCurrencies(currencies);
     }
 
     getCurrencies(): Currency[] {
-        return this.store.getState().currencies;
+        return this.store.currencies;
     }
 
     setSelectedCurrency(currency: Currency | null) {
-        this.store.setState({ selectedCurrency: currency });
+        this.store.setSelectedCurrency(currency);
     }
 
     getSelectedCurrency(): Currency | null {
-        return this.store.getState().selectedCurrency;
+        return this.store.selectedCurrency;
     }
 
     // Utility getters
     findProviderById(id: string): Provider | undefined {
-        return this.store.getState().providers.find(provider => provider.id === id);
+        return this.store.providers.find(provider => provider.id === id);
     }
 
     findTokenById(id: string): Token | undefined {
-        return this.store.getState().tokens.find(token => token.id === id);
+        return this.store.tokens.find(token => token.id === id);
     }
 
     findCurrencyById(id: string): Currency | undefined {
-        return this.store.getState().currencies.find(currency => currency.id === id);
+        return this.store.currencies.find(currency => currency.id === id);
     }
 
     clearAll() {
-        this.store.getState().clearAll();
+        this.store.clearAll();
     }
 }
 
