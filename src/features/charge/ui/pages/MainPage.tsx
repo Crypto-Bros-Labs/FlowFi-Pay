@@ -7,8 +7,17 @@ import { useMain } from "../hooks/useMain";
 import { useAppBar } from "../../../../shared/hooks/useAppBar";
 
 const MainPage: React.FC = () => {
-    const { goToSelectToken } = useMain();
+    const { goToSelectToken, isAccountOptionsLoading } = useMain();
     const { goToHistory, goToProfile } = useAppBar();
+
+    if (isAccountOptionsLoading) {
+        return (
+            <div className="flex h-full flex-col items-center justify-center p-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                <span className="ml-2 text-gray-500">Cargando...</span>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-full">

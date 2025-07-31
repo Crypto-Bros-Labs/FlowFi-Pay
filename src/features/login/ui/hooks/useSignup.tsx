@@ -177,6 +177,14 @@ export const useSignup = () => {
         }
     };
 
+    const handleAddBank = () => {
+        if (!validateFullname(fullname)) return;
+        if (!validatePhone(phone)) return;
+        if (!validateCountryCode(countryCode)) return;
+        handleUpdateUser();
+        navigate('/add-account');
+    };
+
     return {
         fullname,
         email,
@@ -191,6 +199,7 @@ export const useSignup = () => {
         handleEmailChange,
         handlePhoneChange,
         handleCountryCodeChange,
-        handleUpdateUser
+        handleUpdateUser,
+        handleAddBank
     };
 }

@@ -4,6 +4,7 @@ import type { Token } from '../../data/local/tokenLocalService';
 import sellRepository from '../../data/repositories/sellRepository';
 import userRepository from '../../../login/data/repositories/userRepository';
 import { useNavigate } from 'react-router-dom';
+import { useDialog } from '../../../../shared/hooks/useDialog';
 
 interface Currency {
     symbol: string;
@@ -25,6 +26,8 @@ export const useSetAmount = () => {
     const [kycCompleted, setKycCompleted] = useState<boolean>(false);
     const [showTimerModal, setShowTimerModal] = useState<boolean>(false);
     const navigate = useNavigate();
+    const { showDialog } = useDialog();
+
 
     const selectedCurrency: Currency = useMemo(() => ({
         symbol: '$',
@@ -148,6 +151,17 @@ export const useSetAmount = () => {
             const userUuid = (await userRepository.getCurrentUserData())?.userUuid || 'default-uuid';
             const bankAccountUuid = (await userRepository.getBankAccountUuid()) || 'default-bank-account';
 
+            if (bankAccountUuid === 'default-bank-account') {
+                showDialog({
+                    title: 'Cuenta bancaria requerida',
+                    subtitle: 'Por favor, agrega una cuenta bancaria antes de continuar.',
+                    onNext: () => navigate('/add-account'),
+                    nextText: 'Agregar',
+                    backText: 'Cancelar',
+                });
+                return;
+            }
+
             const response = await sellRepository.createOffRamp({
                 userUuid: userUuid,
                 providerUuid: '237b0541-5521-4fda-8bba-05ee4d484795',
@@ -161,7 +175,7 @@ export const useSetAmount = () => {
             if (response.kycUrl !== null) {
                 setKycUrl(response.kycUrl);
                 if (response.kycUrl) {
-                    navigate(response.kycUrl);
+                    window.location.href = response.kycUrl;
                 }
 
             } else if (response.success && response.kycUrl === null) {
@@ -180,7 +194,7 @@ export const useSetAmount = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [isValidAmount, isQuoteLoading, amountFiat, amountToken, selectedCurrency, selectedToken, navigate]);
+    }, [isValidAmount, isQuoteLoading, amountFiat, amountToken, selectedCurrency, selectedToken, showDialog, navigate]);
 
 
     const handleKycComplete = useCallback(() => {

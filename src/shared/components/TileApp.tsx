@@ -42,7 +42,7 @@ const TileApp: React.FC<TileAppProps> = ({
 
     const baseClasses = `
         w-full flex items-center justify-between
-        transition-colors duration-150 ease-in-out
+        transition-colors duration-150 ease-in-out py-3
         ${isClickable
             ? 'cursor-pointer hover:bg-gray-50 active:bg-gray-100'
             : 'cursor-default'
@@ -54,11 +54,11 @@ const TileApp: React.FC<TileAppProps> = ({
     // Clases por defecto solo si no se proporcionan clases personalizadas
     const defaultTitleClasses = titleClassName
         ? titleClassName
-        : `${getSizeClass(titleSize)} font-bold text-[#020F1E] truncate max-w-[50%]`;
+        : `${getSizeClass(titleSize)} font-bold text-[#020F1E] truncate max-w-[70%]`;
 
     const defaultSubtitleClasses = subtitleClassName
         ? subtitleClassName
-        : `${getSizeClass(subtitleSize)} font-medium text-[#666666] truncate mt-0.5 max-w-[50%]`;
+        : `${getSizeClass(subtitleSize)} font-medium text-[#666666] truncate mt-0.5 max-w-[70%]`;
 
     const content = (
         <>
@@ -99,7 +99,8 @@ const TileApp: React.FC<TileAppProps> = ({
                 type="button"
                 onClick={onClick}
                 disabled={disabled}
-                className={baseClasses}
+                className={baseClasses + " appearance-none bg-transparent border-none outline-none"}
+                style={{ width: "100%", textAlign: "left" }}
             >
                 {content}
             </button>

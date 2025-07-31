@@ -5,6 +5,7 @@ import type { ComboBoxOption } from '../../../../shared/components/ComboBoxApp';
 import bankRepository from '../../data/repositories/bankRepository';
 import userRepository from '../../../login/data/repositories/userRepository';
 import { useNavigate } from 'react-router-dom';
+import { useDialog } from '../../../../shared/hooks/useDialog';
 interface Bank {
     id: string;
     name: string;
@@ -19,6 +20,7 @@ export const useAddAccount = () => {
     const [error, setError] = useState('');
     const [autoDetectedBankName, setAutoDetectedBankName] = useState<string>('');
     const navigate = useNavigate();
+    const { showDialog } = useDialog();
 
     // Validar CLABE usando clabe-validator
     const validateClabe = (clabeNumber: string): string => {
@@ -150,8 +152,13 @@ export const useAddAccount = () => {
 
             if (response.success && response.data) {
                 console.log('Cuenta agregada:', response.data);
-                alert(`Cuenta de ${autoDetectedBankName} agregada exitosamente`);
-                navigate('/main');
+                showDialog({
+                    title: 'Cuenta Agregada',
+                    subtitle: `Cuenta de ${autoDetectedBankName} agregada exitosamente`,
+                    onNext: () => navigate('/main'),
+                    onBack: () => navigate('/main'),
+                    hideBack: true,
+                })
             } else {
                 setError(response.error || 'Error al agregar la cuenta');
                 return;

@@ -24,6 +24,7 @@ const SignUpPage: React.FC = () => {
         handlePhoneChange,
         handleCountryCodeChange,
         handleUpdateUser,
+        handleAddBank
     } = useSignup();
 
     const {
@@ -118,7 +119,7 @@ const SignUpPage: React.FC = () => {
                 </div>
             </div>
 
-            <div className="mb-3 px-2">
+            <div className="mb-6 px-2">
                 <div className="text-sm font-bold text-[#020F1E] truncate mb-2">
                     Agregar cuenta de banco
                 </div>
@@ -132,7 +133,7 @@ const SignUpPage: React.FC = () => {
                 ) : (
                     <button
                         type="button"
-                        onClick={() => console.log('Agregar banco')}
+                        onClick={handleAddBank}
                         className={`
                         w-full p-2.5 flex items-center justify-center gap-3
                         border border-[#666666] rounded-[10px]
