@@ -5,6 +5,7 @@ import TileApp from "../../../../shared/components/TileApp";
 import { BiChevronRight } from "react-icons/bi";
 import { useAccountOptions } from "../../../../shared/hooks/useAccountOptions";
 import ComboBoxApp from "../../../../shared/components/ComboBoxApp";
+import { useProfile } from "../hooks/useProfile";
 
 
 const ProfilePage: React.FC = () => {
@@ -20,6 +21,8 @@ const ProfilePage: React.FC = () => {
         isAccountOptionsLoading,
         handleAddBank,
     } = useAccountOptions();
+
+    const { logOut } = useProfile();
 
     if (isAccountOptionsLoading) {
         return (
@@ -127,6 +130,23 @@ const ProfilePage: React.FC = () => {
                         </span>
                     </button>
                 )}
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-gray-700 mx-2 my-4"></div>
+
+            <div className="flex flex-col p-2 mt-2">
+                <TileApp
+                    title="Cerrar sesión"
+                    titleClassName="text-red-600 font-bold truncate max-w-[70%]"
+                    titleSize="lg"
+                    onClick={logOut}
+                    trailing={
+                        <div className="flex items-center gap-1">
+                            <BiChevronRight className="w-8 h-8" />
+                        </div>
+                    }
+                />
             </div>
         </div>
     );

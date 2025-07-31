@@ -12,109 +12,112 @@ import MainPage from './features/charge/ui/pages/MainPage';
 import SelectTokenPage from './features/charge/ui/pages/SelectTokenPage';
 import AddAccountPage from './features/profile/ui/pages/AddAccountPage';
 import AddWalletPage from './features/profile/ui/pages/AddWalletPage';
+import { DialogProvider } from './shared/contexts/DialogProvider';
 
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
+      <DialogProvider>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
 
-        {/* Rutas públicas (redirigen si está autenticado) */}
-        <Route
-          path="/login"
-          element={
-            <ProtectedRoute requireAuth={false}>
-              <LoginPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/otp"
-          element={
-            <ProtectedRoute requireAuth={false}>
-              <OtpPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='/on-off-ramp'
-          element={
-            <OnOffRampPage />
-          }
-        />
+          {/* Rutas públicas (redirigen si está autenticado) */}
+          <Route
+            path="/login"
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <LoginPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/otp"
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <OtpPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/on-off-ramp'
+            element={
+              <OnOffRampPage />
+            }
+          />
 
-        {/* Rutas privadas */}
-        <Route path='/signup'
-          element={
-            <ProtectedRoute>
-              <SignUpPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='/select-token'
-          element={
-            <ProtectedRoute>
-              <SelectTokenPage />
-            </ProtectedRoute>
-          }
-        />
+          {/* Rutas privadas */}
+          <Route path='/signup'
+            element={
+              <ProtectedRoute>
+                <SignUpPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/select-token'
+            element={
+              <ProtectedRoute>
+                <SelectTokenPage />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path='/add-account'
-          element={
-            <ProtectedRoute>
-              <AddAccountPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path='/add-wallet'
-          element={
-            <ProtectedRoute>
-              <AddWalletPage />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path='/add-account'
+            element={
+              <ProtectedRoute>
+                <AddAccountPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='/add-wallet'
+            element={
+              <ProtectedRoute>
+                <AddWalletPage />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/set-amount"
-          element={
-            <ProtectedRoute >
-              <SetAmountPage />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/set-amount"
+            element={
+              <ProtectedRoute >
+                <SetAmountPage />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/history"
-          element={
-            <ProtectedRoute >
-              <HistoryPage />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/history"
+            element={
+              <ProtectedRoute >
+                <HistoryPage />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute >
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute >
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/main"
-          element={
-            <ProtectedRoute >
-              <MainPage />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/main"
+            element={
+              <ProtectedRoute >
+                <MainPage />
+              </ProtectedRoute>
+            }
+          />
 
-      </Routes>
+        </Routes>
+      </DialogProvider>
     </Router>
   );
 }

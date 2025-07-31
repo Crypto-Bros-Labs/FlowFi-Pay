@@ -8,7 +8,6 @@ import { useAppBar } from "../../../../shared/hooks/useAppBar";
 import { truncateLeft } from "../../../../shared/utils/numberUtils";
 import ModalWrapper from "../../../../shared/components/ModalWrapper";
 import SellInfoPanel from "../components/SellInfoPanel";
-import { KycModal } from "../../../../shared/components/KycModalProps";
 
 const SetAmountPage: React.FC = () => {
     const {
@@ -25,10 +24,6 @@ const SetAmountPage: React.FC = () => {
         showSellInfoModal,
         closeSellModal,
         isQuoteLoading,
-        kycUrl,
-        showKycModal,
-        handleKycComplete,
-        handleKycCancel,
         handleContinueTransaction,
     } = useSetAmount();
 
@@ -166,15 +161,6 @@ const SetAmountPage: React.FC = () => {
                 />
             </div>
 
-            {/* ✅ KYC Modal */}
-            {kycUrl && (
-                <KycModal
-                    isOpen={showKycModal}
-                    kycUrl={kycUrl}
-                    onComplete={handleKycComplete}
-                    onCancel={handleKycCancel}
-                />
-            )}
 
             {showSellInfoModal && (
                 <ModalWrapper onClose={closeSellModal}>
