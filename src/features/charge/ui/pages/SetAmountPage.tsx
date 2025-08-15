@@ -25,6 +25,7 @@ const SetAmountPage: React.FC = () => {
         closeSellModal,
         isQuoteLoading,
         handleContinueTransaction,
+        isAccountOptionsLoading
     } = useSetAmount();
 
     const { goToHistory, goToProfile } = useAppBar();
@@ -46,6 +47,15 @@ const SetAmountPage: React.FC = () => {
             {children}
         </button>
     );
+
+    if (isAccountOptionsLoading) {
+        return (
+            <div className="flex h-full flex-col items-center justify-center p-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                <span className="ml-2 text-gray-500">Cargando...</span>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-full">
@@ -164,7 +174,7 @@ const SetAmountPage: React.FC = () => {
 
             {showSellInfoModal && (
                 <ModalWrapper onClose={closeSellModal}>
-                    <SellInfoPanel onClose={closeSellModal} onContinue={handleContinueTransaction} />
+                    <SellInfoPanel onClose={closeSellModal} onContinue={handleContinueTransaction} token={selectedToken!} />
                 </ModalWrapper>
             )}
         </div>

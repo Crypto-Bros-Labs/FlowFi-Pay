@@ -59,14 +59,14 @@ const Dialog: React.FC<DialogProps> = ({
 
                 {/* Subtítulo */}
                 {subtitle && (
-                    <p className="text-[#666666] text-center mb-4">{subtitle}</p>
+                    <p className="text-[#666666] text-center mb-2">{subtitle}</p>
                 )}
 
                 {/* Contenido extra */}
                 {children}
 
                 {/* Botones */}
-                <div className="flex gap-3 mt-6 w-full">
+                <div className="flex gap-3 mt-2 w-full">
                     {!hideBack && (
                         <ButtonApp
                             text={backText}

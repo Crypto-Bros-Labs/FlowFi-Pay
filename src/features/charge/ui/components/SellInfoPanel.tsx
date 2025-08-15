@@ -4,13 +4,15 @@ import ButtonApp from "../../../../shared/components/ButtonApp";
 import QRCode from "../../../../shared/components/QRCode";
 import { useSellInfo } from "../hooks/useSellInfo";
 import TileApp from "../../../../shared/components/TileApp";
+import type { Token } from "../../data/local/tokenLocalService";
 
 interface SellInfoPanelProps {
     onClose?: () => void;
     onContinue?: () => void;
+    token: Token;
 }
 
-const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose, onContinue }) => {
+const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose, onContinue, token }) => {
     const {
         qrData,
         amounts,
@@ -57,7 +59,7 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose, onContinue }) =>
                 />
 
                 <TileApp
-                    title={`Monto USDC}`}
+                    title={`Monto (${token.symbol})`}
                     titleClassName="text-base text-[#666666]"
                     trailing={
                         <>
@@ -72,7 +74,7 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose, onContinue }) =>
                     titleClassName="text-base text-[#666666]"
                     trailing={
                         <>
-                            <span className="text-base font-semibold text-[#020F1E]">Starknet</span>
+                            <span className="text-base font-semibold text-[#020F1E]">{token?.network}</span>
                         </>
                     }
                 />

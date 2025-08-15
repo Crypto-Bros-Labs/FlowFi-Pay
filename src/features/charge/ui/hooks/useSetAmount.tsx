@@ -5,6 +5,7 @@ import sellRepository from '../../data/repositories/sellRepository';
 import userRepository from '../../../login/data/repositories/userRepository';
 import { useNavigate } from 'react-router-dom';
 import { useDialog } from '../../../../shared/hooks/useDialog';
+import { useAccountOptions } from '../../../../shared/hooks/useAccountOptions';
 
 interface Currency {
     symbol: string;
@@ -27,6 +28,9 @@ export const useSetAmount = () => {
     const [showTimerModal, setShowTimerModal] = useState<boolean>(false);
     const navigate = useNavigate();
     const { showDialog } = useDialog();
+    const {
+        isAccountOptionsLoading
+    } = useAccountOptions();
 
 
     const selectedCurrency: Currency = useMemo(() => ({
@@ -180,13 +184,24 @@ export const useSetAmount = () => {
 
             } else if (response.success && response.kycUrl === null) {
                 console.log('Off-ramp created successfully, no KYC required');
+                tokenRepository.setSelectedToken(selectedToken);
+                sellRepository.setAmounts(
+                    {
+                        amountFiat,
+                        amountToken
+                    }
+                )
                 sellRepository.setAmountFiat(amountFiat);
                 sellRepository.setAmountToken(amountToken);
-                tokenRepository.setSelectedToken(selectedToken);
                 openSellModal();
             } else {
                 console.error('Error creating off-ramp:', response);
                 setQuoteError('Error al crear off-ramp');
+                showDialog({
+                    title: 'Error al crear off-ramp',
+                    subtitle: 'Verifica que no tengas una transacción pendiente.',
+                });
+                return;
             }
 
         } catch (error) {
@@ -271,6 +286,7 @@ export const useSetAmount = () => {
         showTimerModal,
         openTimerModal,
         closeTimerModal,
-        handleContinueTransaction
+        handleContinueTransaction,
+        isAccountOptionsLoading
     };
 };
