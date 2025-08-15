@@ -6,6 +6,8 @@ import { BiChevronRight } from "react-icons/bi";
 import { useAccountOptions } from "../../../../shared/hooks/useAccountOptions";
 import ComboBoxApp from "../../../../shared/components/ComboBoxApp";
 import { useProfile } from "../hooks/useProfile";
+import { MdCancel, MdCheckCircle } from "react-icons/md";
+import { usePeopleOptions } from "../hooks/usePeopleOptions";
 
 
 const ProfilePage: React.FC = () => {
@@ -22,9 +24,15 @@ const ProfilePage: React.FC = () => {
         handleAddBank,
     } = useAccountOptions();
 
+    const {
+        teamMembers,
+        teamMembersLoading,
+        handleAddMember,
+    } = usePeopleOptions();
+
     const { logOut } = useProfile();
 
-    if (isAccountOptionsLoading) {
+    if (isAccountOptionsLoading || teamMembersLoading) {
         return (
             <div className="flex h-full flex-col items-center justify-center p-4">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -127,6 +135,86 @@ const ProfilePage: React.FC = () => {
                         </div>
                         <span className="text-sm font-bold text-[#020F1E] mt-0.75">
                             Agregar cuenta de banco
+                        </span>
+                    </button>
+                )}
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-gray-700 mx-2 my-4"></div>
+
+            <div className="mb-6 px-2">
+                <div className="text-sm font-bold text-[#020F1E] truncate mb-2">
+                    Equipo
+                </div>
+
+                {teamMembers.length > 0 ? (
+                    <div className="flex flex-col gap-2">
+                        {teamMembers.map((member) => (
+                            <TileApp
+                                key={member.id}
+                                title={member.name}
+                                leading={
+                                    member.status === "active" ? (
+                                        <MdCheckCircle className="text-green-500 w-6 h-6" />
+                                    ) : (
+                                        <MdCancel className="text-red-400 w-6 h-6" />
+                                    )
+                                }
+                                trailing={<BiChevronRight className="w-6 h-6 text-gray-400" />}
+                                onClick={() => {
+
+                                }}
+                                className="bg-white"
+                            />
+                        ))}
+
+                        <button
+                            type="button"
+                            onClick={() => {
+                                handleAddMember();
+                            }}
+                            className={`
+          w-full p-2.5 flex items-center justify-center gap-3
+          border border-[#666666] rounded-[10px]
+          bg-white text-left
+          transition-all duration-200 ease-in-out
+          hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
+          cursor-pointer mt-2
+        `}
+                        >
+                            <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center">
+                                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                </svg>
+                            </div>
+                            <span className="text-sm font-bold text-[#020F1E] mt-0.75">
+                                Agregar miembro
+                            </span>
+                        </button>
+                    </div>
+                ) : (
+                    <button
+                        type="button"
+                        onClick={() => {
+                            handleAddMember();
+                        }}
+                        className={`
+        w-full p-2.5 flex items-center justify-center gap-3
+        border border-[#666666] rounded-[10px]
+        bg-white text-left
+        transition-all duration-200 ease-in-out
+        hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50
+        cursor-pointer
+      `}
+                    >
+                        <div className="w-9 h-9 bg-blue-100 rounded-full flex items-center justify-center">
+                            <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                        </div>
+                        <span className="text-sm font-bold text-[#020F1E] mt-0.75">
+                            Agregar miembro
                         </span>
                     </button>
                 )}

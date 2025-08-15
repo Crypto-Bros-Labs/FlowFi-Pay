@@ -13,6 +13,7 @@ import SelectTokenPage from './features/charge/ui/pages/SelectTokenPage';
 import AddAccountPage from './features/profile/ui/pages/AddAccountPage';
 import AddWalletPage from './features/profile/ui/pages/AddWalletPage';
 import { DialogProvider } from './shared/contexts/DialogProvider';
+import AddPeoplePage from './features/profile/ui/pages/AddPeoplePage';
 
 
 function App() {
@@ -63,6 +64,14 @@ function App() {
             }
           />
 
+          <Route
+            path='/add-people'
+            element={
+              <ProtectedRoute>
+                <AddPeoplePage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path='/add-account'
             element={
