@@ -26,18 +26,82 @@ export const useSetAmount = () => {
     const [showKycModal, setShowKycModal] = useState<boolean>(false);
     const [kycCompleted, setKycCompleted] = useState<boolean>(false);
     const [showTimerModal, setShowTimerModal] = useState<boolean>(false);
+    const [isMobile, setIsMobile] = useState<boolean>(false);
+
     const navigate = useNavigate();
     const { showDialog } = useDialog();
-    const {
-        isAccountOptionsLoading
-    } = useAccountOptions();
-
+    const { isAccountOptionsLoading } = useAccountOptions();
 
     const selectedCurrency: Currency = useMemo(() => ({
         symbol: '$',
         code: 'MXN',
         name: 'Peso Mexicano'
     }), []);
+
+    // Detectar si es móvil
+    const checkIsMobile = useCallback(() => {
+        const userAgent = navigator.userAgent || navigator.vendor;
+        const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
+        const isSmallScreen = window.innerWidth <= 768;
+        setIsMobile(isMobileDevice || isSmallScreen);
+    }, []);
+
+    useEffect(() => {
+        checkIsMobile();
+        window.addEventListener('resize', checkIsMobile);
+        return () => window.removeEventListener('resize', checkIsMobile);
+    }, [checkIsMobile]);
+
+    // Manejar input desde teclado físico (solo desktop)
+    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        if (isMobile) return; // Bloquear en móvil
+
+        const value = e.target.value;
+        // Validar que solo contenga números y un punto decimal
+        const regex = /^\d*\.?\d*$/;
+        if (regex.test(value)) {
+            setAmountFiat(value);
+        }
+    }, [isMobile]);
+
+    // Manejar teclas del teclado físico (solo desktop)
+    const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (isMobile) {
+            e.preventDefault();
+            return;
+        }
+
+        // Permitir solo números, punto decimal, backspace, delete, tab, escape, enter y flechas
+        const allowedKeys = [
+            'Backspace', 'Delete', 'Tab', 'Escape', 'Enter',
+            'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+            'Home', 'End'
+        ];
+
+        if (allowedKeys.includes(e.key)) {
+            return;
+        }
+
+        // Permitir números (0-9)
+        if (e.key >= '0' && e.key <= '9') {
+            return;
+        }
+
+        // Permitir punto decimal solo si no hay uno ya
+        if (e.key === '.' && !amountFiat.includes('.')) {
+            return;
+        }
+
+        // Bloquear cualquier otra tecla
+        e.preventDefault();
+    }, [isMobile, amountFiat]);
+
+    // Evitar que aparezca el teclado en móvil
+    const handleInputFocus = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
+        if (isMobile) {
+            e.target.blur(); // Quitar el foco inmediatamente en móvil
+        }
+    }, [isMobile]);
 
     // Debounced quote fetching
     const fetchQuote = useCallback(async (fiatAmount: string) => {
@@ -78,7 +142,6 @@ export const useSetAmount = () => {
         const timeoutId = setTimeout(() => {
             fetchQuote(amountFiat);
         }, 500);
-
 
         return () => clearTimeout(timeoutId);
     }, [amountFiat, fetchQuote, isInitialized, selectedToken]);
@@ -141,7 +204,7 @@ export const useSetAmount = () => {
         fetchQuote(amountFiat);
     }, [fetchQuote, amountFiat]);
 
-    // Manejar el botón continuar
+    // ... resto de métodos existentes ...
     const handleContinue = useCallback(async () => {
         if (!isValidAmount || isQuoteLoading) return;
 
@@ -173,7 +236,6 @@ export const useSetAmount = () => {
                 fiatCurrencyUuid: '92b61c69-a81f-475a-9bc7-37c85efc74c6',
                 userBankInformationUuid: bankAccountUuid,
                 amount: parseFloat(amountToken) || 0,
-
             })
 
             if (response.kycUrl !== null) {
@@ -181,16 +243,13 @@ export const useSetAmount = () => {
                 if (response.kycUrl) {
                     window.location.href = response.kycUrl;
                 }
-
             } else if (response.success && response.kycUrl === null) {
                 console.log('Off-ramp created successfully, no KYC required');
                 tokenRepository.setSelectedToken(selectedToken);
-                sellRepository.setAmounts(
-                    {
-                        amountFiat,
-                        amountToken
-                    }
-                )
+                sellRepository.setAmounts({
+                    amountFiat,
+                    amountToken
+                })
                 sellRepository.setAmountFiat(amountFiat);
                 sellRepository.setAmountToken(amountToken);
                 openSellModal();
@@ -203,7 +262,6 @@ export const useSetAmount = () => {
                 });
                 return;
             }
-
         } catch (error) {
             console.error('Error processing amount:', error);
         } finally {
@@ -211,20 +269,16 @@ export const useSetAmount = () => {
         }
     }, [isValidAmount, isQuoteLoading, amountFiat, amountToken, selectedCurrency, selectedToken, showDialog, navigate]);
 
-
     const handleKycComplete = useCallback(() => {
         setShowKycModal(false);
         setKycCompleted(true);
         setKycUrl(null);
-        // Proceder al siguiente paso
         openTimerModal();
     }, []);
 
-    // ✅ Manejar cancelación de KYC
     const handleKycCancel = useCallback(() => {
         setShowKycModal(false);
         setKycUrl(null);
-        // Opcional: mostrar mensaje de que el KYC es requerido
         setQuoteError('KYC es requerido para continuar');
     }, []);
 
@@ -247,7 +301,6 @@ export const useSetAmount = () => {
             setSelectedToken(token);
             setAmountToken(initialAmountToken);
 
-            // ✅ Solo setear si hay un valor guardado, sino usar '0'
             if (initialAmountFiat && initialAmountFiat !== '0') {
                 setAmountFiat(initialAmountFiat);
             } else {
@@ -261,6 +314,7 @@ export const useSetAmount = () => {
     }, []);
 
     return {
+        // Estados existentes
         amountFiat,
         amountToken,
         selectedCurrency,
@@ -268,25 +322,37 @@ export const useSetAmount = () => {
         isLoading,
         isQuoteLoading,
         quoteError,
-        retryQuote,
+        isValidAmount,
+        showSellInfoModal,
+        kycUrl,
+        showKycModal,
+        kycCompleted,
+        showTimerModal,
+        isAccountOptionsLoading,
+
+        // Nuevo estado para móvil
+        isMobile,
+
+        // Métodos existentes del keypad
         handleNumberPress,
         handleDeletePress,
         handleClearPress,
         handleDecimalPress,
         handleContinue,
-        isValidAmount,
-        showSellInfoModal,
+
+        // Nuevos métodos para input de desktop
+        handleInputChange,
+        handleKeyDown,
+        handleInputFocus,
+
+        // Métodos existentes
+        retryQuote,
         openSellModal,
         closeSellModal,
-        kycUrl,
-        showKycModal,
-        kycCompleted,
         handleKycComplete,
         handleKycCancel,
-        showTimerModal,
         openTimerModal,
         closeTimerModal,
         handleContinueTransaction,
-        isAccountOptionsLoading
     };
 };
