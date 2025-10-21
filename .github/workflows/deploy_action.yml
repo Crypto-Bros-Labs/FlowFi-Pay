@@ -20,5 +20,5 @@ jobs:
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
-          projectId: still-sensor-471119-d7
+          projectId: cb-wallet-70da0
           channelId: live
