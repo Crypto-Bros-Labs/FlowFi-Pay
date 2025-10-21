@@ -1,0 +1,24 @@
+name: Deploy to Preview Channel
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_preview:
+    runs-on: ubuntu-latest
+    environment: production
+
+    env:
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: npm i && npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
+          projectId: still-sensor-471119-d7
+          channelId: live
