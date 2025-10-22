@@ -2,11 +2,10 @@ import React from "react";
 import AppHeader from "../../../../shared/components/AppHeader";
 import blueUser from '/illustrations/blueuser.png';
 import TileApp from "../../../../shared/components/TileApp";
-import { BiChevronRight } from "react-icons/bi";
+import { BiChevronRight, BiEdit, BiTrash } from "react-icons/bi";
 import { useAccountOptions } from "../../../../shared/hooks/useAccountOptions";
 import ComboBoxApp from "../../../../shared/components/ComboBoxApp";
 import { useProfile } from "../hooks/useProfile";
-
 
 const ProfilePage: React.FC = () => {
     const {
@@ -22,7 +21,14 @@ const ProfilePage: React.FC = () => {
         handleAddBank,
     } = useAccountOptions();
 
-    const { logOut } = useProfile();
+    const {
+        logOut,
+        profileImage,
+        fileInputRef,
+        handleFileSelect,
+        handleAddProfileImage,
+        handleRemoveProfileImage
+    } = useProfile();
 
     if (isAccountOptionsLoading) {
         return (
@@ -37,9 +43,50 @@ const ProfilePage: React.FC = () => {
         <div className="flex flex-col h-full p-4">
             <AppHeader title="Perfil" />
 
-            {/* Imagen placeholder */}
-            <div className="w-30 h-30 bg-gray-200 rounded-full mx-auto mb-6 flex items-center justify-center mt-4">
-                <img src={blueUser} alt="User Icon" className="w-full h-full" />
+            {/* Input file oculto */}
+            <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                className="hidden"
+            />
+
+            {/* Imagen de perfil con botón de editar */}
+            <div className="relative w-30 h-30 mx-auto mb-6 mt-4">
+                <div className="w-30 h-30 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
+                    {profileImage ? (
+                        <img
+                            src={profileImage}
+                            alt="Profile"
+                            className="w-full h-full object-cover object-center"
+                        />
+                    ) : (
+                        <img
+                            src={blueUser}
+                            alt="User Icon"
+                            className="w-full h-full object-cover"
+                        />
+                    )}
+                </div>
+
+                {/* Botón de editar */}
+                <button
+                    onClick={handleAddProfileImage}
+                    className="absolute bottom-0 right-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition-colors"
+                >
+                    <BiEdit className="w-4 h-4 text-white" />
+                </button>
+
+                {/* Botón de eliminar (solo se muestra si hay imagen personalizada) */}
+                {profileImage && (
+                    <button
+                        onClick={handleRemoveProfileImage}
+                        className="absolute top-0 right-0 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
+                    >
+                        <BiTrash className="w-3 h-3 text-white" />
+                    </button>
+                )}
             </div>
 
             <div className="flex flex-col p-2 mt-2">

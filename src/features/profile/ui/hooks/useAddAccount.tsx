@@ -50,8 +50,9 @@ export const useAddAccount = () => {
     // ✅ Función para detectar banco automáticamente
     const handleClabeComplete = (completeCLABE: string) => {
         try {
-            const banksMap = clabe.clabe.banksMap as Record<string, { name: string }>;
-            const bankName = banksMap[completeCLABE.slice(0, 3)]?.name || 'Banco no encontrado';
+            const clabeTest = clabe.clabe.validate(completeCLABE);
+            const bankName = clabeTest.bank || 'Banco Desconocido';
+
             setAutoDetectedBankName(bankName);
 
         } catch (err) {
