@@ -25,5 +25,6 @@ export interface QuoteData {
 
 export interface QuoteResponse {
     fiatAmount: number,
-    cryptoAmount: number,
+    exactCryptoAmount: number,
+    displayCryptoAmount: string,
 }

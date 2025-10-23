@@ -6,8 +6,80 @@ import { useHistory } from "../hooks/useHistory";
 import { parseTransactionStatus } from "../../../../shared/utils/historyUtils";
 import { formatDateRelative } from "../../../../shared/utils/dateUtils";
 
+// Componente para las tarjetas de estadísticas
+const StatCard: React.FC<{
+    title: string;
+    amountUSD?: number;
+    amountMXN?: number;
+    count?: number;
+    isLoading: boolean;
+}> = ({ title, amountUSD, amountMXN, count, isLoading }) => {
+    if (isLoading) {
+        return (
+            <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 flex-1">
+                <div className="animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2 mx-auto"></div>
+                    <div className="h-6 bg-gray-200 rounded w-1/2 mb-1 mx-auto"></div>
+                    <div className="h-3 bg-gray-200 rounded w-2/3 mx-auto"></div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100 flex-1">
+            <h3 className="text-sm font-medium text-gray-600 mb-3 truncate text-center">{title}</h3>
+
+            {count !== undefined ? (
+                <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">
+                        {count.toLocaleString()}
+                    </div>
+                </div>
+            ) : (
+                <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600 mb-1">
+                        ${amountUSD?.toFixed(2) || '0.00'}
+                    </div>
+                    <div className="text-sm text-gray-500">
+                        ${amountMXN?.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+// Componente para los botones de filtro
+const FilterButton: React.FC<{
+    label: string;
+    isSelected: boolean;
+    onClick: () => void;
+}> = ({ label, isSelected, onClick }) => (
+    <button
+        onClick={onClick}
+        className={`
+            px-4 py-2 rounded-full whitespace-nowrap text-sm font-medium transition-all duration-200
+            ${isSelected
+                ? 'bg-blue-600 text-white shadow-md'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }
+        `}
+    >
+        {label}
+    </button>
+);
+
 const HistoryPage: React.FC = () => {
-    const { history, isLoading, refetch } = useHistory();
+    const {
+        history,
+        isLoading,
+        refetch,
+        statistics,
+        selectedFilter,
+        filterOptions,
+        handleFilterChange
+    } = useHistory();
 
     // ✅ Estados para pull-to-refresh
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -92,9 +164,40 @@ const HistoryPage: React.FC = () => {
                 ]}
             />
 
+            {/* Tarjetas de estadísticas */}
+            <div className="px-4 mt-4 mb-4">
+                <div className="flex gap-3">
+                    <StatCard
+                        title="Total de transacciones"
+                        count={statistics.totalTransactions}
+                        isLoading={isLoading && !isRefreshing}
+                    />
+                    <StatCard
+                        title="Total recibido"
+                        amountUSD={statistics.totalReceivedUSD}
+                        amountMXN={statistics.totalReceivedMXN}
+                        isLoading={isLoading && !isRefreshing}
+                    />
+                </div>
+            </div>
+
+            {/* Sección de filtros */}
+            <div className="px-4 mb-4">
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+                    {filterOptions.map((option) => (
+                        <FilterButton
+                            key={option.key}
+                            label={option.label}
+                            isSelected={selectedFilter === option.key}
+                            onClick={() => handleFilterChange(option.key)}
+                        />
+                    ))}
+                </div>
+            </div>
+
             <div
                 ref={containerRef}
-                className="flex-1 flex px-4 mt-4 overflow-y-auto flex-col gap-4 relative"
+                className="flex-1 flex px-4 overflow-y-auto flex-col gap-4 relative"
                 style={{
                     transform: `translateY(${pullDistance}px)`,
                     transition: pullDistance > 0 && !isRefreshing ? 'none' : 'transform 0.3s ease-out'
@@ -141,7 +244,6 @@ const HistoryPage: React.FC = () => {
 
                 {/* ✅ Loading state */}
                 {isLoading && !isRefreshing && (
-
                     <div className="flex items-center justify-center py-8">
                         <div className="text-center">
                             <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
@@ -156,9 +258,9 @@ const HistoryPage: React.FC = () => {
                         <svg className="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                         </svg>
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">Sin historial</h3>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">Sin transacciones</h3>
                         <p className="text-sm text-gray-500 text-center">
-                            Aún no tienes transacciones registradas
+                            No hay transacciones para el período seleccionado
                         </p>
                         <button
                             onClick={handleRefresh}
@@ -166,7 +268,6 @@ const HistoryPage: React.FC = () => {
                         >
                             Recargar
                         </button>
-
                     </div>
                 )}
 
@@ -177,7 +278,6 @@ const HistoryPage: React.FC = () => {
                         status={parseTransactionStatus(transaction.status)}
                         amount={Number(transaction.cryptoAmount)}
                         subtitle={formatDateRelative(transaction.createdAt)}
-
                     />
                 ))}
             </div>
