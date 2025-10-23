@@ -11,6 +11,11 @@ export const useProfile = () => {
     // Estado para la imagen de perfil
     const [profileImage, setProfileImage] = useState<string | null>(null);
 
+    // Estado para el nombre del usuario
+    const [fullName, setFullName] = useState<string>("Jorge Clavo");
+    const [isEditingName, setIsEditingName] = useState<boolean>(false);
+    const [tempName, setTempName] = useState<string>("");
+
     const logOut = () => {
         showDialog({
             title: "Cerrar sesión",
@@ -93,12 +98,85 @@ export const useProfile = () => {
         });
     };
 
+    // Función para iniciar la edición del nombre
+    const handleEditName = () => {
+        setTempName(fullName);
+        setIsEditingName(true);
+
+        showDialog({
+            title: "Editar nombre",
+            subtitle: "¿Quieres editar tu nombre?",
+            onNext: () => {
+                // El modal se cerrará y el estado isEditingName quedará en true
+            },
+            onBack: () => {
+                setIsEditingName(false);
+                setTempName("");
+            },
+            nextText: "Sí, editar",
+            backText: "Cancelar"
+        });
+    };
+
+    // Función para manejar el cambio en el input del nombre
+    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTempName(event.target.value);
+    };
+
+    // Función para confirmar el cambio de nombre
+    const handleConfirmNameChange = () => {
+        if (tempName.trim() === "") {
+            showDialog({
+                title: "Nombre vacío",
+                subtitle: "El nombre no puede estar vacío",
+                nextText: "Entendido"
+            });
+            return;
+        }
+
+        if (tempName.trim() === fullName) {
+            // Si no hay cambios, simplemente cancelar
+            handleCancelNameEdit();
+            return;
+        }
+
+        showDialog({
+            title: "Confirmar cambio",
+            subtitle: `¿Estás seguro de que quieres cambiar tu nombre a "${tempName.trim()}"?`,
+            onNext: () => {
+                setFullName(tempName.trim());
+                setIsEditingName(false);
+                setTempName("");
+            },
+            onBack: () => {
+                // Continuar editando
+            },
+            nextText: "Confirmar",
+            backText: "Continuar editando"
+        });
+    };
+
+    // Función para cancelar la edición del nombre
+    const handleCancelNameEdit = () => {
+        setIsEditingName(false);
+        setTempName("");
+    };
+
     return {
         logOut,
         profileImage,
         fileInputRef,
         handleFileSelect,
         handleAddProfileImage,
-        handleRemoveProfileImage
+        handleRemoveProfileImage,
+
+        // Nuevas funciones para el nombre
+        fullName,
+        isEditingName,
+        tempName,
+        handleEditName,
+        handleNameChange,
+        handleConfirmNameChange,
+        handleCancelNameEdit
     };
 };

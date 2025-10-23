@@ -54,7 +54,7 @@ class SellRepository {
         try {
             const response = await sellApiService.getQuote(data);
 
-            const cryptoAmountStr = response.cryptoAmount.toString();
+            const cryptoAmountStr = response.displayCryptoAmount.toString();
             sellLocalService.setAmountToken(cryptoAmountStr);
 
             // ✅ Retornar el valor obtenido

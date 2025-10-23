@@ -2,7 +2,7 @@ import React from "react";
 import AppHeader from "../../../../shared/components/AppHeader";
 import blueUser from '/illustrations/blueuser.png';
 import TileApp from "../../../../shared/components/TileApp";
-import { BiChevronRight, BiEdit, BiTrash } from "react-icons/bi";
+import { BiChevronRight, BiEdit, BiTrash, BiCheck, BiX } from "react-icons/bi";
 import { useAccountOptions } from "../../../../shared/hooks/useAccountOptions";
 import ComboBoxApp from "../../../../shared/components/ComboBoxApp";
 import { useProfile } from "../hooks/useProfile";
@@ -27,7 +27,14 @@ const ProfilePage: React.FC = () => {
         fileInputRef,
         handleFileSelect,
         handleAddProfileImage,
-        handleRemoveProfileImage
+        handleRemoveProfileImage,
+        fullName,
+        isEditingName,
+        tempName,
+        handleEditName,
+        handleNameChange,
+        handleConfirmNameChange,
+        handleCancelNameEdit
     } = useProfile();
 
     if (isAccountOptionsLoading) {
@@ -86,6 +93,47 @@ const ProfilePage: React.FC = () => {
                     >
                         <BiTrash className="w-3 h-3 text-white" />
                     </button>
+                )}
+            </div>
+
+            {/* Sección del nombre del usuario */}
+            <div className="mb-6 px-4">
+                {isEditingName ? (
+                    <div className="flex items-center gap-2">
+                        <input
+                            type="text"
+                            value={tempName}
+                            onChange={handleNameChange}
+                            className="flex-1 text-xl font-semibold text-gray-900 bg-transparent border-b-2 border-blue-500 outline-none px-2 py-1 text-center"
+                            placeholder="Ingresa tu nombre"
+                            autoFocus
+                            maxLength={50}
+                        />
+                        <button
+                            onClick={handleConfirmNameChange}
+                            className="w-16 bg-blue-600 rounded-full flex items-center justify-center shadow-lg hover:bg-green-700 transition-colors"
+                        >
+                            <BiCheck className="w-8 h-8 p-1 text-white" />
+                        </button>
+                        <button
+                            onClick={handleCancelNameEdit}
+                            className="w-16 bg-gray-600 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-700 transition-colors"
+                        >
+                            <BiX className="w-8 h-8 p-1 text-white" />
+                        </button>
+                    </div>
+                ) : (
+                    <div className="flex items-center justify-center gap-2">
+                        <h2 className="text-xl font-semibold text-gray-900 text-center">
+                            {fullName}
+                        </h2>
+                        <button
+                            onClick={handleEditName}
+                            className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition-colors"
+                        >
+                            <BiEdit className="w-3 h-3 text-white" />
+                        </button>
+                    </div>
                 )}
             </div>
 
