@@ -1,11 +1,13 @@
 import userApiService from "../api/userApiService";
 import userLocalService from "../local/userLocalService";
+import type { UserData } from "../models/userModel";
 
 class UserRepository {
     async updateUser(userData: {
         userUuid: string;
         phone: string;
         fullName: string;
+        image: string;
     }): Promise<boolean> {
         try {
             // 1. Llamada al servicio API
@@ -23,6 +25,17 @@ class UserRepository {
         } catch (error) {
             console.error('Update user failed:', error);
             return false;
+        }
+    }
+
+    async fetchUserData(userUuid: string): Promise<UserData> {
+        try {
+            const response = await userApiService.getUser(userUuid);
+            return response;
+        }
+        catch (error) {
+            console.error('Fetch user data failed:', error);
+            throw error;
         }
     }
 

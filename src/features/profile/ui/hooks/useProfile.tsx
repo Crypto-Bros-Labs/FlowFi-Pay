@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react"; // ✅ Agregamos useEffect
 import { useNavigate } from "react-router-dom";
 import { useDialog } from "../../../../shared/hooks/useDialog";
 import userLocalService from "../../../login/data/local/userLocalService";
+import userRepository from "../../../login/data/repositories/userRepository";
 
 export const useProfile = () => {
     const navigate = useNavigate();
@@ -12,9 +13,42 @@ export const useProfile = () => {
     const [profileImage, setProfileImage] = useState<string | null>(null);
 
     // Estado para el nombre del usuario
-    const [fullName, setFullName] = useState<string>("Jorge Clavo");
+    const [fullName, setFullName] = useState<string>(""); // ✅ Cambiamos el valor inicial a vacío
     const [isEditingName, setIsEditingName] = useState<boolean>(false);
     const [tempName, setTempName] = useState<string>("");
+
+    // ✅ Nuevo estado para loading
+    const [isLoadingUserData, setIsLoadingUserData] = useState<boolean>(true);
+
+    async function fetchUserData() {
+        setIsLoadingUserData(true); // ✅ Iniciamos loading
+        try {
+            const userUuid = (await userRepository.getCurrentUserData())?.userUuid || 'default-uuid';
+            const userData = await userRepository.fetchUserData(userUuid);
+
+            if (userData.success) {
+                setFullName(userData.data.fullName || "Usuario");
+                setProfileImage(userData.data.image || null);
+            } else {
+                // En caso de error, establecer valores por defecto
+                setFullName("Usuario");
+                setProfileImage(null);
+                console.error('Error fetching user data');
+            }
+        } catch (error) {
+            console.error('Error in fetchUserData:', error);
+            // Valores por defecto en caso de error
+            setFullName("Usuario");
+            setProfileImage(null);
+        } finally {
+            setIsLoadingUserData(false); // ✅ Terminamos loading
+        }
+    }
+
+    // ✅ useEffect para llamar fetchUserData una sola vez al montar el componente
+    useEffect(() => {
+        fetchUserData();
+    }, []); // Array vacío significa que solo se ejecuta una vez
 
     const logOut = () => {
         showDialog({
@@ -145,6 +179,7 @@ export const useProfile = () => {
             subtitle: `¿Estás seguro de que quieres cambiar tu nombre a "${tempName.trim()}"?`,
             onNext: () => {
                 setFullName(tempName.trim());
+                updateNameOnServer(tempName.trim());
                 setIsEditingName(false);
                 setTempName("");
             },
@@ -155,6 +190,22 @@ export const useProfile = () => {
             backText: "Continuar editando"
         });
     };
+
+    async function updateNameOnServer(newName: string) {
+        try {
+            const userData = await userRepository.getCurrentUserData();
+            if (userData) {
+                await userRepository.updateUser({
+                    userUuid: userData.userUuid || '',
+                    fullName: newName,
+                    image: profileImage || '',
+                    phone: userData.phone || ''
+                });
+            }
+        } catch (error) {
+            console.error("Error updating name on server:", error);
+        }
+    }
 
     // Función para cancelar la edición del nombre
     const handleCancelNameEdit = () => {
@@ -170,13 +221,15 @@ export const useProfile = () => {
         handleAddProfileImage,
         handleRemoveProfileImage,
 
-        // Nuevas funciones para el nombre
+        // Funciones para el nombre
         fullName,
         isEditingName,
         tempName,
         handleEditName,
         handleNameChange,
         handleConfirmNameChange,
-        handleCancelNameEdit
+        handleCancelNameEdit,
+        isLoadingUserData,
+        refetchUserData: fetchUserData
     };
 };

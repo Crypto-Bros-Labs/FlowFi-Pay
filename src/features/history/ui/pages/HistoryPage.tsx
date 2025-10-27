@@ -5,6 +5,7 @@ import TileHistory from "../components/TileHistory";
 import { useHistory } from "../hooks/useHistory";
 import { parseTransactionStatus } from "../../../../shared/utils/historyUtils";
 import { formatDateRelative } from "../../../../shared/utils/dateUtils";
+import { useNavigate } from "react-router-dom";
 
 // Componente para las tarjetas de estadísticas
 const StatCard: React.FC<{
@@ -80,6 +81,8 @@ const HistoryPage: React.FC = () => {
         filterOptions,
         handleFilterChange
     } = useHistory();
+
+    const navigate = useNavigate();
 
     // ✅ Estados para pull-to-refresh
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -158,7 +161,7 @@ const HistoryPage: React.FC = () => {
                 rightActions={[
                     {
                         icon: IoPerson,
-                        onClick: () => console.log('Profile clicked'),
+                        onClick: () => navigate('/profile'),
                         className: 'text-gray-700'
                     }
                 ]}

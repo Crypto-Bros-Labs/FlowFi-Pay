@@ -161,7 +161,8 @@ export const useSignup = () => {
                 {
                     userUuid: userData.userUuid || '',
                     phone: `${countryCode}${phone}`,
-                    fullName: fullname
+                    fullName: fullname,
+                    image: ''
                 }
             );
 

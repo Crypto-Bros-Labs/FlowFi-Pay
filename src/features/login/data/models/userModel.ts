@@ -2,6 +2,7 @@ export interface UpdateUserData {
     userUuid: string;
     phone: string;
     fullName: string;
+    image: string;
 }
 
 export interface UserDataResponse {
@@ -9,6 +10,7 @@ export interface UserDataResponse {
     phone: string;
     fullName: string;
     email: string;
+    image: string;
 }
 
 export interface UserData {
