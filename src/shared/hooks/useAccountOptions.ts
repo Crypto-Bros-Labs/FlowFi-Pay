@@ -73,6 +73,7 @@ export const useAccountOptions = () => {
             return;
         }
         setSelectedWalletAddress(option.id as string);
+
     };
 
     // bank account
@@ -99,8 +100,13 @@ export const useAccountOptions = () => {
                 setBankAccounts(bankAccountsData);
 
                 if (bankAccountsData.length > 0) {
-                    setSelectedBankAccount(bankAccountsData[0].id);
-                    userRepository.setBankAccountUuid(bankAccountsData[0].id);
+                    const userBankAccountUuid = await userRepository.getBankAccountUuid();
+                    if (userBankAccountUuid && bankAccountsData.some(acc => acc.id === userBankAccountUuid)) {
+                        setSelectedBankAccount(userBankAccountUuid);
+                    } else {
+                        setSelectedBankAccount(bankAccountsData[0].id);
+                        userRepository.setBankAccountUuid(bankAccountsData[0].id);
+                    }
                 }
             }
         } catch (error) {

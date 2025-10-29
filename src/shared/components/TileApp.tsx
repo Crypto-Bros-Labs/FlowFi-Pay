@@ -42,7 +42,7 @@ const TileApp: React.FC<TileAppProps> = ({
 
     const baseClasses = `
         w-full flex items-center justify-between
-        transition-colors duration-150 ease-in-out py-3
+        transition-colors duration-150 ease-in-out py-2
         ${isClickable
             ? 'cursor-pointer hover:bg-gray-50 active:bg-gray-100'
             : 'cursor-default'

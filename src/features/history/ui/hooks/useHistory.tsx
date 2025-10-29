@@ -114,6 +114,28 @@ export const useHistory = () => {
         }
     };
 
+    const cancelTransaction = async (transactionId: string) => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const result = await historyRepository.cancelTransaction(transactionId);
+            if (result.success) {
+                // Refrescar el historial después de cancelar
+                await fetchHistory();
+            } else {
+                setError(result.error || 'Error al cancelar la transacción');
+                console.error('Failed to cancel transaction:', result.error);
+            }
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Error desconocido al cancelar la transacción';
+            setError(errorMessage);
+            console.error('Error cancelling transaction:', err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const retryFetch = () => {
         fetchHistory();
     };
@@ -165,6 +187,7 @@ export const useHistory = () => {
         refetch: fetchHistory,
         retry: retryFetch,
         clearError,
+        cancelTransaction,
 
         // Nuevas estadísticas (basadas en el filtro)
         statistics,

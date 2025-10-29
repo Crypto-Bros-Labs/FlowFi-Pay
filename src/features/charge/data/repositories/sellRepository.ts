@@ -11,7 +11,8 @@ class SellRepository {
             if (response.details === "SUCCESS") {
                 const sellData = {
                     kycUrl: response.kycUrl,
-                    destinationWalletAddress: response.destinationWalletAddress
+                    destinationWalletAddress: response.destinationWalletAddress,
+                    id: response.id
                 };
 
                 console.log('💾 Intentando guardar:', sellData);

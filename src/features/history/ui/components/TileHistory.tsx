@@ -1,20 +1,29 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FaClock } from 'react-icons/fa';
 import { IoCheckmarkCircleOutline, IoCloseCircleOutline } from 'react-icons/io5';
+import { HiEllipsisVertical } from 'react-icons/hi2';
 
 export type TransactionStatus = 'completed' | 'pending' | 'canceled';
 
 interface TileHistoryProps {
     status: TransactionStatus;
     amount: number;
+    id: string;
     subtitle?: string;
+    onCancelTransaction?: (id: string) => void;
 }
 
 const TileHistory: React.FC<TileHistoryProps> = ({
     status,
     amount,
-    subtitle = "Transferencia"
+    id,
+    subtitle = "Transferencia",
+    onCancelTransaction
 }) => {
+    // ✅ Estado para el menú desplegable
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+
     // Configuración por estado
     const getStatusConfig = (status: TransactionStatus) => {
         switch (status) {
@@ -64,6 +73,31 @@ const TileHistory: React.FC<TileHistoryProps> = ({
     const config = getStatusConfig(status);
     const IconComponent = config.leadingIcon;
 
+    // ✅ Cerrar menú al hacer click fuera
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setIsMenuOpen(false);
+            }
+        };
+
+        if (isMenuOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isMenuOpen]);
+
+    // ✅ Manejar cancelación de transacción
+    const handleCancelClick = () => {
+        if (onCancelTransaction) {
+            onCancelTransaction(id);
+        }
+        setIsMenuOpen(false);
+    };
+
     // Formatear amount
     const formatAmount = (amount: number) => {
         return new Intl.NumberFormat('es-MX', {
@@ -94,16 +128,46 @@ const TileHistory: React.FC<TileHistoryProps> = ({
                 </div>
 
                 {/* Trailing - Amount and Status Chip */}
-                <div className="flex flex-col items-end">
+                <div className="flex flex-col items-end gap-2">
                     {/* Amount */}
-                    <span className="text-lg font-semibold text-gray-900 mb-1">
+                    <span className="text-lg font-semibold text-gray-900">
                         {formatAmount(amount)}
                     </span>
 
-                    {/* Status Chip */}
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${config.chipBg} ${config.chipText}`}>
-                        {config.chipLabel}
-                    </span>
+                    <div className="flex items-center gap-3">
+                        {/* Status Chip */}
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${config.chipBg} ${config.chipText}`}>
+                            {config.chipLabel}
+                        </span>
+
+                        {/* ✅ Menú de opciones - Solo para pending */}
+                        {status === 'pending' && (
+                            <div className="relative" ref={menuRef}>
+                                {/* Botón de opciones */}
+                                <button
+                                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                    className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                                    aria-label="Más opciones"
+                                >
+                                    <HiEllipsisVertical className="w-5 h-5 text-gray-600" />
+                                </button>
+
+                                {/* ✅ Menú desplegable */}
+                                {isMenuOpen && (
+                                    <div className="absolute right-0 top-full mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-10 min-w-[180px] overflow-hidden">
+                                        {/* Opción cancelar */}
+                                        <button
+                                            onClick={handleCancelClick}
+                                            className="w-full px-4 py-3 text-left text-sm font-medium text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
+                                        >
+                                            <IoCloseCircleOutline className="w-4 h-4" />
+                                            Cancelar transacción
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

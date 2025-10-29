@@ -11,6 +11,20 @@ class HistoryRepository {
             return { success: false, error: 'Error fetching history' };
         }
     }
+
+    async cancelTransaction(transactionId: string): Promise<{ success: boolean, error?: string }> {
+        try {
+            const result = await historyApiService.cancelTransaction(transactionId);
+            if (result) {
+                return { success: true };
+            } else {
+                return { success: false, error: 'Error cancelling transaction' };
+            }
+        } catch (error) {
+            console.error('Error cancelling transaction:', error);
+            return { success: false, error: 'Error cancelling transaction' };
+        }
+    }
 }
 
 export default new HistoryRepository();

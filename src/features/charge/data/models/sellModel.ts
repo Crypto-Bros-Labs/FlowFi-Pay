@@ -4,6 +4,7 @@ export interface OffRampResponse {
     destinationWalletAddress: string,
     cryptoAmount: string,
     fiatAmount: string
+    id: string,
 }
 
 export interface OffRampData {

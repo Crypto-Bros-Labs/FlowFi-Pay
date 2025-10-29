@@ -53,13 +53,25 @@ export const useSetAmount = () => {
     }, [checkIsMobile]);
 
     // Manejar input desde teclado físico (solo desktop)
+    // Manejar input desde teclado físico (solo desktop)
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (isMobile) return; // Bloquear en móvil
 
-        const value = e.target.value;
+        let value = e.target.value;
+
+        // ✅ Si está vacío, establecer a '0'
+        if (value === '') {
+            value = '0';
+        }
+
         // Validar que solo contenga números y un punto decimal
         const regex = /^\d*\.?\d*$/;
         if (regex.test(value)) {
+            // ✅ Si el valor anterior es '0' y el nuevo comienza con un dígito diferente a '0' o '.', reemplazarlo
+            if (value.length > 1 && value.startsWith('0') && value[1] !== '.' && value[1] !== '0') {
+                // Remover el leading zero
+                value = value.substring(1);
+            }
             setAmountFiat(value);
         }
     }, [isMobile]);
@@ -153,17 +165,24 @@ export const useSetAmount = () => {
     }, [amountFiat]);
 
     // Manejar la entrada de números
+    // Manejar la entrada de números
     const handleNumberPress = useCallback((number: string) => {
         setAmountFiat(prev => {
-            if (prev === '0') {
+            if (number === '.') {
+                if (prev.includes('.')) {
+                    return prev;
+                }
+                if (prev === '0') {
+                    return '0.';
+                }
+                return prev + '.';
+            }
+
+
+            if (prev === '0' && number !== '.') {
                 return number;
             }
 
-            if (number === '.' && prev.includes('.')) {
-                return prev;
-            }
-
-            // Limitar a 2 decimales después del punto
             if (prev.includes('.')) {
                 const [, decimal] = prev.split('.');
                 if (decimal && decimal.length >= 2) {
@@ -174,6 +193,8 @@ export const useSetAmount = () => {
             return prev + number;
         });
     }, []);
+
+
 
     const handleDeletePress = useCallback(() => {
         setAmountFiat(prev => {

@@ -10,6 +10,7 @@ export interface Amounts {
 export interface SellData {
     kycUrl: string;
     destinationWalletAddress: string;
+    id?: string;
 }
 
 interface SellLocalState {

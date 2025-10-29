@@ -3,5 +3,6 @@ export interface HistoryResponse {
     createdAt: string,
     status: string,
     cryptoAmount: string,
-    fiatAmount: string
+    fiatAmount: string,
+    id: string
 }

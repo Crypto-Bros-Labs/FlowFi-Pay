@@ -11,6 +11,16 @@ class HistoryApiService {
             throw error;
         }
     }
+
+    async cancelTransaction(transactionId: string): Promise<boolean> {
+        try {
+            await axiosInstance.get(`/transactions/${transactionId}/cancel`);
+            return true;
+        } catch (error) {
+            console.error('Error cancelling transaction:', error);
+            return false;
+        }
+    }
 };
 
 export default new HistoryApiService();
