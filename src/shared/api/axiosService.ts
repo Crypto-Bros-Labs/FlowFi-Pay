@@ -72,6 +72,41 @@ axiosWithAuthInstance.interceptors.response.use(
     }
 );
 
+// Para multipart/form-data (imágenes, archivos, etc.)
+const axiosFormDataInstance = axios.create({
+    baseURL,
+});
+
+axiosFormDataInstance.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    if (config.data instanceof FormData) {
+        delete config.headers['Content-Type'];
+    }
+
+    return config;
+});
+
+axiosFormDataInstance.interceptors.response.use(
+    (response) => {
+        return response;
+    },
+    (error) => {
+        if (error.response?.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('tokenrefresh');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user-storage');
+            localStorage.removeItem('token-local-service');
+            window.location.href = '/login';
+        }
+        return Promise.reject(error);
+    }
+);
+
 // Instancia pública
 const publicAxiosInstance = axios.create({
     baseURL,
@@ -81,4 +116,4 @@ const publicAxiosInstance = axios.create({
 });
 
 // Solo named exports
-export { axiosInstance, publicAxiosInstance, axiosWithAuthInstance };
+export { axiosInstance, publicAxiosInstance, axiosWithAuthInstance, axiosFormDataInstance };

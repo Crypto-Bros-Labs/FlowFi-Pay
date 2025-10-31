@@ -20,3 +20,11 @@ export interface UserData {
     status: string;
     code: number;
 }
+
+export interface UserPictureResponse {
+    data: string;
+    message: string;
+    success: boolean;
+    status: string;
+    code: number;
+}

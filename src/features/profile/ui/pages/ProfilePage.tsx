@@ -36,13 +36,14 @@ const ProfilePage: React.FC = () => {
         handleConfirmNameChange,
         handleCancelNameEdit,
         isLoadingUserData,
+        isUploadingImage,
     } = useProfile();
 
-    if (isAccountOptionsLoading && isLoadingUserData) {
+    if (isAccountOptionsLoading || isLoadingUserData) {
         return (
             <div className="flex h-full flex-col items-center justify-center p-4">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                <span className="ml-2 text-gray-500">Cargando...</span>
+                <span className="ml-2 text-gray-500">Cargando perfil...</span>
             </div>
         );
     }
@@ -78,19 +79,27 @@ const ProfilePage: React.FC = () => {
                     )}
                 </div>
 
+                {isUploadingImage && (
+                    <div className="absolute inset-0 bg-black bg-opacity-30 rounded-full flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-blue-500"></div>
+                    </div>
+                )}
+
                 {/* Botón de editar */}
                 <button
                     onClick={handleAddProfileImage}
-                    className="absolute bottom-0 right-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition-colors"
+                    disabled={isUploadingImage}
+                    className="absolute bottom-0 right-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <BiEdit className="w-4 h-4 text-white" />
                 </button>
 
                 {/* Botón de eliminar (solo se muestra si hay imagen personalizada) */}
-                {profileImage && (
+                {profileImage && !isUploadingImage && (
                     <button
                         onClick={handleRemoveProfileImage}
-                        className="absolute top-0 right-0 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors"
+                        disabled={isUploadingImage}
+                        className="absolute top-0 right-0 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <BiTrash className="w-3 h-3 text-white" />
                     </button>
@@ -109,28 +118,32 @@ const ProfilePage: React.FC = () => {
                             placeholder="Ingresa tu nombre"
                             autoFocus
                             maxLength={50}
+                            disabled={isUploadingImage}
                         />
                         <button
                             onClick={handleConfirmNameChange}
-                            className="w-16 bg-blue-600 rounded-full flex items-center justify-center shadow-lg hover:bg-green-700 transition-colors"
+                            disabled={isUploadingImage}
+                            className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <BiCheck className="w-8 h-8 p-1 text-white" />
+                            <BiCheck className="w-5 h-5 text-white" />
                         </button>
                         <button
                             onClick={handleCancelNameEdit}
-                            className="w-16 bg-gray-600 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-700 transition-colors"
+                            disabled={isUploadingImage}
+                            className="w-8 h-8 bg-gray-600 rounded-full flex items-center justify-center shadow-lg hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <BiX className="w-8 h-8 p-1 text-white" />
+                            <BiX className="w-5 h-5 text-white" />
                         </button>
                     </div>
                 ) : (
                     <div className="flex items-center justify-center gap-2">
                         <h2 className="text-xl font-semibold text-gray-900 text-center">
-                            {fullName}
+                            {isLoadingUserData ? 'Cargando...' : fullName}
                         </h2>
                         <button
                             onClick={handleEditName}
-                            className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition-colors"
+                            disabled={isUploadingImage}
+                            className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             <BiEdit className="w-3 h-3 text-white" />
                         </button>

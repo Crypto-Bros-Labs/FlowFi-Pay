@@ -1,5 +1,5 @@
-import { axiosInstance } from '../../../../shared/api/axiosService';
-import type { UserData, UpdateUserData } from '../models/userModel';
+import { axiosInstance, axiosFormDataInstance } from '../../../../shared/api/axiosService';
+import type { UserData, UpdateUserData, UserPictureResponse } from '../models/userModel';
 
 class UserService {
     async updateUser(userData: UpdateUserData): Promise<UserData> {
@@ -9,6 +9,11 @@ class UserService {
 
     async getUser(userUuid: string): Promise<UserData> {
         const response = await axiosInstance.get(`/user/info/${userUuid}`);
+        return response.data;
+    }
+
+    async uploadUserPicture(formData: FormData, userUuid: string): Promise<UserPictureResponse> {
+        const response = await axiosFormDataInstance.put(`/user/update-picture/${userUuid}`, formData);
         return response.data;
     }
 }

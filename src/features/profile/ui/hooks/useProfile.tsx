@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react"; // ✅ Agregamos useEffect
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDialog } from "../../../../shared/hooks/useDialog";
 import userLocalService from "../../../login/data/local/userLocalService";
 import userRepository from "../../../login/data/repositories/userRepository";
+import { base64ToFile } from "../../../../shared/utils/dataUtils";
 
 export const useProfile = () => {
     const navigate = useNavigate();
@@ -11,17 +12,17 @@ export const useProfile = () => {
 
     // Estado para la imagen de perfil
     const [profileImage, setProfileImage] = useState<string | null>(null);
+    const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
 
     // Estado para el nombre del usuario
-    const [fullName, setFullName] = useState<string>(""); // ✅ Cambiamos el valor inicial a vacío
+    const [fullName, setFullName] = useState<string>("");
     const [isEditingName, setIsEditingName] = useState<boolean>(false);
     const [tempName, setTempName] = useState<string>("");
 
-    // ✅ Nuevo estado para loading
     const [isLoadingUserData, setIsLoadingUserData] = useState<boolean>(true);
 
     async function fetchUserData() {
-        setIsLoadingUserData(true); // ✅ Iniciamos loading
+        setIsLoadingUserData(true);
         try {
             const userUuid = (await userRepository.getCurrentUserData())?.userUuid || 'default-uuid';
             const userData = await userRepository.fetchUserData(userUuid);
@@ -30,25 +31,22 @@ export const useProfile = () => {
                 setFullName(userData.data.fullName || "Usuario");
                 setProfileImage(userData.data.image || null);
             } else {
-                // En caso de error, establecer valores por defecto
                 setFullName("Usuario");
                 setProfileImage(null);
                 console.error('Error fetching user data');
             }
         } catch (error) {
             console.error('Error in fetchUserData:', error);
-            // Valores por defecto en caso de error
             setFullName("Usuario");
             setProfileImage(null);
         } finally {
-            setIsLoadingUserData(false); // ✅ Terminamos loading
+            setIsLoadingUserData(false);
         }
     }
 
-    // ✅ useEffect para llamar fetchUserData una sola vez al montar el componente
     useEffect(() => {
         fetchUserData();
-    }, []); // Array vacío significa que solo se ejecuta una vez
+    }, []);
 
     const logOut = () => {
         showDialog({
@@ -65,6 +63,48 @@ export const useProfile = () => {
             backText: "Cancelar",
         });
     };
+
+    async function uploadImageToServer(imageBase64: string) {
+        try {
+            setIsUploadingImage(true);
+            const userData = await userRepository.getCurrentUserData();
+
+            if (!userData) {
+                throw new Error('No user data found');
+            }
+
+            const file = await base64ToFile(imageBase64, 'profile-image.jpg');
+
+            const formData = new FormData();
+            formData.append('picture', file);
+
+            const success = await userRepository.uploadUserPicture(
+                formData,
+                userData.userUuid || ''
+            );
+
+            if (success) {
+                showDialog({
+                    title: "Imagen actualizada",
+                    subtitle: "Tu imagen de perfil ha sido actualizada correctamente",
+                    nextText: "Entendido"
+                });
+                return true;
+            } else {
+                throw new Error('Error uploading image');
+            }
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            showDialog({
+                title: "Error al subir imagen",
+                subtitle: "No pudimos subir tu imagen. Intenta de nuevo.",
+                nextText: "Entendido"
+            });
+            return false;
+        } finally {
+            setIsUploadingImage(false);
+        }
+    }
 
     // Función para manejar la selección de archivo
     const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,16 +130,18 @@ export const useProfile = () => {
                 return;
             }
 
-            // Crear URL para preview
+            // Crear URL para preview Y subir al servidor
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
                 const result = e.target?.result as string;
                 setProfileImage(result);
+
+                await uploadImageToServer(result);
             };
             reader.readAsDataURL(file);
         }
 
-        // Limpiar el input para permitir seleccionar el mismo archivo nuevamente
+        // Limpiar el input
         if (event.target) {
             event.target.value = '';
         }
@@ -111,7 +153,6 @@ export const useProfile = () => {
             title: "Agregar imagen de perfil",
             subtitle: "Selecciona una imagen para tu perfil",
             onNext: () => {
-                // Trigger del input file
                 fileInputRef.current?.click();
             },
             nextText: "Agregar",
@@ -124,7 +165,7 @@ export const useProfile = () => {
         showDialog({
             title: "Eliminar imagen de perfil",
             subtitle: "¿Estás seguro de que quieres eliminar tu imagen de perfil?",
-            onNext: () => {
+            onNext: async () => {
                 setProfileImage(null);
             },
             nextText: "Eliminar",
@@ -169,7 +210,6 @@ export const useProfile = () => {
         }
 
         if (tempName.trim() === fullName) {
-            // Si no hay cambios, simplemente cancelar
             handleCancelNameEdit();
             return;
         }
@@ -229,7 +269,11 @@ export const useProfile = () => {
         handleNameChange,
         handleConfirmNameChange,
         handleCancelNameEdit,
+
         isLoadingUserData,
-        refetchUserData: fetchUserData
+        isUploadingImage,
+
+        refetchUserData: fetchUserData,
+        uploadImageToServer
     };
 };

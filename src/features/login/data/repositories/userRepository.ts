@@ -50,6 +50,19 @@ class UserRepository {
     async getBankAccountUuid(): Promise<string | null> {
         return userLocalService.getBankAccountUuid();
     }
+
+    async uploadUserPicture(formData: FormData, userUuid: string): Promise<boolean> {
+        try {
+            const response = await userApiService.uploadUserPicture(formData, userUuid);
+            console.log('Upload user picture response:', response);
+
+            return response.success;
+        }
+        catch (error) {
+            console.error('Upload user picture failed:', error);
+            return false;
+        }
+    }
 }
 
 export default new UserRepository();

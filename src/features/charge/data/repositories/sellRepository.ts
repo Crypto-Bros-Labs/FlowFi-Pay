@@ -7,7 +7,6 @@ class SellRepository {
         try {
             const response = await sellApiService.createOffRamp(data);
             console.log('📨 API Response completa:', response);
-
             if (response.details === "SUCCESS") {
                 const sellData = {
                     kycUrl: response.kycUrl,
