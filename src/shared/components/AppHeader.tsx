@@ -1,7 +1,7 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import type { IconType } from 'react-icons';
 import { IoChevronBack } from 'react-icons/io5';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderAction {
     icon: IconType;
@@ -24,6 +24,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
     leftAction,
     rightActions = []
 }) => {
+
     const navigate = useNavigate();
 
     const handleBack = () => {

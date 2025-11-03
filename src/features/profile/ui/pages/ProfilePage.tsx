@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import AppHeader from "../../../../shared/components/AppHeader";
 import blueUser from '/illustrations/blueuser.png';
 import TileApp from "../../../../shared/components/TileApp";
@@ -6,17 +7,19 @@ import { BiChevronRight, BiEdit, BiTrash, BiCheck, BiX } from "react-icons/bi";
 import { useAccountOptions } from "../../../../shared/hooks/useAccountOptions";
 import ComboBoxApp from "../../../../shared/components/ComboBoxApp";
 import { useProfile } from "../hooks/useProfile";
+import BankTile from "../components/BankTile";
+import TeamTile from "../components/TeamTile";
+import { useTeam } from "../hooks/useTeam";
 
 const ProfilePage: React.FC = () => {
+    const navigate = useNavigate();
     const {
         walletAddresses,
         walletComboBoxOptions,
         selectedWalletAddress,
         onWalletSelect,
         bankAccounts,
-        bankComboBoxOptions,
         selectedBankAccount,
-        onBankSelect,
         isAccountOptionsLoading,
         handleAddBank,
     } = useAccountOptions();
@@ -39,7 +42,10 @@ const ProfilePage: React.FC = () => {
         isUploadingImage,
     } = useProfile();
 
-    if (isAccountOptionsLoading || isLoadingUserData) {
+    // ✅ Hook del equipo
+    const { teamMembers, isLoadingTeam } = useTeam();
+
+    if (isAccountOptionsLoading || isLoadingUserData || isLoadingTeam) {
         return (
             <div className="flex h-full flex-col items-center justify-center p-4">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -48,8 +54,11 @@ const ProfilePage: React.FC = () => {
         );
     }
 
+    // ✅ Obtener la cuenta bancaria seleccionada
+    const selectedBank = bankAccounts?.find(bank => bank.id === selectedBankAccount);
+
     return (
-        <div className="flex flex-col h-full p-4">
+        <div className="flex flex-col h-full p-4 overflow-y-auto">
             <AppHeader title="Perfil" />
 
             {/* Input file oculto */}
@@ -94,7 +103,7 @@ const ProfilePage: React.FC = () => {
                     <BiEdit className="w-4 h-4 text-white" />
                 </button>
 
-                {/* Botón de eliminar (solo se muestra si hay imagen personalizada) */}
+                {/* Botón de eliminar */}
                 {profileImage && !isUploadingImage && (
                     <button
                         onClick={handleRemoveProfileImage}
@@ -210,11 +219,14 @@ const ProfilePage: React.FC = () => {
                     Cuenta bancaria
                 </div>
 
-                {bankAccounts && bankAccounts.length > 0 ? (
-                    <ComboBoxApp
-                        options={bankComboBoxOptions}
-                        selectedId={selectedBankAccount}
-                        onSelect={onBankSelect}
+                {/* ✅ Reemplazar ComboBoxApp con BankTile */}
+                {bankAccounts && bankAccounts.length > 0 && selectedBank ? (
+                    <BankTile
+                        id={selectedBank.id}
+                        bankName={selectedBank.bankName}
+                        accountNumber={selectedBank.accountNumber}
+                        isModificable={false}
+                        onClick={() => navigate('/profile/bank-accounts')}
                     />
                 ) : (
                     <button
@@ -239,6 +251,21 @@ const ProfilePage: React.FC = () => {
                         </span>
                     </button>
                 )}
+            </div>
+
+            {/* ✅ NUEVA SECCIÓN: Equipo */}
+            {/* Divider */}
+            <div className="border-t border-gray-700 mx-2 my-4"></div>
+
+            <div className="mb-6 px-2">
+                <div className="text-sm font-bold text-[#020F1E] truncate mb-2">
+                    Equipo
+                </div>
+
+                <TeamTile
+                    memberCount={teamMembers?.length || 0}
+                    onClick={() => navigate('/profile/team')}
+                />
             </div>
 
             {/* Divider */}

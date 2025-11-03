@@ -126,13 +126,13 @@ export const useAccountOptions = () => {
         bankAccounts,
         handleAddBank)
 
-    const handleBankSelect = (option: ComboBoxOption) => {
-        if (option.id === 'add-bank') {
+    const handleBankSelect = (id: string) => {
+        if (id === 'add-bank') {
             console.log('Acción: Agregar nuevo banco');
             return;
         }
-        setSelectedBankAccount(option.id as string);
-        userRepository.setBankAccountUuid(option.id as string);
+        setSelectedBankAccount(id);
+        userRepository.setBankAccountUuid(id);
     };
 
     useEffect(() => {

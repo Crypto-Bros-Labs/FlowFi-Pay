@@ -13,6 +13,8 @@ import SelectTokenPage from './features/charge/ui/pages/SelectTokenPage';
 import AddAccountPage from './features/profile/ui/pages/AddAccountPage';
 import AddWalletPage from './features/profile/ui/pages/AddWalletPage';
 import { DialogProvider } from './shared/contexts/DialogProvider';
+import BankAccountsPage from './features/profile/ui/pages/BankAccountsPage';
+import TeamPage from './features/profile/ui/pages/TeamPage';
 
 
 function App() {
@@ -71,6 +73,19 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/profile/bank-accounts" element={
+            <ProtectedRoute>
+              <BankAccountsPage />
+            </ProtectedRoute>
+          } />
+
+          <Route path="/profile/team" element={
+            <ProtectedRoute>
+              <TeamPage />
+            </ProtectedRoute>
+          } />
+
+
           <Route
             path='/add-wallet'
             element={
