@@ -63,6 +63,17 @@ class UserRepository {
             return false;
         }
     }
+
+    async deleteUserPicture(userUuid: string): Promise<boolean> {
+        try {
+            await userApiService.deleteUserPicture(userUuid);
+            return true;
+        }
+        catch (error) {
+            console.error('Delete user picture failed:', error);
+            return false;
+        }
+    }
 }
 
 export default new UserRepository();

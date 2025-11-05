@@ -16,6 +16,10 @@ class UserService {
         const response = await axiosFormDataInstance.put(`/user/update-picture/${userUuid}`, formData);
         return response.data;
     }
+
+    async deleteUserPicture(userUuid: string): Promise<void> {
+        await axiosInstance.delete(`/user/remove-picture/${userUuid}`);
+    }
 }
 
 export default new UserService();

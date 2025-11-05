@@ -97,7 +97,7 @@ export const useProfile = () => {
             console.error("Error uploading image:", error);
             showDialog({
                 title: "Error al subir imagen",
-                subtitle: "No pudimos subir tu imagen. Intenta de nuevo.",
+                subtitle: "No pudimos subir tu imagen. La imagen debe ser menor a 2MB",
                 nextText: "Entendido"
             });
             return false;
@@ -120,11 +120,11 @@ export const useProfile = () => {
                 return;
             }
 
-            // Validar tamaño (máximo 5MB)
-            if (file.size > 5 * 1024 * 1024) {
+            // Validar tamaño (máximo 2MB)
+            if (file.size > 2 * 1024 * 1024) {
                 showDialog({
                     title: "Archivo muy grande",
-                    subtitle: "La imagen debe ser menor a 5MB",
+                    subtitle: "La imagen debe ser menor a 2MB",
                     nextText: "Entendido"
                 });
                 return;
@@ -166,7 +166,18 @@ export const useProfile = () => {
             title: "Eliminar imagen de perfil",
             subtitle: "¿Estás seguro de que quieres eliminar tu imagen de perfil?",
             onNext: async () => {
-                setProfileImage(null);
+                const userUuid = (await userRepository.getCurrentUserData())?.userUuid || '';
+                try {
+                    await userRepository.deleteUserPicture(userUuid);
+                    setProfileImage(null);
+                } catch (error) {
+                    console.error("Error deleting profile picture:", error);
+                    showDialog({
+                        title: "Error al eliminar imagen",
+                        subtitle: "No pudimos eliminar tu imagen. Intenta de nuevo.",
+                        nextText: "Entendido"
+                    });
+                }
             },
             nextText: "Eliminar",
             backText: "Cancelar"
