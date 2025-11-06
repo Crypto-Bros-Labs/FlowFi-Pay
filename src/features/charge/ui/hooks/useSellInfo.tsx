@@ -32,7 +32,6 @@ export const useSellInfo = () => {
 
     // Función para generar QR code data
     const generateQRData = () => {
-        // Para Ethereum, el formato estándar es ethereum:address
         return `${walletData?.destinationWalletAddress}`;
 
     };
