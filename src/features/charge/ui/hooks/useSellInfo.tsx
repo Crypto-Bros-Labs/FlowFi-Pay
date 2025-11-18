@@ -3,8 +3,8 @@ import { formatCryptoAddress } from '../../../../shared/utils/cryptoUtils';
 import type { Amounts, SellData } from '../../data/local/sellLocalService';
 import type { Token } from '../../data/local/tokenLocalService';
 import sellRepository from '../../data/repositories/sellRepository';
-import tokenRepository from '../../../exchange/data/repositories/tokenRepository';
 import historyRepository from '../../../history/data/repositories/historyRepository';
+import tokenRepository from '../../data/repositories/tokenRepository';
 
 export const useSellInfo = () => {
     const [walletData, setWalletData] = useState<SellData | null>(null);
