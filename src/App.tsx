@@ -3,7 +3,6 @@ import LandingPage from "./shared/pages/LandingPage";
 import LoginPage from './features/login/ui/pages/LoginPage';
 import SignUpPage from './features/login/ui/pages/SignUpPage';
 import OtpPage from './features/login/ui/pages/OtpPage';
-import OnOffRampPage from './features/exchange/ui/pages/OnOffRampPage';
 import ProtectedRoute from './shared/pages/ProtectedRoute';
 import SetAmountPage from './features/charge/ui/pages/SetAmountPage';
 import HistoryPage from './features/history/ui/pages/HistoryPage';
@@ -13,6 +12,10 @@ import SelectTokenPage from './features/charge/ui/pages/SelectTokenPage';
 import AddAccountPage from './features/profile/ui/pages/AddAccountPage';
 import AddWalletPage from './features/profile/ui/pages/AddWalletPage';
 import { DialogProvider } from './shared/contexts/DialogProvider';
+import SetAmountDynamicPage from './features/wallet/ui/pages/SetAmountDynamicPage';
+import SelectTokenDynamicPage from './features/wallet/ui/pages/SelectTokenDynamicPage';
+import ReceivePage from './features/wallet/ui/pages/ReceivePage';
+import QRScannerPage from './features/wallet/ui/pages/QRScannerPage';
 
 
 function App() {
@@ -37,12 +40,6 @@ function App() {
               <ProtectedRoute requireAuth={false}>
                 <OtpPage />
               </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/on-off-ramp'
-            element={
-              <OnOffRampPage />
             }
           />
 
@@ -116,6 +113,41 @@ function App() {
             }
           />
 
+          <Route
+            path="/set-amount-dynamic"
+            element={
+              <ProtectedRoute>
+                <SetAmountDynamicPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/select-token-dynamic"
+            element={
+              <ProtectedRoute>
+                <SelectTokenDynamicPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="wallet/qr-scanner"
+            element={
+              <ProtectedRoute>
+                <QRScannerPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/receive"
+            element={
+              <ProtectedRoute>
+                <ReceivePage />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </DialogProvider>
     </Router>

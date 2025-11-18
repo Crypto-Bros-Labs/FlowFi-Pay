@@ -2,7 +2,7 @@ import React, { type ReactNode } from 'react';
 
 interface TileAppProps {
     title: string;
-    subtitle?: string;
+    subtitle?: string | ReactNode;
     leading?: ReactNode;
     trailing?: ReactNode;
     onClick?: () => void;

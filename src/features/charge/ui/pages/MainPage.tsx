@@ -9,13 +9,22 @@ import { useMain } from "../hooks/useMain";
 import { useAppBar } from "../../../../shared/hooks/useAppBar";
 
 const MainPage: React.FC = () => {
-    const { goToSelectToken, isAccountOptionsLoading } = useMain();
+    const {
+        goToSelectToken,
+        isAccountOptionsLoading,
+        onHandleSend,
+        onHandleBuy,
+        onHandleSell,
+        onHandleReceive,
+        isLoading,
+    } = useMain();
+
     const { goToHistory, goToProfile } = useAppBar();
 
     // ✅ Mock de balance - cambiar por datos reales del hook
-    const userBalance = 15750.50;
+    const userBalance = 0.0;
 
-    if (isAccountOptionsLoading) {
+    if (isAccountOptionsLoading || isLoading) {
         return (
             <div className="flex h-full flex-col items-center justify-center p-4">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -84,7 +93,7 @@ const MainPage: React.FC = () => {
                                 border-0 outline-none
                                 focus:ring-4 focus:ring-blue-100
                             "
-                            onClick={() => console.log('Enviar')}
+                            onClick={onHandleSend}
                         >
                             <GoArrowUpRight className="w-6 h-6 text-blue-600" />
                             <span className="text-xs font-medium text-gray-700 text-center">
@@ -108,7 +117,7 @@ const MainPage: React.FC = () => {
                                 border-0 outline-none
                                 focus:ring-4 focus:ring-blue-100
                             "
-                            onClick={() => console.log('Recibir')}
+                            onClick={onHandleReceive}
                         >
                             <GoArrowDownLeft className="w-6 h-6 text-blue-600" />
                             <span className="text-xs font-medium text-gray-700 text-center">
@@ -132,7 +141,7 @@ const MainPage: React.FC = () => {
                                 border-0 outline-none
                                 focus:ring-4 focus:ring-blue-100
                             "
-                            onClick={() => console.log('Comprar')}
+                            onClick={onHandleBuy}
                         >
                             <BiDollar className="w-6 h-6 text-blue-600" />
                             <span className="text-xs font-medium text-gray-700 text-center">
@@ -156,7 +165,7 @@ const MainPage: React.FC = () => {
                                 border-0 outline-none
                                 focus:ring-4 focus:ring-blue-100
                             "
-                            onClick={() => console.log('Retirar')}
+                            onClick={onHandleSell}
                         >
                             <IoCashOutline className="w-6 h-6 text-blue-600" />
                             <span className="text-xs font-medium text-gray-700 text-center">
@@ -186,7 +195,7 @@ const MainPage: React.FC = () => {
                     "
                     onClick={goToSelectToken}
                 >
-                    <BiMoneyWithdraw className="w-8 h-8 text-gray-700" />
+                    <BiMoneyWithdraw className="w-8 h-8 text-blue-600" />
 
                     <span className="text-sm font-medium text-gray-700">
                         Cobrar
