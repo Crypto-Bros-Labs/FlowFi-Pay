@@ -5,14 +5,19 @@ import AppHeader from "../../../../shared/components/AppHeader";
 import TileApp from "../../../../shared/components/TileApp";
 import QRCode from "../../../../shared/components/QRCode";
 import blueUser from '/illustrations/blueuser.png';
+import { useProfile } from "../../../profile/ui/hooks/useProfile";
 
 const ReceivePage: React.FC = () => {
     const navigate = useNavigate();
     const [isCopied, setIsCopied] = useState(false);
 
-    // ✅ Mock de datos
-    const userName = "Invitado";
-    const walletAddress = "0x1234567890abcdef1234567890abcdef";
+    const {
+        walletAddress,
+        profileImage,
+        isLoadingUserData,
+        fullName,
+
+    } = useProfile();
 
     const handleCopyAddress = () => {
         navigator.clipboard.writeText(walletAddress);
@@ -23,6 +28,15 @@ const ReceivePage: React.FC = () => {
             setIsCopied(false);
         }, 2000);
     };
+
+    if (isLoadingUserData) {
+        return (
+            <div className="flex h-full flex-col items-center justify-center p-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                <span className="ml-2 text-gray-500">Cargando datos...</span>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-col h-full p-4 overflow-y-auto">
@@ -35,16 +49,24 @@ const ReceivePage: React.FC = () => {
             <div className="flex flex-col items-center mt-6 mb-8">
                 {/* Imagen de perfil */}
                 <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden mb-4">
-                    <img
-                        src={blueUser}
-                        alt="Profile"
-                        className="w-full h-full object-cover"
-                    />
+                    {profileImage ? (
+                        <img
+                            src={profileImage}
+                            alt="Profile"
+                            className="w-full h-full object-cover object-center"
+                        />
+                    ) : (
+                        <img
+                            src={blueUser}
+                            alt="User Icon"
+                            className="w-full h-full object-cover"
+                        />
+                    )}
                 </div>
 
                 {/* Nombre */}
                 <h2 className="text-lg font-semibold text-gray-900 text-center">
-                    {userName}
+                    {isLoadingUserData ? 'Cargando...' : fullName}
                 </h2>
             </div>
 
