@@ -11,6 +11,7 @@ export interface UserDataResponse {
     fullName: string;
     email: string;
     image: string;
+    walletAddress: string;
 }
 
 export interface UserData {

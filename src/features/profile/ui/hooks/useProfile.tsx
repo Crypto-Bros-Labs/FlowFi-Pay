@@ -19,6 +19,9 @@ export const useProfile = () => {
     const [isEditingName, setIsEditingName] = useState<boolean>(false);
     const [tempName, setTempName] = useState<string>("");
 
+    // Estado wallet 
+    const [walletAddress, setWalletAddress] = useState<string>("");
+
     const [isLoadingUserData, setIsLoadingUserData] = useState<boolean>(true);
 
     async function fetchUserData() {
@@ -30,9 +33,11 @@ export const useProfile = () => {
             if (userData.success) {
                 setFullName(userData.data.fullName || "Usuario");
                 setProfileImage(userData.data.image || null);
+                setWalletAddress(userData.data.walletAddress || "");
             } else {
                 setFullName("Usuario");
                 setProfileImage(null);
+                setWalletAddress("");
                 console.error('Error fetching user data');
             }
         } catch (error) {
@@ -285,6 +290,9 @@ export const useProfile = () => {
         isUploadingImage,
 
         refetchUserData: fetchUserData,
-        uploadImageToServer
+        uploadImageToServer,
+
+        // Wallet
+        walletAddress,
     };
 };
