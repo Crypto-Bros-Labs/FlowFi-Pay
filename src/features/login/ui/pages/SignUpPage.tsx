@@ -5,8 +5,6 @@ import DescriptionApp from "../../../../shared/components/DescriptionApp";
 import { useSignup } from "../hooks/useSignup";
 import crypto from "/illustrations/crypto.png";
 import AppHeader from "../../../../shared/components/AppHeader";
-import { useAccountOptions } from "../../../../shared/hooks/useAccountOptions";
-import ComboBoxApp from "../../../../shared/components/ComboBoxApp";
 
 const SignUpPage: React.FC = () => {
     const {
@@ -24,25 +22,9 @@ const SignUpPage: React.FC = () => {
         handlePhoneChange,
         handleCountryCodeChange,
         handleUpdateUser,
-        handleAddBank
     } = useSignup();
 
-    const {
-        bankAccounts,
-        bankComboBoxOptions,
-        selectedBankAccount,
-        onBankSelect,
-        isAccountOptionsLoading,
-    } = useAccountOptions();
 
-    if (isAccountOptionsLoading) {
-        return (
-            <div className="flex flex-1 flex-col h-full items-center justify-center p-4">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                <span className="ml-2 text-gray-500">Cargando...</span>
-            </div>
-        );
-    }
 
     return (
         <div className="flex flex-col min-h-full p-4">
@@ -109,7 +91,7 @@ const SignUpPage: React.FC = () => {
                         <InputApp
                             showLabel={false}
                             type='tel'
-                            placeholder='96 1359 9611'
+                            placeholder='52 1234 5678'
                             value={phone}
                             onChange={(e) => handlePhoneChange(e.target.value)}
                             error={phoneError}
@@ -118,7 +100,7 @@ const SignUpPage: React.FC = () => {
                     </div>
                 </div>
             </div>
-
+            {/* Selección de cuenta bancaria 
             <div className="mb-6 px-2">
                 <div className="text-sm font-bold text-[#020F1E] truncate mb-2">
                     Agregar cuenta de banco
@@ -154,7 +136,7 @@ const SignUpPage: React.FC = () => {
                     </button>
                 )}
             </div>
-
+            */}
 
             {/* Mensaje de error */}
             {error && (
