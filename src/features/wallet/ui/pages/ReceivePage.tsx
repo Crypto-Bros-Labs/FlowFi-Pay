@@ -6,6 +6,7 @@ import TileApp from "../../../../shared/components/TileApp";
 import QRCode from "../../../../shared/components/QRCode";
 import blueUser from '/illustrations/blueuser.png';
 import { useProfile } from "../../../profile/ui/hooks/useProfile";
+import { formatCryptoAddressCustom } from "../../../../shared/utils/cryptoUtils";
 
 const ReceivePage: React.FC = () => {
     const navigate = useNavigate();
@@ -78,7 +79,7 @@ const ReceivePage: React.FC = () => {
                 <div className="w-full">
                     <TileApp
                         title="Tu dirección"
-                        subtitle={walletAddress}
+                        subtitle={formatCryptoAddressCustom(walletAddress, 20, 4)}
                         titleSize="base"
                         subtitleSize="xs"
                         trailing={
@@ -116,8 +117,8 @@ const ReceivePage: React.FC = () => {
                     <QRCode
                         data={walletAddress}
                         size={200}
-                        foregroundColor="#2563eb"
-                        backgroundColor="#ffffff"
+                        foregroundColor="2563eb"
+                        backgroundColor="ffffff"
                     />
                 </div>
             </div>

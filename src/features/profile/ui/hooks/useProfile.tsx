@@ -21,6 +21,7 @@ export const useProfile = () => {
 
     // Estado wallet 
     const [walletAddress, setWalletAddress] = useState<string>("");
+    const [formatedBalance, setFormatedBalance] = useState<string>("");
 
     const [isLoadingUserData, setIsLoadingUserData] = useState<boolean>(true);
 
@@ -33,11 +34,13 @@ export const useProfile = () => {
             if (userData.success) {
                 setFullName(userData.data.fullName || "Usuario");
                 setProfileImage(userData.data.image || null);
-                setWalletAddress(userData.data.walletAddress || "");
+                setWalletAddress(userData.data.normalizedPublicKey || "");
+                setFormatedBalance(userData.data.formatBalance || "");
             } else {
                 setFullName("Usuario");
                 setProfileImage(null);
                 setWalletAddress("");
+                setFormatedBalance("");
                 console.error('Error fetching user data');
             }
         } catch (error) {
@@ -294,5 +297,6 @@ export const useProfile = () => {
 
         // Wallet
         walletAddress,
+        formatedBalance,
     };
 };

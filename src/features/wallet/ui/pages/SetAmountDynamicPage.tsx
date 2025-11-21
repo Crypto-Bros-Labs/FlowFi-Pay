@@ -11,6 +11,7 @@ import TransferResultModal from "../components/TransferResultModal";
 import { truncateLeft } from "../../../../shared/utils/numberUtils";
 import { CgSwapVertical } from "react-icons/cg";
 import type { DynamicToken } from "../hooks/useSelectTokenDynamic";
+import { useProfile } from "../../../profile/ui/hooks/useProfile";
 
 export interface SetAmountDynamicPageProps {
     title?: string;
@@ -58,6 +59,10 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
         handleCloseTransferModal,
         showModalTransferResult,
     } = useSetAmountDynamic(token, typeTransaction);
+
+    const { formatedBalance } = useProfile();
+
+    const userBalance = formatedBalance ? parseFloat(formatedBalance.replace(/,/g, '')) : availableCrypto;
 
     // ✅ Manejar dirección escaneada
     useEffect(() => {
@@ -139,11 +144,11 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
             <div className="flex-1 overflow-y-auto px-4 py-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none]">
                 <div className="flex flex-col h-full">
                     {/* Available Crypto Section */}
-                    {availableCrypto !== undefined && (
+                    {userBalance !== undefined && (
                         <div className="flex items-center gap-2 justify-center mb-6">
                             <AvailableCryptoSection
                                 symbol={token.symbol}
-                                amount={availableCrypto}
+                                amount={userBalance}
                                 name={token.name}
                             />
                         </div>

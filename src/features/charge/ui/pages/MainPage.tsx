@@ -7,6 +7,7 @@ import { BiMoneyWithdraw, BiDollar } from "react-icons/bi";
 import AppHeader from "../../../../shared/components/AppHeader";
 import { useMain } from "../hooks/useMain";
 import { useAppBar } from "../../../../shared/hooks/useAppBar";
+import { useProfile } from "../../../profile/ui/hooks/useProfile";
 
 const MainPage: React.FC = () => {
     const {
@@ -19,10 +20,13 @@ const MainPage: React.FC = () => {
         isLoading,
     } = useMain();
 
+    const {
+        formatedBalance,
+    } = useProfile();
+
     const { goToHistory, goToProfile } = useAppBar();
 
-    // ✅ Mock de balance - cambiar por datos reales del hook
-    const userBalance = 0.0;
+    const userBalance = formatedBalance ? parseFloat(formatedBalance.replace(/,/g, '')) : 0.1;
 
     if (isAccountOptionsLoading || isLoading) {
         return (
@@ -127,6 +131,7 @@ const MainPage: React.FC = () => {
 
                         {/* Botón Comprar */}
                         <button
+                            disabled={true}
                             className="
                                 flex flex-col items-center justify-center gap-2
                                 w-20 h-20
@@ -140,6 +145,7 @@ const MainPage: React.FC = () => {
                                 active:scale-95
                                 border-0 outline-none
                                 focus:ring-4 focus:ring-blue-100
+                                opacity-50 cursor-not-allowed
                             "
                             onClick={onHandleBuy}
                         >
