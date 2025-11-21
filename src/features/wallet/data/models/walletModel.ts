@@ -10,3 +10,4 @@ export type SendCryptoResponse = {
     transactionHash: string;
     success: boolean;
 }
+

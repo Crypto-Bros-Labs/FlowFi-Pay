@@ -1,3 +1,4 @@
+
 export interface UpdateUserData {
     userUuid: string;
     phone: string;
@@ -11,7 +12,9 @@ export interface UserDataResponse {
     fullName: string;
     email: string;
     image: string;
-    walletAddress: string;
+    normalizedPublicKey: string;
+    balance: string;
+    formatBalance: string;
 }
 
 export interface UserData {

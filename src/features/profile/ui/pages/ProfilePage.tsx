@@ -1,18 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import AppHeader from "../../../../shared/components/AppHeader";
 import blueUser from '/illustrations/blueuser.png';
 import TileApp from "../../../../shared/components/TileApp";
-import { BiChevronRight, BiEdit, BiTrash, BiCheck, BiX } from "react-icons/bi";
+import { BiChevronRight, BiEdit, BiTrash, BiCheck, BiX, BiCopy } from "react-icons/bi";
 import { useAccountOptions } from "../../../../shared/hooks/useAccountOptions";
 import ComboBoxApp from "../../../../shared/components/ComboBoxApp";
 import { useProfile } from "../hooks/useProfile";
+import { formatCryptoAddressCustom } from "../../../../shared/utils/cryptoUtils";
 
 const ProfilePage: React.FC = () => {
     const {
-        walletAddresses,
-        walletComboBoxOptions,
-        selectedWalletAddress,
-        onWalletSelect,
         bankAccounts,
         bankComboBoxOptions,
         selectedBankAccount,
@@ -37,7 +34,21 @@ const ProfilePage: React.FC = () => {
         handleCancelNameEdit,
         isLoadingUserData,
         isUploadingImage,
+        walletAddress,
     } = useProfile();
+
+    const [isCopied, setIsCopied] = useState(false);
+
+
+    const handleCopyAddress = () => {
+        navigator.clipboard.writeText(walletAddress);
+        setIsCopied(true);
+
+        // ✅ Resetear el estado después de 2 segundos
+        setTimeout(() => {
+            setIsCopied(false);
+        }, 2000);
+    };
 
     if (isAccountOptionsLoading || isLoadingUserData) {
         return (
@@ -168,6 +179,40 @@ const ProfilePage: React.FC = () => {
             {/* Divider */}
             <div className="border-t border-gray-700 mx-2 my-4"></div>
 
+            {/* ✅ SECCIÓN DE DIRECCIÓN - Tile con Copy */}
+            <div className="flex flex-col items-center mb-6 px-2">
+                <div className="w-full">
+                    <TileApp
+                        title="Tu dirección"
+                        subtitle={formatCryptoAddressCustom(walletAddress, 20, 4)}
+                        titleSize="base"
+                        subtitleSize="xs"
+                        trailing={
+                            <button
+                                onClick={handleCopyAddress}
+                                className="
+                                    flex items-center justify-center
+                                    w-10 h-10
+                                    rounded-full
+                                    bg-blue-100
+                                    hover:bg-blue-200
+                                    transition-colors duration-200
+                                    cursor-pointer
+                                    flex-shrink-0
+                                "
+                                title="Copiar dirección"
+                            >
+                                {isCopied ? (
+                                    <BiCheck className="w-5 h-5 text-green-600" />
+                                ) : (
+                                    <BiCopy className="w-5 h-5 text-blue-600" />
+                                )}
+                            </button>
+                        }
+                    />
+                </div>
+            </div>
+            {/* 
             <div className="mb-6 px-2">
                 <div className="text-sm font-bold text-[#020F1E] truncate mb-2">
                     Wallet
@@ -204,6 +249,7 @@ const ProfilePage: React.FC = () => {
                     </button>
                 )}
             </div>
+            */}
 
             <div className="mb-6 px-2">
                 <div className="text-sm font-bold text-[#020F1E] truncate mb-2">
