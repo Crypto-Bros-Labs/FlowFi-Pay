@@ -25,25 +25,25 @@ const LandingPage: React.FC = () => {
     const steps = [
         "1. Crea tu cuenta",
         "2. Comienza a cobrar o transaccionar",
-        "3. Realiza KYC unicamente al interactuar con tu banco"
+        "3. Realiza KYC/KYB unicamente al interactuar con tu banco"
     ];
 
     const features = [
         {
-            title: "Pago en cripto",
-            description: "Tu cliente paga con USDC (mostrar QR o billetera)."
+            title: "Compra y vende USDC con pesos en minutos",
+            description: "De forma sencilla por medio de transferencia SPEI"
         },
         {
-            title: "Validación",
-            description: "Procesamos la transacción on-chain."
+            title: "Acepta pagos con USDC",
+            description: "Cobra en tienda física o genera links de pago"
         },
         {
-            title: "Conversión",
-            description: "Automáticamente a pesos al tipo de cambio actual."
+            title: "Envía y recibe pagos internacionales",
+            description: "Realiza transacciones a cualquier parte del mundo 24/7"
         },
         {
-            title: "Depósito",
-            description: "SPEI directo a tu cuenta bancaria."
+            title: "Genera rendimientos sobre tu USDC",
+            description: "Pon a trabajar tu dinero y ve como crece día a día"
         }
     ];
 
