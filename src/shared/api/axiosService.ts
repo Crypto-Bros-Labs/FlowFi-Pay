@@ -24,6 +24,7 @@ axiosInstance.interceptors.response.use(
         return response;
     },
     (error) => {
+
         // Si hay un error 401 (Unauthorized)
         if (error.response?.status === 401) {
             // Limpiar todo el localStorage

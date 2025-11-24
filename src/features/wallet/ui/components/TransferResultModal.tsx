@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Check, X } from "lucide-react";
 import ButtonApp from "../../../../shared/components/ButtonApp";
 import ModalWrapper from "../../../../shared/components/ModalWrapper";
 import TileApp from "../../../../shared/components/TileApp";
 import type { DynamicToken } from "../hooks/useSelectTokenDynamic";
+import { formatCryptoAddressCustom } from "../../../../shared/utils/cryptoUtils";
+import { BiCheck, BiCopy } from "react-icons/bi";
 
 interface TransferResultModalProps {
     isOpen: boolean;
@@ -24,7 +26,18 @@ const TransferResultModal: React.FC<TransferResultModalProps> = ({
     hashTransfer,
     onClose,
 }) => {
+    const [isCopied, setIsCopied] = useState(false);
+    const handleCopyHash = () => {
+        if (hashTransfer) {
+            navigator.clipboard.writeText(hashTransfer).then(() => {
+                setIsCopied(true);
+                setTimeout(() => setIsCopied(false), 2000);
+            });
+        }
+    }
     if (!isOpen) return null;
+
+
 
     return (
         <ModalWrapper onClose={onClose}>
@@ -40,7 +53,7 @@ const TransferResultModal: React.FC<TransferResultModalProps> = ({
                 </div>
 
                 {/* Content */}
-                <div className="flex flex-col items-center justify-center py-6">
+                <div className="w-full flex flex-col items-center justify-center py-6">
                     {/* Status Icon */}
                     <div className="mb-6">
                         {isSuccess ? (
@@ -112,14 +125,36 @@ const TransferResultModal: React.FC<TransferResultModalProps> = ({
                             {hashTransfer && (
                                 <TileApp
                                     title="Hash"
-                                    titleClassName="text-sm text-[#666666]"
-                                    trailing={
+                                    titleClassName="text-sm text-[#666666] mb-2"
+                                    subtitle={
                                         <code className="text-xs font-mono text-[#020F1E] bg-gray-100 px-2 py-1 rounded break-all">
-                                            {hashTransfer.substring(0, 16)}...
+                                            {formatCryptoAddressCustom(hashTransfer, 16, 4)}
                                         </code>
                                     }
-                                    className="bg-gray-50"
+                                    trailing={
+                                        <button
+                                            onClick={handleCopyHash}
+                                            className="
+                                    flex items-center justify-center
+                                    w-10 h-10
+                                    rounded-full
+                                    bg-blue-100
+                                    hover:bg-blue-200
+                                    transition-colors duration-200
+                                    cursor-pointer
+                                    flex-shrink-0
+                                "
+                                            title="Copiar dirección"
+                                        >
+                                            {isCopied ? (
+                                                <BiCheck className="w-5 h-5 text-green-600" />
+                                            ) : (
+                                                <BiCopy className="w-5 h-5 text-blue-600" />
+                                            )}
+                                        </button>
+                                    }
                                 />
+
                             )}
                         </div>
                     )}

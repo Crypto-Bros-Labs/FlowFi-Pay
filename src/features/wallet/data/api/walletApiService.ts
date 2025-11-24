@@ -5,8 +5,8 @@ class WalletApiService {
     async sendTransaction(request: SendCryptoRequest): Promise<SendCryptoResponse> {
         const response = await axiosInstance.post('/wallet/transfer', request);
         return {
-            transactionURL: response.data.data.transactionURL,
-            transactionHash: response.data.data.transactionHash,
+            transactionURL: response.data.data.data.transactionURL,
+            transactionHash: response.data.data.data.transactionHash,
             success: response.data.success
         };
     }
