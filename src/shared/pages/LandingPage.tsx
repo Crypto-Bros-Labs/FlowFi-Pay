@@ -24,8 +24,8 @@ const LandingPage: React.FC = () => {
 
     const steps = [
         "1. Crea tu cuenta",
-        "2. Realiza el KYC",
-        "3. Comienza a cobrar"
+        "2. Comienza a cobrar o transaccionar",
+        "3. Realiza KYC unicamente al interactuar con tu banco"
     ];
 
     const features = [
