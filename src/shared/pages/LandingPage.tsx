@@ -159,7 +159,7 @@ const LandingPage: React.FC = () => {
                         {/* How It Works */}
                         <div>
                             <h2 className="text-3xl md:text-5xl xl:text-6xl font-bold text-slate-900 mb-16 text-center lg:text-left">
-                                Como funciona <span className="text-blue-600">FlowFi Pay</span>
+                                Compra USDC, cobra y genera rendimientos en <span className="text-blue-600">FlowFi Pay</span>
                             </h2>
 
                             <div className="grid xl:grid-cols-2 gap-16 items-center">
@@ -205,7 +205,7 @@ const LandingPage: React.FC = () => {
                         {/* Product Section */}
                         <div>
                             <h2 className="text-3xl md:text-5xl xl:text-6xl font-bold text-slate-900 mb-16 text-center lg:text-left">
-                                Nuestro producto
+                                Beneficios de usar FlowFi Pay para tus cobros
                             </h2>
 
                             <div className="grid md:grid-cols-2 gap-12">
