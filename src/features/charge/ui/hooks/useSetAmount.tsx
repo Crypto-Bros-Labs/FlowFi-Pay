@@ -236,7 +236,7 @@ export const useSetAmount = () => {
             console.log('Currency:', selectedCurrency);
             console.log('Token:', selectedToken);
 
-            const userUuid = (await userRepository.getCurrentUserData())?.userUuid || 'default-uuid';
+            // const userUuid = (await userRepository.getCurrentUserData())?.userUuid || 'default-uuid';
             const bankAccountUuid = (await userRepository.getBankAccountUuid()) || 'default-bank-account';
 
             if (bankAccountUuid === 'default-bank-account') {
@@ -250,39 +250,51 @@ export const useSetAmount = () => {
                 return;
             }
 
-            const response = await sellRepository.createOffRamp({
-                userUuid: userUuid,
-                providerUuid: '237b0541-5521-4fda-8bba-05ee4d484795',
-                tokenNetworkUuid: selectedToken?.uuid || 'default-network',
-                fiatCurrencyUuid: '92b61c69-a81f-475a-9bc7-37c85efc74c6',
-                userBankInformationUuid: bankAccountUuid,
-                amount: parseFloat(amountToken) || 0,
+            console.log('Orden de pago fija');
+            tokenRepository.setSelectedToken(selectedToken);
+            sellRepository.setAmounts({
+                amountFiat,
+                amountToken
             })
+            sellRepository.setAmountFiat(amountFiat);
+            sellRepository.setAmountToken(amountToken);
+            openSellModal();
 
-            if (response.kycUrl !== null) {
-                setKycUrl(response.kycUrl);
-                if (response.kycUrl) {
-                    window.location.href = response.kycUrl;
-                }
-            } else if (response.success && response.kycUrl === null) {
-                console.log('Off-ramp created successfully, no KYC required');
-                tokenRepository.setSelectedToken(selectedToken);
-                sellRepository.setAmounts({
-                    amountFiat,
-                    amountToken
-                })
-                sellRepository.setAmountFiat(amountFiat);
-                sellRepository.setAmountToken(amountToken);
-                openSellModal();
-            } else {
-                console.error('Error creating off-ramp:', response);
-                setQuoteError('Error al crear off-ramp');
-                showDialog({
-                    title: 'Error al crear off-ramp',
-                    subtitle: 'Verifica que no tengas una transacción pendiente.',
-                });
-                return;
-            }
+
+
+            /*  const response = await sellRepository.createOffRamp({
+                 userUuid: userUuid,
+                 providerUuid: '237b0541-5521-4fda-8bba-05ee4d484795',
+                 tokenNetworkUuid: selectedToken?.uuid || 'default-network',
+                 fiatCurrencyUuid: '92b61c69-a81f-475a-9bc7-37c85efc74c6',
+                 userBankInformationUuid: bankAccountUuid,
+                 amount: parseFloat(amountToken) || 0,
+             })
+ 
+             if (response.kycUrl !== null) {
+                 setKycUrl(response.kycUrl);
+                 if (response.kycUrl) {
+                     window.location.href = response.kycUrl;
+                 }
+             } else if (response.success && response.kycUrl === null) {
+                 console.log('Off-ramp created successfully, no KYC required');
+                 tokenRepository.setSelectedToken(selectedToken);
+                 sellRepository.setAmounts({
+                     amountFiat,
+                     amountToken
+                 })
+                 sellRepository.setAmountFiat(amountFiat);
+                 sellRepository.setAmountToken(amountToken);
+                 openSellModal();
+             } else {
+                 console.error('Error creating off-ramp:', response);
+                 setQuoteError('Error al crear off-ramp');
+                 showDialog({
+                     title: 'Error al crear off-ramp',
+                     subtitle: 'Verifica que no tengas una transacción pendiente.',
+                 });
+                 return;
+             } */
         } catch (error) {
             console.error('Error processing amount:', error);
         } finally {
@@ -323,7 +335,7 @@ export const useSetAmount = () => {
             setAmountToken(initialAmountToken);
 
             if (initialAmountFiat && initialAmountFiat !== '0') {
-                setAmountFiat(initialAmountFiat);
+                setAmountFiat('0');
             } else {
                 setAmountFiat('0');
             }

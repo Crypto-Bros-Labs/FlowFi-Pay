@@ -6,6 +6,7 @@ import TileApp from "../../../../shared/components/TileApp";
 import type { DynamicToken } from "../hooks/useSelectTokenDynamic";
 import { formatCryptoAddressCustom } from "../../../../shared/utils/cryptoUtils";
 import { BiCheck, BiCopy } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 
 interface TransferResultModalProps {
     isOpen: boolean;
@@ -27,6 +28,7 @@ const TransferResultModal: React.FC<TransferResultModalProps> = ({
     onClose,
 }) => {
     const [isCopied, setIsCopied] = useState(false);
+    const navigate = useNavigate();
     const handleCopyHash = () => {
         if (hashTransfer) {
             navigator.clipboard.writeText(hashTransfer).then(() => {
@@ -34,6 +36,10 @@ const TransferResultModal: React.FC<TransferResultModalProps> = ({
                 setTimeout(() => setIsCopied(false), 2000);
             });
         }
+    }
+    const handleAcept = () => {
+        onClose();
+        navigate('/main');
     }
     if (!isOpen) return null;
 
@@ -167,7 +173,7 @@ const TransferResultModal: React.FC<TransferResultModalProps> = ({
                         textSize="text-sm"
                         paddingVertical="py-3"
                         isMobile={true}
-                        onClick={onClose}
+                        onClick={handleAcept}
                     />
                 </div>
             </div>

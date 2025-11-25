@@ -104,7 +104,8 @@ export const useSelectToken = () => {
 
 
             const fetchedTokens = await fetchTokens();
-            setTokens(fetchedTokens);
+            const filteredTokens = fetchedTokens.filter(token => token.network !== 'Worldcoin');
+            setTokens(filteredTokens);
 
         } catch (error) {
             setTokensError(error instanceof Error ? error.message : 'Error loading tokens');

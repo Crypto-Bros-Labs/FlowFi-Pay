@@ -5,21 +5,37 @@ import type { Token } from '../../data/local/tokenLocalService';
 import sellRepository from '../../data/repositories/sellRepository';
 import historyRepository from '../../../history/data/repositories/historyRepository';
 import tokenRepository from '../../data/repositories/tokenRepository';
+import { useProfile } from '../../../profile/ui/hooks/useProfile';
 
 export const useSellInfo = () => {
     const [walletData, setWalletData] = useState<SellData | null>(null);
     const [amounts, setAmounts] = useState<Amounts | null>(null);
     const [selectedToken, setSelectedToken] = useState<Token | null>(null);
     const [isCancelLoading, setIsCancelLoading] = useState<boolean>(false);
+    const {
+        walletAddress,
+        isLoadingUserData
+    } = useProfile();
 
+    // ✅ Esperar a que walletAddress esté disponible
     useEffect(() => {
         const fetchWalletData = async () => {
+            // ✅ No ejecutar si aún está cargando
+            if (isLoadingUserData || !walletAddress) {
+                return;
+            }
+
             try {
-                const offRampData = sellRepository.getSellData();
+                const sellData = {
+                    kycUrl: 'https://example.com/kyc',
+                    destinationWalletAddress: walletAddress,
+                    id: 'sell123'
+                };
+
                 const amountsData = sellRepository.getAmounts();
                 const token = tokenRepository.getSelectedToken();
 
-                setWalletData(offRampData);
+                setWalletData(sellData);
                 setAmounts(amountsData);
                 setSelectedToken(token);
             } catch (error) {
@@ -28,7 +44,7 @@ export const useSellInfo = () => {
         };
 
         fetchWalletData();
-    }, [walletData, amounts, selectedToken]);
+    }, [walletAddress, isLoadingUserData]);
 
     // Función para generar QR code data
     const generateQRData = () => {

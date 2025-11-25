@@ -16,9 +16,11 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose, onContinue, toke
     const {
         qrData,
         amounts,
-        cancelTransaction,
+        /*cancelTransaction,
         isCancelLoading,
         walletData,
+                */
+
     } = useSellInfo();
 
     return (
@@ -106,7 +108,7 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose, onContinue, toke
                     onClick={onContinue}
                 />
 
-                {/* Botón cancelar */}
+                {/* Botón cancelar 
                 <ButtonApp
                     text="Cancelar"
                     textSize="text-sm"
@@ -121,6 +123,7 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose, onContinue, toke
                         }
                     }}
                 />
+                */}
             </div>
         </div>
     );
