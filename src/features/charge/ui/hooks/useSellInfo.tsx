@@ -28,7 +28,7 @@ export const useSellInfo = () => {
             try {
                 const sellData = {
                     kycUrl: 'https://example.com/kyc',
-                    destinationWalletAddress: walletAddress,
+                    destinationWalletAddress: `ethereum:${walletAddress}`,
                     id: 'sell123'
                 };
 
