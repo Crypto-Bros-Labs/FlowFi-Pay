@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
                             FlowFi Pay
                         </h3>
                         <p className="text-gray-300 text-center md:text-left">
-                            Made by CB Labs team. Built in Starknet. 
+                            Made by CB Labs team. Built on Starknet. Supported by a Starknet Seed Grant.
                         </p>
                     </div>
 
