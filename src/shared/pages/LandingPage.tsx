@@ -229,10 +229,10 @@ const LandingPage: React.FC = () => {
                         <div className="space-y-20">
                             <div className="text-center lg:text-left">
                                 <h2 className="text-3xl md:text-5xl xl:text-6xl font-bold text-slate-900 mb-8">
-                                    ¿Y si no se nada de cripto?
+                                    Las herramientas financieras que necesitas en una misma plataforma
                                 </h2>
                                 <p className="text-lg md:text-xl lg:text-2xl xl:text-3xl text-slate-600 mx-auto lg:mx-0">
-                                    No necesitas saberlo. Nosotros nos encargamos. Tú solo cobras y <span className='text-blue-600 font-semibold'>recibes tu dinero.</span>
+                                    Pensada en startups, negocios, equipos y freelancers que realizan transacciones internacionales y quieren proteger su dinero.
                                 </p>
                             </div>
 
@@ -262,7 +262,7 @@ const LandingPage: React.FC = () => {
                             Únete a la <span className="text-blue-200">waitlist</span>
                         </h2>
                         <p className="text-lg md:text-xl lg:text-2xl mb-12 text-blue-100 max-w-2xl mx-auto">
-                            Sé de los primeros en acceder a FlowFi Pay y revoluciona la forma en que recibes pagos.
+                            Sé de los primeros en acceder a FlowFi Pay y revoluciona la forma en que realizas transacciones internacionales.
                         </p>
 
                         {/* Formulario */}
