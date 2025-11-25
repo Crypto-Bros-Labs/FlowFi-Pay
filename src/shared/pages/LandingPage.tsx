@@ -34,8 +34,8 @@ const LandingPage: React.FC = () => {
             description: "De forma sencilla por medio de transferencia SPEI"
         },
         {
-            title: "Acepta pagos con USDC",
-            description: "Cobra en tienda física o genera links de pago"
+            title: "Acepta pagos en USDC",
+            description: "Cobra en tienda física o genera links de pago y envíalos a donde quieras"
         },
         {
             title: "Envía y recibe pagos internacionales",
@@ -49,20 +49,20 @@ const LandingPage: React.FC = () => {
 
     const products = [
         {
-            title: "Dashboard",
-            description: "Monitorea pagos y conversiones."
+            title: "Wallet de custodia propia",
+            description: "Control total sobre tu dinero."
         },
         {
-            title: "Conversión automática",
-            description: "De USDC (u otras criptos) a pesos."
+            title: "0.0% de comisión por cobrar, envíar o recibir",
+            description: "La comisión por compra-venta de USDC con pesos es de 1.5%."
         },
         {
-            title: "Reportes contables",
-            description: "Descarga registros para tu contabilidad."
+            title: "Dashboard de estadísticas",
+            description: "Monitorea tus pagos y conversiones en tiempo real."
         },
         {
-            title: "Soporte multicadena",
-            description: "Acepta pagos en la red de Starknet y Base. Más opciones muy pronto."
+            title: "Administra a tu equipo",
+            description: "Agrega miembros y define roles."
         }
     ];
 
@@ -76,7 +76,7 @@ const LandingPage: React.FC = () => {
                         {/* Texto - Ocupa 8 columnas en desktop */}
                         <div className="lg:col-span-8 text-center lg:text-left space-y-6">
                             <h1 className="text-4xl md:text-6xl xl:text-7xl font-bold text-slate-900 leading-tight">
-                                Acepta pagos con cripto. Recibe Pesos. <span className="text-blue-600">Todo sin friccion.</span>
+                                Todas las herramientas financieras que necesitas <span className="text-blue-600">en una misma plataforma.</span>
                             </h1>
                             <p className="text-lg md:text-xl lg:text-2xl text-slate-600 max-w-2xl mx-auto lg:mx-0">
                                 Permite que tus clientes te paguen en <span className="text-blue-600 font-semibold">USDC</span>. Nosotros nos encargamos del resto.
