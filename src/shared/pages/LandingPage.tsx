@@ -54,7 +54,7 @@ const LandingPage: React.FC = () => {
         },
         {
             title: "0.0% de comisión por cobrar, envíar o recibir",
-            description: "La comisión por compra-venta de USDC con pesos es de 1.5%."
+            description: "Sin comisiones ocultas, solo pagas por la compra-venta de USDC con pesos."
         },
         {
             title: "Dashboard de estadísticas",
@@ -62,7 +62,7 @@ const LandingPage: React.FC = () => {
         },
         {
             title: "Administra a tu equipo",
-            description: "Agrega miembros y define roles."
+            description: "Agrega miembros y define roles y capacidades."
         }
     ];
 
