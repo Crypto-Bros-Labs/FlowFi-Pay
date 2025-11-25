@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
                 <div className="border-t border-gray-700 mt-8 pt-6">
                     <div className="flex flex-col md:flex-row justify-between items-center">
                         <p className="text-gray-400 text-sm">
-                            © 2025 CB Flow Connect. Todos los derechos reservados.
+                            © 2025 CB Labs. Todos los derechos reservados.
                         </p>
 
                     </div>
