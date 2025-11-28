@@ -3,50 +3,22 @@ import { sellApiService } from "../api/sellApiService";
 import type { OffRampData, QuoteData } from "../models/sellModel";
 
 class SellRepository {
-    async createOffRamp(data: OffRampData): Promise<{ success: boolean, kycUrl: string | null }> {
+    async createOffRamp(data: OffRampData): Promise<{ success: boolean, kycUrl: string | null, status: string | null }> {
         try {
             const response = await sellApiService.createOffRamp(data);
             console.log('📨 API Response completa:', response);
-            if (response.details === "SUCCESS") {
-                const sellData = {
-                    kycUrl: response.kycUrl,
-                    destinationWalletAddress: response.destinationWalletAddress,
-                    id: response.id
-                };
-
-                console.log('💾 Intentando guardar:', sellData);
-
-                // Verificar antes de guardar
-                console.log('📝 Datos antes de guardar:', sellLocalService.getSellData());
-
-                sellLocalService.setSellData(sellData);
-
-                // Verificar después de guardar
-                console.log('✅ Datos después de guardar:', sellLocalService.getSellData());
-
-                // Verificar que realmente se guardó
-                const verification = sellLocalService.getSellData();
-                if (!verification) {
-                    console.error('❌ ERROR: Los datos NO se guardaron correctamente');
+            if (response.kycStatus === "APPROVED") {
+                if (response.successTransfer) {
+                    return { success: true, kycUrl: null, status: response.kycStatus };
                 } else {
-                    console.log('✅ CONFIRMADO: Datos guardados correctamente:', verification);
+                    return { success: false, kycUrl: null, status: response.kycStatus };
                 }
-
-
-                return { success: true, kycUrl: null };
+            } else {
+                return { success: false, kycUrl: response.kycUrl, status: response.kycStatus };
             }
-
-            if (response.details === "KYC_REQUIRED") {
-                sellLocalService.setSellData({
-                    kycUrl: response.kycUrl,
-                    destinationWalletAddress: response.destinationWalletAddress
-                });
-                return { success: true, kycUrl: response.kycUrl };
-            }
-            return { success: false, kycUrl: response.kycUrl || null };
         } catch (error) {
             console.error('Failed to create off-ramp:', error);
-            return { success: false, kycUrl: null };
+            return { success: false, kycUrl: null, status: null };
         }
     }
 

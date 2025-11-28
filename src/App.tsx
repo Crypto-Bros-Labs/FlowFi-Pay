@@ -16,140 +16,143 @@ import SetAmountDynamicPage from './features/wallet/ui/pages/SetAmountDynamicPag
 import SelectTokenDynamicPage from './features/wallet/ui/pages/SelectTokenDynamicPage';
 import ReceivePage from './features/wallet/ui/pages/ReceivePage';
 import QRScannerPage from './features/wallet/ui/pages/QRScannerPage';
+import { CurrencyProvider } from './shared/contexts/CurrencyProvider';
 
 
 function App() {
   return (
     <Router>
-      <DialogProvider>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
+      <CurrencyProvider>
+        <DialogProvider>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
 
-          {/* Rutas públicas (redirigen si está autenticado) */}
-          <Route
-            path="/login"
-            element={
-              <ProtectedRoute requireAuth={false}>
-                <LoginPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/otp"
-            element={
-              <ProtectedRoute requireAuth={false}>
-                <OtpPage />
-              </ProtectedRoute>
-            }
-          />
+            {/* Rutas públicas (redirigen si está autenticado) */}
+            <Route
+              path="/login"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <LoginPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/otp"
+              element={
+                <ProtectedRoute requireAuth={false}>
+                  <OtpPage />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Rutas privadas */}
-          <Route path='/signup'
-            element={
-              <ProtectedRoute>
-                <SignUpPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/select-token'
-            element={
-              <ProtectedRoute>
-                <SelectTokenPage />
-              </ProtectedRoute>
-            }
-          />
+            {/* Rutas privadas */}
+            <Route path='/signup'
+              element={
+                <ProtectedRoute>
+                  <SignUpPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/select-token'
+              element={
+                <ProtectedRoute>
+                  <SelectTokenPage />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path='/add-account'
-            element={
-              <ProtectedRoute>
-                <AddAccountPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path='/add-wallet'
-            element={
-              <ProtectedRoute>
-                <AddWalletPage />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path='/add-account'
+              element={
+                <ProtectedRoute>
+                  <AddAccountPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path='/add-wallet'
+              element={
+                <ProtectedRoute>
+                  <AddWalletPage />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/set-amount"
-            element={
-              <ProtectedRoute >
-                <SetAmountPage />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/set-amount"
+              element={
+                <ProtectedRoute >
+                  <SetAmountPage />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/history"
-            element={
-              <ProtectedRoute >
-                <HistoryPage />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/history"
+              element={
+                <ProtectedRoute >
+                  <HistoryPage />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute >
-                <ProfilePage />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute >
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/main"
-            element={
-              <ProtectedRoute >
-                <MainPage />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/main"
+              element={
+                <ProtectedRoute >
+                  <MainPage />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/set-amount-dynamic"
-            element={
-              <ProtectedRoute>
-                <SetAmountDynamicPage />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/set-amount-dynamic"
+              element={
+                <ProtectedRoute>
+                  <SetAmountDynamicPage />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/select-token-dynamic"
-            element={
-              <ProtectedRoute>
-                <SelectTokenDynamicPage />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/select-token-dynamic"
+              element={
+                <ProtectedRoute>
+                  <SelectTokenDynamicPage />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="wallet/qr-scanner"
-            element={
-              <ProtectedRoute>
-                <QRScannerPage />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="wallet/qr-scanner"
+              element={
+                <ProtectedRoute>
+                  <QRScannerPage />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/receive"
-            element={
-              <ProtectedRoute>
-                <ReceivePage />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </DialogProvider>
+            <Route
+              path="/receive"
+              element={
+                <ProtectedRoute>
+                  <ReceivePage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </DialogProvider>
+      </CurrencyProvider>
     </Router>
   );
 }

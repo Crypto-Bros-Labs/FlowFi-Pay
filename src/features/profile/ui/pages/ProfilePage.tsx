@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import AppHeader from "../../../../shared/components/AppHeader";
 import blueUser from '/illustrations/blueuser.png';
 import TileApp from "../../../../shared/components/TileApp";
-import { BiChevronRight, BiEdit, BiTrash, BiCheck, BiX, BiCopy } from "react-icons/bi";
+import { BiChevronRight, BiEdit, BiTrash, BiCheck, BiX, BiCopy, BiMoney } from "react-icons/bi";
 import { useAccountOptions } from "../../../../shared/hooks/useAccountOptions";
 import ComboBoxApp from "../../../../shared/components/ComboBoxApp";
 import { useProfile } from "../hooks/useProfile";
 import { formatCryptoAddressCustom } from "../../../../shared/utils/cryptoUtils";
+import TileAppMenu, { type MenuOption } from "../../../../shared/components/TileAppMenu";
+import { useCurrency } from "../../../../shared/hooks/useCurrency";
 
 const ProfilePage: React.FC = () => {
     const {
@@ -37,6 +39,8 @@ const ProfilePage: React.FC = () => {
         walletAddress,
     } = useProfile();
 
+    const { currency, setCurrency, availableCurrencies } = useCurrency();
+
     const [isCopied, setIsCopied] = useState(false);
 
 
@@ -49,6 +53,20 @@ const ProfilePage: React.FC = () => {
             setIsCopied(false);
         }, 2000);
     };
+
+    const [selectedType, setSelectedType] = useState<string | null>(currency);
+
+    // ✅ Definir opciones del menú de monedas
+    const currencyMenuOptions: MenuOption[] = availableCurrencies.map((curr) => ({
+        id: curr,
+        label: curr,
+        icon: <BiMoney className="w-5 h-5" />,
+    }));
+
+    const onCurrencySelect = (selectedId: string) => {
+        setSelectedType(selectedId);
+        setCurrency(availableCurrencies.find(c => c === selectedId) || 'USD');
+    }
 
     if (isAccountOptionsLoading || isLoadingUserData) {
         return (
@@ -163,16 +181,14 @@ const ProfilePage: React.FC = () => {
             </div>
 
             <div className="flex flex-col p-2 mt-2">
-                <TileApp
-                    title="Moneda a cobrar"
+                <TileAppMenu
+                    title="Moneda"
+                    subtitle="Moneda de preferencia"
                     titleSize="lg"
-                    disabled={true}
-                    trailing={
-                        <div className="flex items-center gap-1">
-                            <span className="text-base font-medium text-[#666666]">MXN</span>
-                            <BiChevronRight className="w-8 h-8" />
-                        </div>
-                    }
+                    menuOptions={currencyMenuOptions}
+                    onMenuSelect={onCurrencySelect}
+                    selectedMenuId={selectedType}
+
                 />
             </div>
 

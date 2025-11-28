@@ -1,10 +1,14 @@
 import type { BankAccount } from "../components/SellSection";
 import type { DynamicToken } from "./useSelectTokenDynamic";
 import { useState, useCallback, useMemo, useEffect } from 'react';
+import { Check } from "lucide-react";
 import { walletRepository } from '../../data/repositories/walletRepository';
-import sellRepository from "../../../charge/data/repositories/sellRepository";
+// import sellRepository from "../../../charge/data/repositories/sellRepository";
 import { useDialog } from "../../../../shared/hooks/useDialog";
 import userRepository from "../../../login/data/repositories/userRepository";
+import { useCurrency } from "../../../../shared/hooks/useCurrency";
+import { useNavigate } from "react-router-dom";
+import sellRepository from "../../../charge/data/repositories/sellRepository";
 
 export type TransactionType = 'transfer' | 'buy' | 'sell';
 export type CurrencyMode = 'fiat' | 'crypto';
@@ -23,7 +27,7 @@ export interface SetAmountDynamicPageParams {
     redirectPath?: string;
 }
 
-const MXN_UUID = '92b61c69-a81f-475a-9bc7-37c85efc74c6';
+// const MXN_UUID = '92b61c69-a81f-475a-9bc7-37c85efc74c6';
 
 export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: TransactionType) => {
     const [amountFiat, setAmountFiat] = useState<string>('0');
@@ -38,7 +42,8 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
     });
     const [isQuoteLoading, setIsQuoteLoading] = useState(false);
     const [quoteError, setQuoteError] = useState<string | null>(null);
-    const [editingMode, setEditingMode] = useState<CurrencyMode>('fiat');
+    const { currency, usdToMxnRate, mxnToUsdRate } = useCurrency();
+    const [editingMode, setEditingMode] = useState<CurrencyMode>(currency === 'USD' ? 'crypto' : 'fiat');
 
     // ✅ Estados para manejo de errores y respuesta de transferencia
     const [transferError, setTransferError] = useState<string>('');
@@ -46,6 +51,10 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
     const [isTransferLoading, setIsTransferLoading] = useState(false);
     const [showModalTransferResult, setShowModalTransferResult] = useState(false);
     const { showDialog } = useDialog();
+    const navigate = useNavigate();
+
+    // Estado para retirar 
+    const [kycUrl, setKycUrl] = useState<string | null>(null);
 
 
     const selectedCurrency = useMemo(() => ({
@@ -73,7 +82,7 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
             setQuoteError(null);
 
             try {
-                const response = await sellRepository.getQuote({
+                /*const response = await sellRepository.getQuote({
                     providerUuid: '237b0541-5521-4fda-8bba-05ee4d484795',
                     fromUuuid: token.id || '',
                     toUuid: MXN_UUID,
@@ -86,6 +95,10 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
                     setQuoteError('Error obteniendo cotización');
                     setAmountToken('0.00');
                 }
+                    */
+                await new Promise(resolve => setTimeout(resolve, 500));
+                const quote = numericAmount * mxnToUsdRate;
+                setAmountToken(quote.toFixed(6));
             } catch (error) {
                 console.error('Error fetching quote:', error);
                 setQuoteError('Error obteniendo cotización');
@@ -104,6 +117,7 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
             setQuoteError(null);
 
             try {
+                /*
                 const response = await sellRepository.getQuote({
                     providerUuid: '237b0541-5521-4fda-8bba-05ee4d484795',
                     fromUuuid: token.id || '',
@@ -116,7 +130,10 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
                 } else {
                     setQuoteError('Error obteniendo cotización');
                     setAmountFiat('0');
-                }
+                }*/
+                await new Promise(resolve => setTimeout(resolve, 500));
+                const quote = numericAmount * usdToMxnRate;
+                setAmountFiat(quote.toFixed(2));
             } catch (error) {
                 console.error('Error fetching quote:', error);
                 setQuoteError('Error obteniendo cotización');
@@ -125,7 +142,7 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
                 setIsQuoteLoading(false);
             }
         }
-    }, [token.id, editingMode]);
+    }, [editingMode, mxnToUsdRate, usdToMxnRate]);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -362,22 +379,93 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
                 setIsLoading(false);
             }, 300);
         } else if (typeTransaction === 'sell') {
-            if (!selectedBankAccount) {
-                setTransferError('Cuenta bancaria requerida');
-                return;
-            }
+            if (!isValidAmount || isQuoteLoading) return;
 
             setIsLoading(true);
-            setTimeout(() => {
-                console.log('Procesando venta:', {
-                    amountFiat,
-                    amountToken,
-                    bankAccount: selectedBankAccount,
-                });
+            try {
+                console.log('Amount Fiat:', amountFiat);
+                console.log('Amount Token:', amountToken);
+                console.log('Currency:', selectedCurrency);
+                console.log('Token:', token);
+
+                const userUuid = (await userRepository.getCurrentUserData())?.userUuid || 'default-uuid';
+                const bankAccountUuid = (await userRepository.getBankAccountUuid()) || 'default-bank-account';
+
+                if (bankAccountUuid === 'default-bank-account') {
+                    showDialog({
+                        title: 'Cuenta bancaria requerida',
+                        subtitle: 'Por favor, agrega una cuenta bancaria antes de continuar.',
+                        onNext: () => navigate('/add-account'),
+                        nextText: 'Agregar',
+                        backText: 'Cancelar',
+                    });
+                    return;
+                }
+
+                const response = await sellRepository.createOffRamp({
+                    userUuid: userUuid,
+                    providerUuid: '237b0541-5521-4fda-8bba-05ee4d484795',
+                    tokenNetworkUuid: token?.id || 'default-network',
+                    fiatCurrencyUuid: '92b61c69-a81f-475a-9bc7-37c85efc74c6',
+                    userBankInformationUuid: bankAccountUuid,
+                    amount: parseFloat(amountToken) || 0,
+                })
+
+                if (response.kycUrl !== null) {
+                    setKycUrl(response.kycUrl);
+                    if (response.status === 'UNKNOWN') {
+                        showDialog({
+                            title: 'KYC Requerido',
+                            subtitle: 'No has iniciado tu proceso de KYC o este está incompleto. Por favor, completa tu KYC para continuar con el retiro.',
+                            onNext: () => window.open(kycUrl!, '_blank', 'noopener,noreferrer'),
+                            nextText: 'Iniciar KYC',
+                            backText: 'Cancelar',
+                        });
+                        return;
+                    } else if (response.status === 'REVIEW') {
+                        showDialog({
+                            title: 'KYC en revisión',
+                            subtitle: 'Tu proceso de KYC está en revisión. Por favor, espera a que sea aprobado para continuar con el retiro.',
+                            nextText: 'Aceptar',
+                            hideBack: true,
+                        });
+                        return;
+                    } else if (response.status === 'DECLINED') {
+                        showDialog({
+                            title: 'KYC Rechazado',
+                            subtitle: 'Tu proceso de KYC ha sido rechazado. Por favor, vuelve a intentarlo para continuar con el retiro. si necesitas ayuda, contacta al soporte.',
+                            onNext: () => window.open(kycUrl!, '_blank', 'noopener,noreferrer'),
+                            nextText: 'Reintentar KYC',
+                            backText: 'Cancelar',
+                        });
+                        return;
+                    }
+                } else if (response.success && response.kycUrl === null) {
+                    showDialog({
+                        title: 'Retiro exitoso',
+                        subtitle: 'Tu retiro ha sido procesado exitosamente. Se acreditará en tu cuenta bancaria en breve.',
+                        hideBack: true,
+                        nextText: 'Aceptar',
+                        icon: <Check className="w-8 h-8 text-green-600" />
+                        ,
+                    });
+                } else {
+                    console.error('Error creating off-ramp:', response);
+                    setQuoteError('Error al crear off-ramp');
+                    showDialog({
+                        title: 'Error al retirar fondos',
+                        subtitle: 'Por el momento no se puede procesar tu solicitud. Inténtalo más tarde.',
+                        hideBack: true,
+                    });
+                    return;
+                }
+            } catch (error) {
+                console.error('Error processing amount:', error);
+            } finally {
                 setIsLoading(false);
-            }, 300);
+            }
         }
-    }, [typeTransaction, transferAddress, showDialog, amountToken, token.id, amountFiat, selectedBankAccount]);
+    }, [typeTransaction, transferAddress, showDialog, amountToken, token, amountFiat, isValidAmount, isQuoteLoading, selectedCurrency, navigate, kycUrl]);
 
     const handleCloseTransferModal = useCallback(() => {
         setShowModalTransferResult(false);

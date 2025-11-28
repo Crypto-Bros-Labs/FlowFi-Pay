@@ -32,9 +32,14 @@ const Dialog: React.FC<DialogProps> = ({
 }) => {
     if (!open) return null;
 
+    // ✅ Determinar si mostrar un botón o dos
+    const showOnlyOneButton = hideBack || hideNext;
+    const buttonText = hideBack ? nextText : backText;
+    const buttonCallback = hideBack ? onNext : onBack;
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center "
-            style={{ background: "rgba(0,0,0,0.5)" }} >
+        <div className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{ background: "rgba(0,0,0,0.5)" }}>
             <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 px-6 py-10 relative flex flex-col items-center">
                 {/* Cerrar */}
                 {onClose && (
@@ -65,26 +70,40 @@ const Dialog: React.FC<DialogProps> = ({
                 {/* Contenido extra */}
                 {children}
 
-                {/* Botones */}
-                <div className="flex gap-3 mt-2 w-full">
-                    {!hideBack && (
+                {/* ✅ Botones - Un botón o dos según la config */}
+                <div className={`${showOnlyOneButton ? 'w-full' : 'flex gap-3'} mt-2 w-full`}>
+                    {showOnlyOneButton ? (
+                        // ✅ Un solo botón extendido
                         <ButtonApp
-                            text={backText}
-                            onClick={onBack}
-                            backgroundColor="bg-white"
-                            textColor="text-blue-600"
-                            isMobile={true}
-                            stroke={true}
-                        />
-                    )}
-                    {!hideNext && (
-                        <ButtonApp
-                            text={nextText}
-                            onClick={onNext}
+                            text={buttonText || "Aceptar"}
+                            onClick={buttonCallback}
                             isMobile={true}
                             backgroundColor="bg-[#3E5EF5]"
                             textColor="text-white"
                         />
+                    ) : (
+                        // ✅ Dos botones normales
+                        <>
+                            {!hideBack && (
+                                <ButtonApp
+                                    text={backText}
+                                    onClick={onBack}
+                                    backgroundColor="bg-white"
+                                    textColor="text-blue-600"
+                                    isMobile={true}
+                                    stroke={true}
+                                />
+                            )}
+                            {!hideNext && (
+                                <ButtonApp
+                                    text={nextText}
+                                    onClick={onNext}
+                                    isMobile={true}
+                                    backgroundColor="bg-[#3E5EF5]"
+                                    textColor="text-white"
+                                />
+                            )}
+                        </>
                     )}
                 </div>
             </div>

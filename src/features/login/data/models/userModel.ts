@@ -32,3 +32,8 @@ export interface UserPictureResponse {
     status: string;
     code: number;
 }
+
+export type KycStatusResponse = {
+    status: string;
+    kycDetails: string;
+};

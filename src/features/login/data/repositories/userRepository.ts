@@ -1,6 +1,6 @@
 import userApiService from "../api/userApiService";
 import userLocalService from "../local/userLocalService";
-import type { UserData } from "../models/userModel";
+import type { KycStatusResponse, UserData } from "../models/userModel";
 
 class UserRepository {
     async updateUser(userData: {
@@ -72,6 +72,17 @@ class UserRepository {
         catch (error) {
             console.error('Delete user picture failed:', error);
             return false;
+        }
+    }
+
+    async getKycStatus(userUuid: string): Promise<KycStatusResponse> {
+        try {
+            const response = await userApiService.getKycStatus(userUuid);
+            return response;
+        }
+        catch (error) {
+            console.error('Get KYC status failed:', error);
+            throw error;
         }
     }
 }

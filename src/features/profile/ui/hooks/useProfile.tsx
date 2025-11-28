@@ -21,7 +21,10 @@ export const useProfile = () => {
 
     // Estado wallet 
     const [walletAddress, setWalletAddress] = useState<string>("");
-    const [formatedBalance, setFormatedBalance] = useState<string>("");
+    const [formatedBalance, setFormatedBalance] = useState<number>(0.1);
+
+    // Estado kyc CAPA
+    const [kycStatus, setKycStatus] = useState<string>("");
 
     const [isLoadingUserData, setIsLoadingUserData] = useState<boolean>(true);
 
@@ -35,12 +38,12 @@ export const useProfile = () => {
                 setFullName(userData.data.fullName || "Usuario");
                 setProfileImage(userData.data.image || null);
                 setWalletAddress(userData.data.normalizedPublicKey || "");
-                setFormatedBalance(userData.data.formatBalance || "");
+                setFormatedBalance(parseFloat(userData.data.formatBalance.replace(/,/g, '')) || 0.1);
             } else {
                 setFullName("Usuario");
                 setProfileImage(null);
                 setWalletAddress("");
-                setFormatedBalance("");
+                setFormatedBalance(0.1);
                 console.error('Error fetching user data');
             }
         } catch (error) {
@@ -52,8 +55,21 @@ export const useProfile = () => {
         }
     }
 
+    async function fetchKycStatus() {
+        try {
+            const userUuid = (await userRepository.getCurrentUserData())?.userUuid || 'default-uuid';
+            const kycData = await userRepository.getKycStatus(userUuid);
+
+            setKycStatus(kycData.status || "");
+        } catch (error) {
+            console.error('Error fetching KYC status:', error);
+            setKycStatus("unknown");
+        }
+    }
+
     useEffect(() => {
         fetchUserData();
+        fetchKycStatus();
     }, []);
 
     const logOut = () => {
@@ -298,5 +314,8 @@ export const useProfile = () => {
         // Wallet
         walletAddress,
         formatedBalance,
+
+        // KYC CAPA
+        kycStatus
     };
 };

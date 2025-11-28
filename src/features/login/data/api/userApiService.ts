@@ -1,5 +1,5 @@
 import { axiosInstance, axiosFormDataInstance } from '../../../../shared/api/axiosService';
-import type { UserData, UpdateUserData, UserPictureResponse } from '../models/userModel';
+import type { UserData, UpdateUserData, UserPictureResponse, KycStatusResponse } from '../models/userModel';
 
 class UserService {
     async updateUser(userData: UpdateUserData): Promise<UserData> {
@@ -15,6 +15,11 @@ class UserService {
     async uploadUserPicture(formData: FormData, userUuid: string): Promise<UserPictureResponse> {
         const response = await axiosFormDataInstance.put(`/user/update-picture/${userUuid}`, formData);
         return response.data;
+    }
+
+    async getKycStatus(userUuid: string): Promise<KycStatusResponse> {
+        const response = await axiosInstance.get(`/user/kyc/info/${userUuid}`);
+        return response.data.data;
     }
 
     async deleteUserPicture(userUuid: string): Promise<void> {

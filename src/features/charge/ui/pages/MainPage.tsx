@@ -8,6 +8,7 @@ import AppHeader from "../../../../shared/components/AppHeader";
 import { useMain } from "../hooks/useMain";
 import { useAppBar } from "../../../../shared/hooks/useAppBar";
 import { useProfile } from "../../../profile/ui/hooks/useProfile";
+import { useCurrency } from "../../../../shared/hooks/useCurrency";
 
 const MainPage: React.FC = () => {
     const {
@@ -24,9 +25,13 @@ const MainPage: React.FC = () => {
         formatedBalance,
     } = useProfile();
 
+    const {
+        currency,
+        usdToMxnRate,
+    } = useCurrency();
+
     const { goToHistory, goToProfile } = useAppBar();
 
-    const userBalance = formatedBalance ? parseFloat(formatedBalance.replace(/,/g, '')) : 0.1;
 
     if (isAccountOptionsLoading || isLoading) {
         return (
@@ -69,11 +74,14 @@ const MainPage: React.FC = () => {
                         </p>
                         <div className="flex items-start justify-center gap-1">
                             <span className="text-5xl font-bold text-gray-900">
-                                ${userBalance.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                            </span>
+                                ${
+                                    currency === 'USD' ?
+                                        formatedBalance.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) :
+                                        (formatedBalance * usdToMxnRate).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                                }</span>
                         </div>
                         <p className="text-xs font-medium text-gray-400 mt-2">
-                            MXN
+                            {currency}
                         </p>
                     </div>
                 </div>

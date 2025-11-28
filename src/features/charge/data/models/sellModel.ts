@@ -1,10 +1,8 @@
 export interface OffRampResponse {
+    successTransfer: boolean,
     details: string,
+    kycStatus: string,
     kycUrl: string,
-    destinationWalletAddress: string,
-    cryptoAmount: string,
-    fiatAmount: string
-    id: string,
 }
 
 export interface OffRampData {

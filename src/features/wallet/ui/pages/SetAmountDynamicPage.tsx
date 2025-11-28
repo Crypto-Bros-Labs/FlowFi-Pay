@@ -62,7 +62,7 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
 
     const { formatedBalance } = useProfile();
 
-    const userBalance = formatedBalance ? parseFloat(formatedBalance.replace(/,/g, '')) : availableCrypto;
+    const userBalance = formatedBalance ? formatedBalance : availableCrypto;
 
     // ✅ Manejar dirección escaneada
     useEffect(() => {
