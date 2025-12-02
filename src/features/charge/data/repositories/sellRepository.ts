@@ -1,6 +1,7 @@
 import sellLocalService, { type Amounts, type SellData } from "../local/sellLocalService";
 import { sellApiService } from "../api/sellApiService";
-import type { OffRampData, QuoteData } from "../models/sellModel";
+import type { OffRampData, OffRampResponse, QuoteData } from "../models/sellModel";
+import { AxiosError } from "axios";
 
 class SellRepository {
     async createOffRamp(data: OffRampData): Promise<{ success: boolean, kycUrl: string | null, status: string | null }> {
@@ -18,7 +19,25 @@ class SellRepository {
             }
         } catch (error) {
             console.error('Failed to create off-ramp:', error);
-            return { success: false, kycUrl: null, status: null };
+            // Narrow the AxiosError type to include the expected response shape
+            const axiosErr = error as AxiosError<{ data: OffRampResponse }>;
+            if (axiosErr.response?.status === 403) {
+                const response = axiosErr.response;
+                const data = response?.data?.data as OffRampResponse | undefined;
+                if (data && data.kycStatus === "APPROVED") {
+                    if (data.successTransfer) {
+                        return { success: true, kycUrl: null, status: data.kycStatus };
+                    } else {
+                        return { success: false, kycUrl: null, status: data.kycStatus };
+                    }
+                } else if (data) {
+                    return { success: false, kycUrl: data.kycUrl, status: data.kycStatus };
+                } else {
+                    return { success: false, kycUrl: null, status: null };
+                }
+            } else {
+                return { success: false, kycUrl: null, status: null };
+            }
         }
     }
 

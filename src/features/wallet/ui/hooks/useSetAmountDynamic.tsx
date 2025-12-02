@@ -9,6 +9,7 @@ import userRepository from "../../../login/data/repositories/userRepository";
 import { useCurrency } from "../../../../shared/hooks/useCurrency";
 import { useNavigate } from "react-router-dom";
 import sellRepository from "../../../charge/data/repositories/sellRepository";
+import { useProfile } from "../../../profile/ui/hooks/useProfile";
 
 export type TransactionType = 'transfer' | 'buy' | 'sell';
 export type CurrencyMode = 'fiat' | 'crypto';
@@ -52,6 +53,22 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
     const [showModalTransferResult, setShowModalTransferResult] = useState(false);
     const { showDialog } = useDialog();
     const navigate = useNavigate();
+
+    const { formatedBalance } = useProfile();
+
+    const [errorBalance, setErrorBalance] = useState<string>('');
+
+    useEffect(() => {
+        const numericAmount = parseFloat(amountToken);
+        console.log('Validando balance:', { formatedBalance, numericAmount });
+        if (formatedBalance < numericAmount) {
+            setErrorBalance('Fondos insuficientes, la cantidad excede tu balance disponible.');
+        } else {
+            setErrorBalance('');
+        }
+    }, [amountToken, formatedBalance]);
+
+
 
     // Estado para retirar 
     const [kycUrl, setKycUrl] = useState<string | null>(null);
@@ -413,36 +430,43 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
 
                 if (response.kycUrl !== null) {
                     setKycUrl(response.kycUrl);
-                    if (response.status === 'UNKNOWN') {
-                        showDialog({
-                            title: 'KYC Requerido',
-                            subtitle: 'No has iniciado tu proceso de KYC o este está incompleto. Por favor, completa tu KYC para continuar con el retiro.',
-                            onNext: () => window.open(kycUrl!, '_blank', 'noopener,noreferrer'),
-                            nextText: 'Iniciar KYC',
-                            backText: 'Cancelar',
-                        });
-                        return;
-                    } else if (response.status === 'REVIEW') {
-                        showDialog({
-                            title: 'KYC en revisión',
-                            subtitle: 'Tu proceso de KYC está en revisión. Por favor, espera a que sea aprobado para continuar con el retiro.',
-                            nextText: 'Aceptar',
-                            hideBack: true,
-                        });
-                        return;
-                    } else if (response.status === 'DECLINED') {
-                        showDialog({
-                            title: 'KYC Rechazado',
-                            subtitle: 'Tu proceso de KYC ha sido rechazado. Por favor, vuelve a intentarlo para continuar con el retiro. si necesitas ayuda, contacta al soporte.',
-                            onNext: () => window.open(kycUrl!, '_blank', 'noopener,noreferrer'),
-                            nextText: 'Reintentar KYC',
-                            backText: 'Cancelar',
-                        });
-                        return;
+                    switch (response.status) {
+                        case 'UNKNOWN':
+                            showDialog({
+                                title: 'KYC Requerido',
+                                subtitle: 'No has iniciado tu proceso de KYC o este está incompleto. Por favor, completa tu KYC para continuar con el retiro.',
+                                onNext: () => window.open(`${kycUrl}`, '_blank'),
+                                nextText: 'Iniciar KYC',
+                                backText: 'Cancelar',
+                            });
+                            return;
+
+                        case 'REVIEW':
+                            showDialog({
+                                title: 'KYC en revisión',
+                                subtitle: 'Tu proceso de KYC está en revisión. Por favor, espera a que sea aprobado para continuar con el retiro.',
+                                nextText: 'Aceptar',
+                                hideBack: true,
+                            });
+                            return;
+
+                        case 'DECLINED':
+                            showDialog({
+                                title: 'KYC Rechazado',
+                                subtitle: 'Tu proceso de KYC ha sido rechazado. Por favor, vuelve a intentarlo para continuar con el retiro. Si necesitas ayuda, contacta al soporte.',
+                                onNext: () => window.open(`${kycUrl}`, '_blank'),
+                                nextText: 'Reintentar KYC',
+                                backText: 'Cancelar',
+                            });
+                            return;
+
+                        default:
+                            console.warn('Estado de KYC desconocido:', response.status);
+                            return;
                     }
                 } else if (response.success && response.kycUrl === null) {
                     showDialog({
-                        title: 'Retiro exitoso',
+                        title: 'Transacción exitosa',
                         subtitle: 'Tu retiro ha sido procesado exitosamente. Se acreditará en tu cuenta bancaria en breve.',
                         hideBack: true,
                         nextText: 'Aceptar',
@@ -504,6 +528,6 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
         transferResponse,
         handleCloseTransferModal,
         showModalTransferResult,
-
+        errorBalance,
     };
 };

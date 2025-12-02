@@ -18,7 +18,7 @@ const AvailableCryptoSection: React.FC<AvailableCryptoSectionProps> = ({
             </p>
             <div className="flex items-center justify-center gap-2">
                 <span className="text-base font-semibold text-gray-900">
-                    {amount.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {symbol}
+                    {amount.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 6 })} {symbol}
                 </span>
             </div>
         </div>

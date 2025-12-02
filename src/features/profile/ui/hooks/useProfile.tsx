@@ -21,7 +21,8 @@ export const useProfile = () => {
 
     // Estado wallet 
     const [walletAddress, setWalletAddress] = useState<string>("");
-    const [formatedBalance, setFormatedBalance] = useState<number>(0.1);
+    const [formatedBalance, setFormatedBalance] = useState<number>(0.0);
+    const [balance, setBalance] = useState<number>(0.0);
 
     // Estado kyc CAPA
     const [kycStatus, setKycStatus] = useState<string>("");
@@ -38,12 +39,14 @@ export const useProfile = () => {
                 setFullName(userData.data.fullName || "Usuario");
                 setProfileImage(userData.data.image || null);
                 setWalletAddress(userData.data.normalizedPublicKey || "");
-                setFormatedBalance(parseFloat(userData.data.formatBalance.replace(/,/g, '')) || 0.1);
+                setFormatedBalance(parseFloat(userData.data.formatBalance) || 0.0);
+                setBalance(parseFloat(userData.data.balance) || 0.0);
             } else {
                 setFullName("Usuario");
                 setProfileImage(null);
                 setWalletAddress("");
-                setFormatedBalance(0.1);
+                setFormatedBalance(0.0);
+                setBalance(0.0);
                 console.error('Error fetching user data');
             }
         } catch (error) {
@@ -314,6 +317,7 @@ export const useProfile = () => {
         // Wallet
         walletAddress,
         formatedBalance,
+        balance,
 
         // KYC CAPA
         kycStatus
