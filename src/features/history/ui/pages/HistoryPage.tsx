@@ -276,16 +276,25 @@ const HistoryPage: React.FC = () => {
                 )}
 
                 {/* ✅ History list */}
-                {!isLoading && history.length > 0 && history.map((transaction) => (
-                    <TileHistory
-                        key={transaction.createdAt}
-                        status={parseTransactionStatus(transaction.status)}
-                        amount={Number(transaction.cryptoAmount)}
-                        id={transaction.id}
-                        onCancelTransaction={cancelTransaction}
-                        subtitle={formatDateRelative(transaction.createdAt)}
-                    />
-                ))}
+                {!isLoading && history.length > 0 && history.map((transaction) => {
+                    // ✅ Determinar qué ID usar según el tipo de transacción
+                    const transactionId = 'id' in transaction
+                        ? transaction.id
+                        : 'orderUuid' in transaction
+                            ? transaction.orderUuid
+                            : 'unknown';
+
+                    return (
+                        <TileHistory
+                            key={transaction.createdAt}
+                            status={parseTransactionStatus(transaction.status!)}
+                            amount={Number(transaction.cryptoAmount)}
+                            id={transactionId}
+                            onCancelTransaction={cancelTransaction}
+                            subtitle={formatDateRelative(transaction.createdAt)}
+                        />
+                    );
+                })}
             </div>
         </div>
     );

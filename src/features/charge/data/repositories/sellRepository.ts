@@ -1,6 +1,6 @@
 import sellLocalService, { type Amounts, type SellData } from "../local/sellLocalService";
 import { sellApiService } from "../api/sellApiService";
-import type { OffRampData, OffRampResponse, QuoteData } from "../models/sellModel";
+import type { OffRampData, OffRampResponse, QuoteData, RecoveryOrderData } from "../models/sellModel";
 import { AxiosError } from "axios";
 
 class SellRepository {
@@ -38,6 +38,16 @@ class SellRepository {
             } else {
                 return { success: false, kycUrl: null, status: null };
             }
+        }
+    }
+
+    async createRecoveryOrder(recoveryOrder: RecoveryOrderData): Promise<boolean> {
+        try {
+            const success = await sellApiService.createRecoveryOrdder(recoveryOrder);
+            return success;
+        } catch (error) {
+            console.error('Failed to create recovery order:', error);
+            return false;
         }
     }
 

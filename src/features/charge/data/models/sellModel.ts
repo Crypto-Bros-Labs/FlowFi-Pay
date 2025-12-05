@@ -27,3 +27,13 @@ export interface QuoteResponse {
     exactCryptoAmount: number,
     displayCryptoAmount: string,
 }
+
+export type RecoveryOrderData = {
+    userUuid: string
+    fiatCurrencyUuid: string,
+    tokenUuid: string,
+    fiatCurrencyAmount: string,
+    tokenAmount: string,
+    exchangeValue: number
+}
+

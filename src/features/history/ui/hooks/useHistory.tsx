@@ -1,4 +1,4 @@
-import type { HistoryResponse } from "../../data/models/historyModel";
+import type { CapaOrderModel, RecoveryOrderModel } from "../../data/models/historyModel";
 import historyRepository from "../../data/repositories/historyRepository";
 import userRepository from "../../../login/data/repositories/userRepository";
 import { useEffect, useState, useMemo } from "react";
@@ -7,7 +7,7 @@ import { useEffect, useState, useMemo } from "react";
 export type FilterPeriod = 'all' | 'today' | 'thisWeek' | 'thisMonth' | 'lastMonth';
 
 export const useHistory = () => {
-    const [history, setHistory] = useState<HistoryResponse[]>([]);
+    const [history, setHistory] = useState<(CapaOrderModel | RecoveryOrderModel)[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [selectedFilter, setSelectedFilter] = useState<FilterPeriod>('all'); // ✅ Cambiado a 'all'
@@ -100,7 +100,22 @@ export const useHistory = () => {
             const historyData = await historyRepository.getHistory(userUuid);
 
             if (historyData.success) {
-                setHistory(historyData.data || []);
+                const chargingOrdersWithStatus = (historyData.data?.chargingOrders || []).map(order => ({
+                    ...order,
+                    status: 'order'
+                }));
+                // Combinar y ordenar por fecha (más reciente primero)
+                const combinedHistory = [
+                    ...chargingOrdersWithStatus,
+                    ...historyData.data?.capaTransactions || [],
+                ].sort((a, b) => {
+                    const dateA = new Date(a.createdAt).getTime();
+                    const dateB = new Date(b.createdAt).getTime();
+                    return dateB - dateA; // Más reciente primero (descendente)
+                });
+
+                setHistory(combinedHistory);
+
             } else {
                 setError(historyData.error || 'Error al cargar el historial');
                 console.error('Failed to fetch history:', historyData.error);
@@ -146,16 +161,13 @@ export const useHistory = () => {
 
     // Cálculos de estadísticas usando el historial filtrado
     const statistics = useMemo(() => {
-        const totalTransactions = filteredHistory.length;
+        const totalTransactions = filteredHistory.length
 
         // Filtrar transacciones con status "received" del historial filtrado
         const receivedTransactions = filteredHistory.filter(transaction =>
-            transaction.status.toLowerCase() === 'received' ||
-            transaction.status.toLowerCase() === 'completed' ||
-            transaction.status.toLowerCase() === 'success'
-        );
+            transaction.status?.toLowerCase() === 'received' ||
+            transaction.status?.toLowerCase() === 'completed')
 
-        // Sumar el total de transacciones recibidas en USD
         const totalReceivedUSD = receivedTransactions.reduce((sum, transaction) => {
             return sum + (Number(transaction.cryptoAmount) || 0);
         }, 0);

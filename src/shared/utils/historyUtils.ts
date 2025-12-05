@@ -25,6 +25,9 @@ export const parseTransactionStatus = (status: string): TransactionStatus => {
         'error': 'canceled',
         'declined': 'canceled',
         'crypto_not_received': 'canceled',
+
+        // Estado de orden
+        'order': 'order',
     };
 
     return statusMap[status.toLowerCase()] || 'pending'; // Default a pending

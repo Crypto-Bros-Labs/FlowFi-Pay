@@ -1,5 +1,5 @@
 import { axiosWithAuthInstance } from "../../../../shared/api/axiosService";
-import type { OffRampData, OffRampResponse, QuoteData, QuoteResponse } from "../models/sellModel";
+import type { OffRampData, OffRampResponse, QuoteData, QuoteResponse, RecoveryOrderData } from "../models/sellModel";
 
 class SellApiService {
     async createOffRamp(data: OffRampData): Promise<OffRampResponse> {
@@ -16,6 +16,11 @@ class SellApiService {
             }
         });
         return response.data.data;
+    }
+
+    async createRecoveryOrdder(recoveryOrder: RecoveryOrderData): Promise<boolean> {
+        const response = await axiosWithAuthInstance.post("/transactions/charging-order", recoveryOrder);
+        return response.data.success;
     }
 }
 

@@ -2,7 +2,7 @@ import { axiosInstance } from "../../../../shared/api/axiosService";
 import type { HistoryResponse } from "../models/historyModel";
 
 class HistoryApiService {
-    async getHistory(userUuid: string): Promise<HistoryResponse[]> {
+    async getHistory(userUuid: string): Promise<HistoryResponse> {
         try {
             const response = await axiosInstance.get(`/transactions/user/${userUuid}`);
             return response.data.data;

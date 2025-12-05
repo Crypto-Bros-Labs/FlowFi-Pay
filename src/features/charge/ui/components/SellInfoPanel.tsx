@@ -57,11 +57,11 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose, onContinue, toke
                 {/* Información de montos y red */}
                 <div className="w-full max-w-xs">
                     <TileApp
-                        title="Monto"
+                        title="Monto (Fiat)"
                         titleClassName="text-base text-[#666666]"
                         trailing={
                             <>
-                                <span className="text-base font-semibold text-[#020F1E]">{amounts?.amountFiat}</span>
+                                <span className="text-base font-semibold text-[#020F1E]">{amounts?.amountFiat} MXN</span>
                             </>
                         }
                         className="mb-3"

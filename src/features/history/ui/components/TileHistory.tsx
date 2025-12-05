@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { FaClock } from 'react-icons/fa';
 import { IoCheckmarkCircleOutline, IoCloseCircleOutline } from 'react-icons/io5';
 import { HiEllipsisVertical } from 'react-icons/hi2';
+import { BiChevronRight } from 'react-icons/bi';
 
-export type TransactionStatus = 'completed' | 'pending' | 'canceled';
+export type TransactionStatus = 'completed' | 'pending' | 'canceled' | 'order';
 
 interface TileHistoryProps {
     status: TransactionStatus;
@@ -11,6 +12,7 @@ interface TileHistoryProps {
     id: string;
     subtitle?: string;
     onCancelTransaction?: (id: string) => void;
+    onClick?: () => void;
 }
 
 const TileHistory: React.FC<TileHistoryProps> = ({
@@ -18,7 +20,8 @@ const TileHistory: React.FC<TileHistoryProps> = ({
     amount,
     id,
     subtitle = "Transferencia",
-    onCancelTransaction
+    onCancelTransaction,
+    onClick
 }) => {
     // ✅ Estado para el menú desplegable
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,40 +35,50 @@ const TileHistory: React.FC<TileHistoryProps> = ({
                     leadingBg: 'bg-green-100',
                     leadingIcon: IoCheckmarkCircleOutline,
                     iconColor: 'text-[#00A855]',
-                    title: 'Received',
+                    title: 'Retiro exitoso',
                     chipBg: 'bg-green-100',
                     chipText: 'text-green-700',
-                    chipLabel: 'Completed'
+                    chipLabel: 'Completado'
                 };
             case 'pending':
                 return {
                     leadingBg: 'bg-yellow-100',
                     leadingIcon: FaClock,
                     iconColor: 'text-orange-600',
-                    title: 'Incoming',
+                    title: 'Retiro pendiente',
                     chipBg: 'bg-yellow-100',
                     chipText: 'text-yellow-700',
-                    chipLabel: 'Pending'
+                    chipLabel: 'Pendiente'
                 };
             case 'canceled':
                 return {
                     leadingBg: 'bg-red-200',
                     leadingIcon: IoCloseCircleOutline,
                     iconColor: 'text-red-600',
-                    title: 'Not Received',
+                    title: 'Retiro cancelado',
                     chipBg: 'bg-red-100',
                     chipText: 'text-red-700',
-                    chipLabel: 'Canceled'
+                    chipLabel: 'Cancelado'
+                };
+            case 'order':
+                return {
+                    leadingBg: 'bg-blue-100',
+                    leadingIcon: FaClock,
+                    iconColor: 'text-blue-600',
+                    title: 'Orden de cobro',
+                    chipBg: 'bg-blue-100',
+                    chipText: 'text-blue-700',
+                    chipLabel: 'Orden'
                 };
             default:
                 return {
                     leadingBg: 'bg-gray-200',
                     leadingIcon: IoCheckmarkCircleOutline,
                     iconColor: 'text-gray-600',
-                    title: 'Unknown',
+                    title: 'Desconocido',
                     chipBg: 'bg-gray-100',
                     chipText: 'text-gray-700',
-                    chipLabel: 'Unknown'
+                    chipLabel: 'Desconocido'
                 };
         }
     };
@@ -108,7 +121,10 @@ const TileHistory: React.FC<TileHistoryProps> = ({
     };
 
     return (
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+        <div
+            className={`bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-shadow ${onClick ? 'cursor-pointer' : ''}`}
+            onClick={onClick}
+        >
             <div className="flex items-center justify-between">
                 {/* Leading - Icon Circle */}
                 <div className="flex items-center flex-1">
@@ -145,7 +161,10 @@ const TileHistory: React.FC<TileHistoryProps> = ({
                             <div className="relative" ref={menuRef}>
                                 {/* Botón de opciones */}
                                 <button
-                                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setIsMenuOpen(!isMenuOpen);
+                                    }}
                                     className="p-1 hover:bg-gray-100 rounded-full transition-colors"
                                     aria-label="Más opciones"
                                 >
@@ -166,6 +185,11 @@ const TileHistory: React.FC<TileHistoryProps> = ({
                                     </div>
                                 )}
                             </div>
+                        )}
+
+                        {/* ✅ Indicador de clickeable - Chevron Right */}
+                        {onClick && status !== 'pending' && (
+                            <BiChevronRight className="w-5 h-5 text-gray-400" />
                         )}
                     </div>
                 </div>
