@@ -435,7 +435,7 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
                             showDialog({
                                 title: 'KYC Requerido',
                                 subtitle: 'No has iniciado tu proceso de KYC o este está incompleto. Por favor, completa tu KYC para continuar con el retiro.',
-                                onNext: () => window.open(`${kycUrl}`, '_blank'),
+                                onNext: () => window.open(`${response.kycUrl}`, '_blank'),
                                 nextText: 'Iniciar KYC',
                                 backText: 'Cancelar',
                             });
@@ -454,7 +454,7 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
                             showDialog({
                                 title: 'KYC Rechazado',
                                 subtitle: 'Tu proceso de KYC ha sido rechazado. Por favor, vuelve a intentarlo para continuar con el retiro. Si necesitas ayuda, contacta al soporte.',
-                                onNext: () => window.open(`${kycUrl}`, '_blank'),
+                                onNext: () => window.open(`${response.kycUrl}`, '_blank'),
                                 nextText: 'Reintentar KYC',
                                 backText: 'Cancelar',
                             });
@@ -489,7 +489,7 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
                 setIsLoading(false);
             }
         }
-    }, [typeTransaction, transferAddress, showDialog, amountToken, token, amountFiat, isValidAmount, isQuoteLoading, selectedCurrency, navigate, kycUrl]);
+    }, [typeTransaction, transferAddress, showDialog, amountToken, token, amountFiat, isValidAmount, isQuoteLoading, selectedCurrency, navigate]);
 
     const handleCloseTransferModal = useCallback(() => {
         setShowModalTransferResult(false);
@@ -529,5 +529,6 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
         handleCloseTransferModal,
         showModalTransferResult,
         errorBalance,
+        kycUrl,
     };
 };

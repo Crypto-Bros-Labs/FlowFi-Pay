@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import HeaderModal from "../../../../shared/components/HeaderModal";
 import ButtonApp from "../../../../shared/components/ButtonApp";
 import QRCode from "../../../../shared/components/QRCode";
 import { useSellInfo } from "../hooks/useSellInfo";
 import TileApp from "../../../../shared/components/TileApp";
 import type { Token } from "../../data/local/tokenLocalService";
+import { BiCheck, BiCopy } from "react-icons/bi";
+import { formatCryptoAddressCustom } from "../../../../shared/utils/cryptoUtils";
+import { useProfile } from "../../../profile/ui/hooks/useProfile";
 
 interface SellInfoPanelProps {
     onClose?: () => void;
@@ -22,6 +25,33 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose, onContinue, toke
                 */
 
     } = useSellInfo();
+
+    const {
+        isLoadingUserData,
+        walletAddress
+    } = useProfile();
+
+    const [isCopied, setIsCopied] = useState(false);
+
+    const handleCopyAddress = () => {
+        navigator.clipboard.writeText(walletAddress);
+        setIsCopied(true);
+
+        // ✅ Resetear el estado después de 2 segundos
+        setTimeout(() => {
+            setIsCopied(false);
+        }, 2000);
+    };
+
+
+    if (isLoadingUserData) {
+        return (
+            <div className="flex h-full flex-col items-center justify-center p-4">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                <span className="ml-2 text-gray-500">Cargando perfil...</span>
+            </div>
+        );
+    }
 
     return (
         <div className="bg-white rounded-[1.25rem] w-full h-[80vh] md:h-[90vh] max-w-md p-4 flex flex-col border-2 border-[#3E5EF5] shadow-lg">
@@ -56,6 +86,33 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({ onClose, onContinue, toke
 
                 {/* Información de montos y red */}
                 <div className="w-full max-w-xs">
+                    <TileApp
+                        title={formatCryptoAddressCustom(walletAddress, 15, 4)}
+                        titleClassName="text-base text-[#666666]"
+                        className="mb-3"
+                        trailing={
+                            <button
+                                onClick={handleCopyAddress}
+                                className="
+                                    flex items-center justify-center
+                                    w-10 h-10
+                                    rounded-full
+                                    bg-blue-100
+                                    hover:bg-blue-200
+                                    transition-colors duration-200
+                                    cursor-pointer
+                                    flex-shrink-0
+                                "
+                                title="Copiar dirección"
+                            >
+                                {isCopied ? (
+                                    <BiCheck className="w-5 h-5 text-green-600" />
+                                ) : (
+                                    <BiCopy className="w-5 h-5 text-blue-600" />
+                                )}
+                            </button>
+                        }
+                    />
                     <TileApp
                         title="Monto (Fiat)"
                         titleClassName="text-base text-[#666666]"

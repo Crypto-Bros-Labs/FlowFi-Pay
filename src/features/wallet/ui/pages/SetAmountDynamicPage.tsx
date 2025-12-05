@@ -138,7 +138,7 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
     );
 
     return (
-        <div className="flex flex-col h-full min-h-screen">
+        <div className="h-9/10 md:h-12/12 lg:h-12/12 flex flex-col p-1">
             <AppHeader title={title} onBack={() => navigate(-1)} />
 
             {/* Scrollable Content */}
@@ -391,7 +391,7 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
                     isMobile={true}
                     onClick={handleContinueClick}
                     loading={isLoading || isTransferLoading}
-                    disabled={!isValidAmount || isLoading || isTransferLoading || !!errorBalance}
+                    disabled={!isValidAmount || isLoading || isTransferLoading}
                 />
             </div>
 

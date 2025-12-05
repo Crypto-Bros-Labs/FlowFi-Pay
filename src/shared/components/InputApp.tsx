@@ -49,8 +49,8 @@ const InputApp: React.FC<InputAppProps> = ({
                 disabled={disabled}
                 className={`
                     w-full px-3 md:px-4 py-2 md:py-3 border rounded-lg 
-                    focus:outline-none focus:ring-2 text-sm md:text-base 
-                    placeholder:text-xs md:placeholder:text-sm
+                    focus:outline-none focus:ring-2 text-base
+                    placeholder:text-sm
                     transition-colors duration-200
                     ${hasError
                         ? 'border-red-500 focus:ring-red-500 focus:border-red-500'

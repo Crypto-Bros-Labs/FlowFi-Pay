@@ -82,7 +82,7 @@ const SelectTokenDynamicPage: React.FC<SelectTokenDynamicPageProps> = ({
     }
 
     return (
-        <div className="flex flex-col h-full p-4">
+        <div className="h-9/10 md:h-12/12 lg:h-12/12 flex flex-col p-4">
             <div className="flex flex-col h-full">
                 {/* Header */}
                 <AppHeader
