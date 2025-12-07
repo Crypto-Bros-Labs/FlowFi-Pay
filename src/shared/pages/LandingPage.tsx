@@ -25,7 +25,7 @@ const LandingPage: React.FC = () => {
     const steps = [
         "1. Crea tu cuenta",
         "2. Comienza a cobrar o transaccionar",
-        "3. Realiza KYC/KYB unicamente al interactuar con tu banco"
+        "3. KYC/KYB al interactuar con cuentas bancarias"
     ];
 
     const features = [
@@ -34,16 +34,17 @@ const LandingPage: React.FC = () => {
             description: "De forma sencilla por medio de transferencia SPEI"
         },
         {
-            title: "Acepta pagos en USDC",
-            description: "Cobra en tienda física o genera links de pago y envíalos a donde quieras"
+             title: "Paga nómina desde USDC",
+            description: "Administra y paga a tu equipo automáticamente a cuentas bancarias"
         },
         {
             title: "Envía y recibe pagos internacionales",
             description: "Realiza transacciones a cualquier parte del mundo 24/7"
         },
         {
-            title: "Genera rendimientos sobre tu USDC",
-            description: "Pon a trabajar tu dinero y ve como crece día a día"
+            title: "Acepta pagos en USDC",
+            description: "Cobra en tienda física o genera links de pago y envíalos a donde quieras"
+           
         }
     ];
 
@@ -54,7 +55,7 @@ const LandingPage: React.FC = () => {
         },
         {
             title: "0.0% de comisión por cobrar, envíar o recibir",
-            description: "Sin comisiones ocultas, solo pagas por la compra-venta de USDC con pesos."
+            description: "Sin comisiones ocultas, solo pagas por transacciones desde y hacia cuentas bancarias."
         },
         {
             title: "Dashboard de estadísticas",
@@ -62,7 +63,7 @@ const LandingPage: React.FC = () => {
         },
         {
             title: "Administra a tu equipo",
-            description: "Agrega miembros y define roles y capacidades."
+            description: "Agrega miembros, define roles y capacidades."
         }
     ];
 
@@ -159,7 +160,7 @@ const LandingPage: React.FC = () => {
                         {/* How It Works */}
                         <div>
                             <h2 className="text-3xl md:text-5xl xl:text-6xl font-bold text-slate-900 mb-16 text-center lg:text-left">
-                                Compra USDC, cobra y genera rendimientos en <span className="text-blue-600">FlowFi Pay</span>
+                                La cuenta financiera ideal para startups que operan en USDC <span className="text-blue-600">FlowFi Pay</span>
                             </h2>
 
                             <div className="grid xl:grid-cols-2 gap-16 items-center">
@@ -232,7 +233,7 @@ const LandingPage: React.FC = () => {
                                     Las herramientas financieras que necesitas en una misma plataforma
                                 </h2>
                                 <p className="text-lg md:text-xl lg:text-2xl xl:text-3xl text-slate-600 mx-auto lg:mx-0">
-                                    Pensada en startups, negocios, equipos y freelancers que realizan transacciones internacionales y quieren proteger su dinero.
+                                    Cuenta diseñada para founders y startups que quieren operar globalmente sin fricción.
                                 </p>
                             </div>
 
