@@ -193,7 +193,7 @@ const LandingPage: React.FC = () => {
                                 <ButtonApp
                                     paddingVertical="py-4 md:py-6"
                                     paddingHorizontal="px-8 md:px-12"
-                                    text="Ver más detalles"
+                                    text="Empreza ahora"
                                     textSize="text-base md:text-lg"
                                     stroke={true}
                                     textColor='text-slate-900'
@@ -246,7 +246,7 @@ const LandingPage: React.FC = () => {
                                     <ButtonApp
                                         paddingVertical="py-4 md:py-6"
                                         paddingHorizontal="px-8 md:px-12"
-                                        text="Empieza hoy"
+                                        text="Empezar ahora"
                                         textSize="text-base md:text-lg"
                                         onClick={handleJoinWaitlist}
                                     />
