@@ -160,7 +160,7 @@ const LandingPage: React.FC = () => {
                         {/* How It Works */}
                         <div>
                             <h2 className="text-3xl md:text-5xl xl:text-6xl font-bold text-slate-900 mb-16 text-center lg:text-left">
-                                La cuenta financiera ideal para startups que operan en USDC <span className="text-blue-600">FlowFi Pay</span>
+                                La cuenta financiera ideal para startups que operan en USDC: <span className="text-blue-600">FlowFi Pay</span>
                             </h2>
 
                             <div className="grid xl:grid-cols-2 gap-16 items-center">
