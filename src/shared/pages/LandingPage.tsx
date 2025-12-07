@@ -193,7 +193,7 @@ const LandingPage: React.FC = () => {
                                 <ButtonApp
                                     paddingVertical="py-4 md:py-6"
                                     paddingHorizontal="px-8 md:px-12"
-                                    text="Empreza ahora"
+                                    text="Empezar ahora"
                                     textSize="text-base md:text-lg"
                                     stroke={true}
                                     textColor='text-slate-900'
