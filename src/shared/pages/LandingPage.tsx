@@ -77,7 +77,7 @@ const LandingPage: React.FC = () => {
                         {/* Texto - Ocupa 8 columnas en desktop */}
                         <div className="lg:col-span-8 text-center lg:text-left space-y-6">
                             <h1 className="text-4xl md:text-6xl xl:text-7xl font-bold text-slate-900 leading-tight">
-                                La cuenta en USDC donde podrás <span className="text-blue-600">cobrar, pagar y administrar tu dinero.</span>
+                                Cuenta en USDC donde podrás <span className="text-blue-600">cobrar, pagar y administrar tu dinero.</span>
                             </h1>
                             <p className="text-lg md:text-xl lg:text-2xl text-slate-600 max-w-2xl mx-auto lg:mx-0">
                                 Compra y vende <span className="text-blue-600 font-semibold">USDC</span>, administra tu tesorería, paga a tu equipo y realiza cobros desde una sola plataforma.
