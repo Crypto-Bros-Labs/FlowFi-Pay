@@ -1,4 +1,4 @@
-import React from 'react';
+ezimport React from 'react';
 import ButtonApp from './ButtonApp';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -38,9 +38,9 @@ const Header: React.FC = () => {
                     />
                 </div>
 
-                {/* Botón "Probar ahora" - visible en todas las pantallas */}
+                {/* Botón "Empezar ahora" - visible en todas las pantallas */}
                 <ButtonApp
-                    text="Probar ahora"
+                    text="Empezar ahora"
                     textSize="text-sm md:text-base"
                     paddingVertical="py-2 md:py-3"
                     paddingHorizontal="px-4 md:px-6"
