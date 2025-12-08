@@ -6,6 +6,8 @@ import { useHistory } from "../hooks/useHistory";
 import { parseTransactionStatus } from "../../../../shared/utils/historyUtils";
 import { formatDateRelative } from "../../../../shared/utils/dateUtils";
 import { useNavigate } from "react-router-dom";
+import SellInfoPanel from "../../../charge/ui/components/SellInfoPanel";
+import ModalWrapper from "../../../../shared/components/ModalWrapper";
 
 // Componente para las tarjetas de estadísticas
 const StatCard: React.FC<{
@@ -80,7 +82,11 @@ const HistoryPage: React.FC = () => {
         selectedFilter,
         filterOptions,
         handleFilterChange,
-        cancelTransaction
+        cancelTransaction,
+        showSellInfoModal,
+        closeSellModal,
+        sellInfoData,
+        openSellModal,
     } = useHistory();
 
     const navigate = useNavigate();
@@ -285,17 +291,41 @@ const HistoryPage: React.FC = () => {
                             : 'unknown';
 
                     return (
-                        <TileHistory
-                            key={transaction.createdAt}
-                            status={parseTransactionStatus(transaction.status!)}
-                            amount={Number(transaction.cryptoAmount)}
-                            id={transactionId}
-                            onCancelTransaction={cancelTransaction}
-                            subtitle={formatDateRelative(transaction.createdAt)}
-                        />
+                        'id' in transaction ?
+                            <TileHistory
+                                key={transaction.createdAt}
+                                status={parseTransactionStatus(transaction.status!)}
+                                amount={Number(transaction.cryptoAmount)}
+                                id={transactionId}
+                                onCancelTransaction={cancelTransaction}
+                                subtitle={formatDateRelative(transaction.createdAt)}
+                            /> :
+                            <TileHistory
+                                key={transaction.createdAt}
+                                status={parseTransactionStatus(transaction.status!)}
+                                amount={Number(transaction.cryptoAmount)}
+                                id={transactionId}
+                                onCancelTransaction={cancelTransaction}
+                                subtitle={formatDateRelative(transaction.createdAt)}
+                                onClick={() => openSellModal(
+                                    {
+                                        amountFiat: transaction.FiatCurrencyAmount,
+                                        amountToken: transaction.cryptoAmount,
+                                        tokenSymbol: transaction.TokenSymbol,
+                                        networkName: transaction.network,
+                                        orderId: transaction.orderUuid
+                                    }
+                                )}
+                            />
                     );
                 })}
             </div>
+
+            {showSellInfoModal && (
+                <ModalWrapper onClose={closeSellModal}>
+                    <SellInfoPanel onClose={closeSellModal} onContinue={closeSellModal} sellInfoData={sellInfoData} />
+                </ModalWrapper>
+            )}
         </div>
     );
 }

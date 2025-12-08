@@ -46,7 +46,7 @@ const MainPage: React.FC = () => {
         <div className="flex flex-col h-full">
             <div className="p-2">
                 <AppHeader
-                    title="Cobrar"
+                    title="Billetera"
                     leftAction={
                         {
                             icon: BiHistory,

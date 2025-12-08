@@ -30,6 +30,7 @@ const SetAmountPage: React.FC = () => {
         isQuoteLoading,
         handleContinueTransaction,
         isAccountOptionsLoading,
+        orderUuid,
     } = useSetAmount();
 
     const { goToHistory, goToProfile } = useAppBar();
@@ -200,7 +201,7 @@ const SetAmountPage: React.FC = () => {
 
                 {showSellInfoModal && (
                     <ModalWrapper onClose={closeSellModal}>
-                        <SellInfoPanel onClose={closeSellModal} onContinue={handleContinueTransaction} token={selectedToken!} />
+                        <SellInfoPanel onClose={closeSellModal} onContinue={handleContinueTransaction} token={selectedToken!} orderId={orderUuid!} />
                     </ModalWrapper>
                 )}
             </div>

@@ -2,6 +2,7 @@ import sellLocalService, { type Amounts, type SellData } from "../local/sellLoca
 import { sellApiService } from "../api/sellApiService";
 import type { OffRampData, OffRampResponse, QuoteData, RecoveryOrderData } from "../models/sellModel";
 import { AxiosError } from "axios";
+import type { RecoveryOrderModel } from "../../../history/data/models/historyModel";
 
 class SellRepository {
     async createOffRamp(data: OffRampData): Promise<{ success: boolean, kycUrl: string | null, status: string | null }> {
@@ -41,13 +42,23 @@ class SellRepository {
         }
     }
 
-    async createRecoveryOrder(recoveryOrder: RecoveryOrderData): Promise<boolean> {
+    async createRecoveryOrder(recoveryOrder: RecoveryOrderData): Promise<{ success: boolean, orderUuid: string }> {
         try {
-            const success = await sellApiService.createRecoveryOrdder(recoveryOrder);
-            return success;
+            const response = await sellApiService.createRecoveryOrdder(recoveryOrder);
+            return { success: response.success, orderUuid: response.orderUuid };
         } catch (error) {
             console.error('Failed to create recovery order:', error);
-            return false;
+            return { success: false, orderUuid: '' };
+        }
+    }
+
+    async getRecoveryOrderById(orderId: string): Promise<RecoveryOrderModel> {
+        try {
+            const recoveryOrder = await sellApiService.getRecoveryOrderById(orderId);
+            return recoveryOrder;
+        } catch (error) {
+            console.error('Failed to get recovery order by ID:', error);
+            throw error;
         }
     }
 

@@ -2,6 +2,7 @@ import type { CapaOrderModel, RecoveryOrderModel } from "../../data/models/histo
 import historyRepository from "../../data/repositories/historyRepository";
 import userRepository from "../../../login/data/repositories/userRepository";
 import { useEffect, useState, useMemo } from "react";
+import type { SellInfoData } from "../../../charge/ui/components/SellInfoPanel";
 
 // Tipos para los filtros - agregamos 'all' como opción
 export type FilterPeriod = 'all' | 'today' | 'thisWeek' | 'thisMonth' | 'lastMonth';
@@ -10,7 +11,9 @@ export const useHistory = () => {
     const [history, setHistory] = useState<(CapaOrderModel | RecoveryOrderModel)[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedFilter, setSelectedFilter] = useState<FilterPeriod>('all'); // ✅ Cambiado a 'all'
+    const [selectedFilter, setSelectedFilter] = useState<FilterPeriod>('all');
+    const [showSellInfoModal, setShowSellInfoModal] = useState<boolean>(false);
+    const [sellInfoData, setSellInfoData] = useState<SellInfoData | undefined>(undefined);
 
     // Constante para la conversión USD a MXN
     const USD_TO_MXN_RATE = 18.39;
@@ -23,6 +26,14 @@ export const useHistory = () => {
         { key: 'thisMonth' as FilterPeriod, label: 'Este mes' },
         { key: 'lastMonth' as FilterPeriod, label: 'Mes pasado' }
     ];
+
+    const openSellModal = (
+        sellData: SellInfoData
+    ) => {
+        setSellInfoData(sellData);
+        setShowSellInfoModal(true);
+    }
+    const closeSellModal = () => setShowSellInfoModal(false);
 
     // Función para obtener el rango de fechas según el filtro
     const getDateRange = (filter: FilterPeriod) => {
@@ -208,6 +219,12 @@ export const useHistory = () => {
         // Nuevas propiedades para filtros
         selectedFilter,
         filterOptions,
-        handleFilterChange
+        handleFilterChange,
+
+        // Propiedades para el modal de información de venta
+        showSellInfoModal,
+        openSellModal,
+        closeSellModal,
+        sellInfoData,
     };
 };

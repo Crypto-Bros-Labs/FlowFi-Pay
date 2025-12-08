@@ -27,6 +27,7 @@ export const useSetAmount = () => {
     const [kycCompleted, setKycCompleted] = useState<boolean>(false);
     const [showTimerModal, setShowTimerModal] = useState<boolean>(false);
     const [isMobile, setIsMobile] = useState<boolean>(false);
+    const [orderUuid, setOrderUuid] = useState<string | null>(null);
 
     const navigate = useNavigate();
     const { showDialog } = useDialog();
@@ -267,7 +268,8 @@ export const useSetAmount = () => {
                 tokenAmount: amountToken,
                 exchangeValue: parseFloat(amountToken) / parseFloat(amountFiat),
             })
-            if (response) {
+            if (response.success) {
+                setOrderUuid(response.orderUuid);
                 openSellModal();
             } else {
                 console.error('Error creating off-ramp:', response);
@@ -349,6 +351,7 @@ export const useSetAmount = () => {
         kycCompleted,
         showTimerModal,
         isAccountOptionsLoading,
+        orderUuid,
 
         // Nuevo estado para móvil
         isMobile,

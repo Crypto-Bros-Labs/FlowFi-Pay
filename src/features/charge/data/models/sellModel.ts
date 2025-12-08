@@ -1,3 +1,4 @@
+
 export interface OffRampResponse {
     successTransfer: boolean,
     details: string,
@@ -36,4 +37,5 @@ export type RecoveryOrderData = {
     tokenAmount: string,
     exchangeValue: number
 }
+
 

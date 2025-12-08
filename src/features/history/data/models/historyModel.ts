@@ -13,6 +13,7 @@ export type RecoveryOrderModel = {
     exchangeValue: string,
     createdAt: string,
     status?: string,
+    userWalletAddress: string,
 }
 
 export type CapaOrderModel = {

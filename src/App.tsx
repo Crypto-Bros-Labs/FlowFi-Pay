@@ -17,6 +17,7 @@ import SelectTokenDynamicPage from './features/wallet/ui/pages/SelectTokenDynami
 import ReceivePage from './features/wallet/ui/pages/ReceivePage';
 import QRScannerPage from './features/wallet/ui/pages/QRScannerPage';
 import { CurrencyProvider } from './shared/contexts/CurrencyProvider';
+import SellInfoPage from './features/charge/ui/pages/SellInfoPage';
 
 
 function App() {
@@ -26,6 +27,12 @@ function App() {
         <DialogProvider>
           <Routes>
             <Route path="/" element={<LandingPage />} />
+            <Route
+              path="/recovery-order/:id"
+              element={
+                <SellInfoPage />
+              }
+            />
 
             {/* Rutas públicas (redirigen si está autenticado) */}
             <Route
