@@ -1,4 +1,4 @@
-ezimport React from 'react';
+import React from 'react';
 import ButtonApp from './ButtonApp';
 import { Link, useNavigate } from 'react-router-dom';
 
