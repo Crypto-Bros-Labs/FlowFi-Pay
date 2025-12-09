@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { CurrencyContext, type Currency } from "./CurrencyContext";
+import { useUsdToMxnRate } from "../hooks/useUsdToMxnRate";
 
 
 const CURRENCY_STORAGE_KEY = 'flowfi-currency-preference';
@@ -24,6 +25,8 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
     const [mxnToUsdRate, setMxnToUsdRate] = useState<number>(0.055);
     const [isHydrated, setIsHydrated] = useState(false);
 
+    const { rate } = useUsdToMxnRate();
+
     // ✅ Cargar preferencia del storage al montar
     useEffect(() => {
         const savedCurrency = localStorage.getItem(CURRENCY_STORAGE_KEY) as Currency | null;
@@ -34,8 +37,13 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
             setCurrencyState(DEFAULT_CURRENCY);
         }
 
+        if (rate) {
+            setUsdToMxnRate(rate);
+            setMxnToUsdRate(1 / rate);
+        }
+
         setIsHydrated(true);
-    }, []);
+    }, [rate]);
 
     // ✅ Función para cambiar moneda con persistencia
     const setCurrency = (newCurrency: Currency) => {

@@ -28,7 +28,7 @@ export interface SetAmountDynamicPageParams {
     redirectPath?: string;
 }
 
-// const MXN_UUID = '92b61c69-a81f-475a-9bc7-37c85efc74c6';
+const MXN_UUID = '92b61c69-a81f-475a-9bc7-37c85efc74c6';
 
 export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: TransactionType) => {
     const [amountFiat, setAmountFiat] = useState<string>('0');
@@ -44,8 +44,10 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
     const [isQuoteLoading, setIsQuoteLoading] = useState(false);
     const [quoteError, setQuoteError] = useState<string | null>(null);
     const { currency, usdToMxnRate, mxnToUsdRate } = useCurrency();
-    const [editingMode, setEditingMode] = useState<CurrencyMode>(currency === 'USD' ? 'crypto' : 'fiat');
 
+    const [editingMode, setEditingMode] = useState<CurrencyMode>(
+        typeTransaction === 'sell' ? 'fiat' : (currency === 'USD' ? 'crypto' : 'fiat')
+    );
     // ✅ Estados para manejo de errores y respuesta de transferencia
     const [transferError, setTransferError] = useState<string>('');
     const [transferResponse, setTransferResponse] = useState<SendCryptoResponseData | null>(null);
@@ -88,10 +90,10 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
     }, []);
 
     const fetchQuote = useCallback(async (fiatAmount: string, cryptoAmount: string) => {
-        if (editingMode === 'fiat') {
+        if (typeTransaction === 'sell') {
             const numericAmount = parseFloat(fiatAmount);
             if (!numericAmount || numericAmount <= 0) {
-                setAmountToken('0.00');
+                setAmountFiat('0');
                 return;
             }
 
@@ -99,7 +101,8 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
             setQuoteError(null);
 
             try {
-                /*const response = await sellRepository.getQuote({
+                // ✅ Usar la API para obtener el quote automáticamente
+                const response = await sellRepository.getQuote({
                     providerUuid: '237b0541-5521-4fda-8bba-05ee4d484795',
                     fromUuuid: token.id || '',
                     toUuid: MXN_UUID,
@@ -110,56 +113,91 @@ export const useSetAmountDynamic = (token: DynamicToken, typeTransaction: Transa
                     setAmountToken(response.cryptoAmount);
                 } else {
                     setQuoteError('Error obteniendo cotización');
-                    setAmountToken('0.00');
+                    setAmountFiat('0');
                 }
-                    */
-                await new Promise(resolve => setTimeout(resolve, 500));
-                const quote = numericAmount * mxnToUsdRate;
-                setAmountToken(quote.toFixed(6));
             } catch (error) {
                 console.error('Error fetching quote:', error);
                 setQuoteError('Error obteniendo cotización');
-                setAmountToken('0.00');
+                setAmountFiat('0');
             } finally {
                 setIsQuoteLoading(false);
             }
-        } else {
-            const numericAmount = parseFloat(cryptoAmount);
-            if (!numericAmount || numericAmount <= 0) {
-                setAmountFiat('0');
-                return;
-            }
+            return;
+        } else if (typeTransaction === 'buy' || typeTransaction === 'transfer') {
 
-            setIsQuoteLoading(true);
-            setQuoteError(null);
+            if (editingMode === 'fiat') {
+                const numericAmount = parseFloat(fiatAmount);
+                if (!numericAmount || numericAmount <= 0) {
+                    setAmountToken('0.00');
+                    return;
+                }
 
-            try {
-                /*
-                const response = await sellRepository.getQuote({
-                    providerUuid: '237b0541-5521-4fda-8bba-05ee4d484795',
-                    fromUuuid: token.id || '',
-                    toUuid: MXN_UUID,
-                    amountFiat: cryptoAmount
-                });
+                setIsQuoteLoading(true);
+                setQuoteError(null);
 
-                if (response.success && response.cryptoAmount) {
-                    setAmountFiat(response.cryptoAmount);
-                } else {
+                try {
+                    /*const response = await sellRepository.getQuote({
+                        providerUuid: '237b0541-5521-4fda-8bba-05ee4d484795',
+                        fromUuuid: token.id || '',
+                        toUuid: MXN_UUID,
+                        amountFiat: fiatAmount
+                    });
+    
+                    if (response.success && response.cryptoAmount) {
+                        setAmountToken(response.cryptoAmount);
+                    } else {
+                        setQuoteError('Error obteniendo cotización');
+                        setAmountToken('0.00');
+                    }
+                        */
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    const quote = numericAmount * mxnToUsdRate;
+                    setAmountToken(quote.toFixed(6));
+                } catch (error) {
+                    console.error('Error fetching quote:', error);
+                    setQuoteError('Error obteniendo cotización');
+                    setAmountToken('0.00');
+                } finally {
+                    setIsQuoteLoading(false);
+                }
+            } else {
+                const numericAmount = parseFloat(cryptoAmount);
+                if (!numericAmount || numericAmount <= 0) {
+                    setAmountFiat('0');
+                    return;
+                }
+
+                setIsQuoteLoading(true);
+                setQuoteError(null);
+
+                try {
+                    /*
+                    const response = await sellRepository.getQuote({
+                        providerUuid: '237b0541-5521-4fda-8bba-05ee4d484795',
+                        fromUuuid: token.id || '',
+                        toUuid: MXN_UUID,
+                        amountFiat: cryptoAmount
+                    });
+    
+                    if (response.success && response.cryptoAmount) {
+                        setAmountFiat(response.cryptoAmount);
+                    } else {
+                        setQuoteError('Error obteniendo cotización');
+                        setAmountFiat('0');
+                    }*/
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    const quote = numericAmount * usdToMxnRate;
+                    setAmountFiat(quote.toFixed(2));
+                } catch (error) {
+                    console.error('Error fetching quote:', error);
                     setQuoteError('Error obteniendo cotización');
                     setAmountFiat('0');
-                }*/
-                await new Promise(resolve => setTimeout(resolve, 500));
-                const quote = numericAmount * usdToMxnRate;
-                setAmountFiat(quote.toFixed(2));
-            } catch (error) {
-                console.error('Error fetching quote:', error);
-                setQuoteError('Error obteniendo cotización');
-                setAmountFiat('0');
-            } finally {
-                setIsQuoteLoading(false);
+                } finally {
+                    setIsQuoteLoading(false);
+                }
             }
         }
-    }, [editingMode, mxnToUsdRate, usdToMxnRate]);
+    }, [editingMode, mxnToUsdRate, token.id, typeTransaction, usdToMxnRate]);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {

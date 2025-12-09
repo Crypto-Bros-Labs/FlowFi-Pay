@@ -3,7 +3,7 @@ import ButtonApp from '../../../../shared/components/ButtonApp';
 import InputApp from '../../../../shared/components/InputApp';
 import DescriptionApp from '../../../../shared/components/DescriptionApp';
 import { useLogin } from '../hooks/useLogin';
-import blueUser from '/illustrations/blueuser.png';
+import FP from '/illustrations/FP.png'
 import AppHeader from '../../../../shared/components/AppHeader';
 
 const LoginPage: React.FC = () => {
@@ -24,13 +24,13 @@ const LoginPage: React.FC = () => {
 
             <div className='flex flex-col flex-1 justify-center'>
                 {/* Imagen placeholder */}
-                <div className="w-30 h-30 bg-gray-200 rounded-full mx-auto mb-6 flex items-center justify-center mt-4">
-                    <img src={blueUser} alt="User Icon" className="w-full h-full" />
+                <div className="w-40 h-30 rounded-full mx-auto mb-6 flex items-center justify-center mt-4">
+                    <img src={FP} alt="User Icon" className="w-full h-full" />
                 </div>
 
                 <DescriptionApp
                     title='Inicia sesión'
-                    description='Inicia sesión con tu correo electrónico enlazado a tu cuenta CB para continuar'
+                    description='Ingresa tu correo para iniciar sesión o para crear una cuenta en FlowFi Pay'
                 />
 
                 {/* Input de correo */}

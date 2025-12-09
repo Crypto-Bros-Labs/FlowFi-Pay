@@ -80,6 +80,16 @@ class SellRepository {
         }
     }
 
+    async getUsdToMxnRate(): Promise<number | null> {
+        try {
+            const rate = await sellApiService.getUsdToMxnRate();
+            return rate;
+        } catch (error) {
+            console.error('Failed to get USD to MXN rate:', error);
+            return null;
+        }
+    }
+
 
 
     getOffRampData(): OffRampData | null {

@@ -329,7 +329,7 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
             </div>
 
             {/* Fixed Bottom Section */}
-            <div className="flex-shrink-0 px-4 pb-4">
+            <div className="flex-shrink-0 px-4 ">
                 {/* ✅ Error Balance Message */}
                 {errorBalance && (
                     <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-center">

@@ -28,6 +28,12 @@ class SellApiService {
         const response = await publicAxiosInstance.get(`/transactions/charging-order/${orderId}`);
         return response.data.data as RecoveryOrderModel;
     }
+
+    async getUsdToMxnRate(): Promise<number> {
+        const response = await axiosWithAuthInstance.get('/exchange-value/usd/mxn');
+        console.log('USD to MXN rate response:', response.data);
+        return parseFloat(response.data.data);
+    }
 }
 
 export const sellApiService = new SellApiService();

@@ -27,7 +27,7 @@ const SellSection: React.FC<SellSectionProps> = ({ onClick }) => {
     } = useAccountOptions();
 
     return (
-        <div className="mb-6 px-2">
+        <div className="px-2">
             <button
                 onClick={onClick}
                 className="w-full text-left"

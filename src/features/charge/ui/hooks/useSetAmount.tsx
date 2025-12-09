@@ -6,6 +6,7 @@ import userRepository from '../../../login/data/repositories/userRepository';
 import { useNavigate } from 'react-router-dom';
 import { useDialog } from '../../../../shared/hooks/useDialog';
 import { useAccountOptions } from '../../../../shared/hooks/useAccountOptions';
+import { useCurrency } from '../../../../shared/hooks/useCurrency';
 
 interface Currency {
     symbol: string;
@@ -28,6 +29,7 @@ export const useSetAmount = () => {
     const [showTimerModal, setShowTimerModal] = useState<boolean>(false);
     const [isMobile, setIsMobile] = useState<boolean>(false);
     const [orderUuid, setOrderUuid] = useState<string | null>(null);
+    const { mxnToUsdRate } = useCurrency();
 
     const navigate = useNavigate();
     const { showDialog } = useDialog();
@@ -129,25 +131,31 @@ export const useSetAmount = () => {
         setQuoteError(null);
 
         try {
-            const response = await sellRepository.getQuote({
+            /*const response = await sellRepository.getQuote({
                 providerUuid: '237b0541-5521-4fda-8bba-05ee4d484795',
-                fromUuuid: selectedToken?.uuid || '',
-                toUuid: '92b61c69-a81f-475a-9bc7-37c85efc74c6',
+                fromUuuid: token.id || '',
+                toUuid: MXN_UUID,
                 amountFiat: fiatAmount
             });
-
+ 
             if (response.success && response.cryptoAmount) {
                 setAmountToken(response.cryptoAmount);
             } else {
                 setQuoteError('Error obteniendo cotización');
+                setAmountToken('0.00');
             }
+                */
+            await new Promise(resolve => setTimeout(resolve, 500));
+            const quote = numericAmount * mxnToUsdRate;
+            setAmountToken(quote.toFixed(6));
         } catch (error) {
             console.error('Error fetching quote:', error);
             setQuoteError('Error obteniendo cotización');
+            setAmountToken('0.00');
         } finally {
             setIsQuoteLoading(false);
         }
-    }, [selectedToken?.uuid]);
+    }, [mxnToUsdRate]);
 
     useEffect(() => {
         if (!isInitialized || !selectedToken) return;

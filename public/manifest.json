@@ -1,0 +1,22 @@
+{
+    "name": "FlowFi Pay",
+    "short_name": "FlowFi",
+    "description": "Plataforma de pagos con criptomonedas",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "background_color": "#ffffff",
+    "theme_color": "#3E5EF5",
+    "icons": [
+        {
+            "src": "/icons/fp_icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ],
+    "categories": [
+        "finance"
+    ]
+}
