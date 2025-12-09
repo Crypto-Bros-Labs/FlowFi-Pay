@@ -4,7 +4,7 @@ import ButtonApp from '../components/ButtonApp';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 // import MainPage from '../../features/charge/ui/pages/MainPage';
-import SetAmountPage from '../../features/charge/ui/pages/SetAmountPage';
+import testPage from '/images/app_test.png'
 
 const LandingPage: React.FC = () => {
     const navigate = useNavigate();
@@ -34,7 +34,7 @@ const LandingPage: React.FC = () => {
             description: "De forma sencilla por medio de transferencia SPEI"
         },
         {
-             title: "Paga nómina desde USDC",
+            title: "Paga nómina desde USDC",
             description: "Administra y paga a tu equipo automáticamente a cuentas bancarias"
         },
         {
@@ -44,7 +44,7 @@ const LandingPage: React.FC = () => {
         {
             title: "Acepta pagos en USDC",
             description: "Cobra en tienda física o genera links de pago y envíalos a donde quieras"
-           
+
         }
     ];
 
@@ -115,8 +115,12 @@ const LandingPage: React.FC = () => {
                                     <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-black rounded-b-2xl z-10"></div>
 
                                     {/* Contenido */}
-                                    <div className="w-full h-full pt-8">
-                                        <SetAmountPage />
+                                    <div className="w-full h-full pt-8 overflow-hidden flex items-center justify-center">
+                                        <img
+                                            src={testPage}
+                                            alt="App Test"
+                                            className="w-full h-full object-contain object-center"
+                                        />
                                     </div>
                                 </div>
                             </div>
