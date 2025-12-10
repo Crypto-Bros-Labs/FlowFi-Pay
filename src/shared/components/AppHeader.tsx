@@ -13,7 +13,7 @@ interface AppHeaderProps {
     title?: string;
     showBackButton?: boolean;
     onBack?: () => void;
-    leftAction?: HeaderAction;
+    leftActions?: HeaderAction[];
     rightActions?: HeaderAction[];
 }
 
@@ -21,7 +21,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
     title,
     showBackButton = true,
     onBack,
-    leftAction,
+    leftActions,
     rightActions = []
 }) => {
     const navigate = useNavigate();
@@ -34,8 +34,8 @@ const AppHeader: React.FC<AppHeaderProps> = ({
         }
     };
 
-    // Si hay leftAction, no mostrar el botón de back
-    const shouldShowBackButton = showBackButton && !leftAction;
+    // Si hay leftActions, no mostrar el botón de back
+    const shouldShowBackButton = showBackButton && !leftActions;
 
     return (
         <div className="flex items-center justify-between p-4">
@@ -49,14 +49,19 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                         <IoChevronBack className="w-6 h-6 text-gray-700" />
                     </button>
                 )}
-                {leftAction && (
-                    <button
-                        onClick={leftAction.onClick}
-                        className={`p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors ${leftAction.className || ''}`}
-                    >
-                        <leftAction.icon className="w-6 h-6" />
-                    </button>
-                )}
+                <div className='flex items-center gap-2 w-10 justify-start'>
+                    {leftActions && (
+                        leftActions.map((action, index) => (
+                            <button
+                                key={index}
+                                onClick={action.onClick}
+                                className={`p-2 -ml-2 hover:bg-gray-100 rounded-full transition-colors ${action.className || ''}`}
+                            >
+                                <action.icon className="w-6 h-6" />
+                            </button>
+                        ))
+                    )}
+                </div>
             </div>
 
             {/* Título centrado */}

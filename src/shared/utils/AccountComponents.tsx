@@ -4,6 +4,7 @@ import { formatCryptoAddress } from './cryptoUtils';
 
 interface WalletAddress {
     id: string;
+    name: string;
     address: string;
     network: string;
 }
@@ -23,8 +24,8 @@ export const createWalletOptions = (
             id: wallet.id,
             component: (
                 <TileApp
-                    title="Red"
-                    subtitle={wallet.network}
+                    title={wallet.name || 'Wallet'}
+                    subtitle={formatCryptoAddress(wallet.address, 'medium')}
                     leading={
                         <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                             <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,7 +35,7 @@ export const createWalletOptions = (
                     }
                     trailing={
                         <span className="text-xs font-medium text-[#666666] truncate">
-                            {formatCryptoAddress(wallet.address)}
+                            {wallet.network}
                         </span>
                     }
                 />

@@ -1,13 +1,16 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDialog } from "../../../../shared/hooks/useDialog";
 import userLocalService from "../../../login/data/local/userLocalService";
 import userRepository from "../../../login/data/repositories/userRepository";
 import { base64ToFile } from "../../../../shared/utils/dataUtils";
+import type { DialogOptions } from "../../../../shared/contexts/DialogContext";
+import { useMain } from "../../../charge/ui/hooks/useMain";
 
 export const useProfile = () => {
     const navigate = useNavigate();
     const { showDialog } = useDialog();
+    const { dynamicTokens } = useMain();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Estado para la imagen de perfil
@@ -28,6 +31,93 @@ export const useProfile = () => {
     const [kycStatus, setKycStatus] = useState<string>("");
 
     const [isLoadingUserData, setIsLoadingUserData] = useState<boolean>(true);
+
+    const kycStatusInfo = useMemo(() => ({
+        APPROVED: {
+            label: 'KYC Verificado',
+            bgColor: 'bg-green-100',
+            textColor: 'text-green-800',
+            description: 'Tu identidad ha sido verificada exitosamente. Puedes realizar todas las operaciones sin restricciones.',
+            icon: '✓',
+        },
+        REVIEW: {
+            label: 'KYC en Proceso',
+            bgColor: 'bg-yellow-100',
+            textColor: 'text-yellow-800',
+            description: 'Tu solicitud de verificación está en revisión. Esto generalmente toma 24-48 horas.',
+            icon: '⏳',
+        },
+        DECLINED: {
+            label: 'KYC Rechazado',
+            bgColor: 'bg-red-100',
+            textColor: 'text-red-800',
+            description: 'Tu verificación ha sido rechazada. Por favor, revisa los documentos y vuelve a intentarlo. Si tienes dudas, contacta al soporte.',
+            icon: '✗',
+        },
+        UNKNOWN: {
+            label: 'KYC No Iniciado',
+            bgColor: 'bg-gray-100',
+            textColor: 'text-gray-800',
+            description: 'No has iniciado tu proceso de verificación. Debes completar el KYC para realizar ciertas operaciones. Este proceso se realiza al hacer un Retiro. ¿Quieres iniciarlo ahora?',
+            icon: '?',
+        },
+    }), []);
+
+    // ✅ Handle único para mostrar información del KYC
+    const handleKycStatusInfo = useCallback(() => {
+        const info = kycStatusInfo[kycStatus as keyof typeof kycStatusInfo] || kycStatusInfo.UNKNOWN;
+
+        const dialogConfig: Record<string, DialogOptions> = {
+            APPROVED: {
+                title: 'KYC Verificado',
+                subtitle: info.description,
+                nextText: 'Aceptar',
+                hideBack: true,
+            },
+            REVIEW: {
+                title: 'KYC en Proceso',
+                subtitle: info.description,
+                nextText: 'Aceptar',
+                hideBack: true,
+            },
+            DECLINED: {
+                title: 'KYC Rechazado',
+                subtitle: info.description,
+                nextText: 'Reintentar',
+                backText: 'Cancelar',
+                onNext: () => {
+                    console.log('Reintentar KYC');
+                    navigate("/select-token-dynamic", {
+                        state: {
+                            title: 'Selecciona el token que deseas vender',
+                            tokens: dynamicTokens,
+                            transactionType: 'sell'
+                        }
+                    });
+                },
+            },
+            UNKNOWN: {
+                title: 'KYC No Iniciado',
+                subtitle: info.description,
+                nextText: 'Iniciar Retiro',
+                backText: 'Más tarde',
+                onNext: () => {
+                    console.log('Iniciar KYC');
+                    navigate("/select-token-dynamic", {
+                        state: {
+                            title: 'Selecciona el token que deseas vender',
+                            tokens: dynamicTokens,
+                            transactionType: 'sell'
+                        }
+                    });
+                },
+            },
+        };
+
+        const config = dialogConfig[kycStatus] || dialogConfig.UNKNOWN;
+        showDialog(config);
+    }, [dynamicTokens, kycStatus, kycStatusInfo, navigate, showDialog]);
+
 
     async function fetchUserData() {
         setIsLoadingUserData(true);
@@ -60,6 +150,7 @@ export const useProfile = () => {
 
     async function fetchKycStatus() {
         try {
+            setIsLoadingUserData(true);
             const userUuid = (await userRepository.getCurrentUserData())?.userUuid || 'default-uuid';
             const kycData = await userRepository.getKycStatus(userUuid);
 
@@ -67,6 +158,8 @@ export const useProfile = () => {
         } catch (error) {
             console.error('Error fetching KYC status:', error);
             setKycStatus("unknown");
+        } finally {
+            setIsLoadingUserData(false);
         }
     }
 
@@ -320,6 +413,8 @@ export const useProfile = () => {
         balance,
 
         // KYC CAPA
-        kycStatus
+        kycStatus,
+        handleKycStatusInfo,
+        kycStatusInfo,
     };
 };

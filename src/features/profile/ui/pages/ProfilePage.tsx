@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import AppHeader from "../../../../shared/components/AppHeader";
 import blueUser from '/illustrations/blueuser.png';
 import TileApp from "../../../../shared/components/TileApp";
-import { BiChevronRight, BiEdit, BiTrash, BiCheck, BiX, BiCopy, BiMoney } from "react-icons/bi";
+import { BiChevronRight, BiEdit, BiTrash, BiCheck, BiX, BiCopy, BiMoney, BiHelpCircle } from "react-icons/bi";
 import { useAccountOptions } from "../../../../shared/hooks/useAccountOptions";
 import ComboBoxApp from "../../../../shared/components/ComboBoxApp";
 import { useProfile } from "../hooks/useProfile";
@@ -18,6 +18,12 @@ const ProfilePage: React.FC = () => {
         onBankSelect,
         isAccountOptionsLoading,
         handleAddBank,
+        /*
+        walletAddresses,
+        walletComboBoxOptions,
+        selectedWalletAddress,
+        onWalletSelect,
+        */
     } = useAccountOptions();
 
     const {
@@ -37,6 +43,9 @@ const ProfilePage: React.FC = () => {
         isLoadingUserData,
         isUploadingImage,
         walletAddress,
+        kycStatus,
+        handleKycStatusInfo,
+        kycStatusInfo,
     } = useProfile();
 
     const { currency, setCurrency, availableCurrencies } = useCurrency();
@@ -67,6 +76,9 @@ const ProfilePage: React.FC = () => {
         setSelectedType(selectedId);
         setCurrency(availableCurrencies.find(c => c === selectedId) || 'USD');
     }
+
+    const currentKycInfo = kycStatusInfo[kycStatus as keyof typeof kycStatusInfo] || kycStatusInfo.UNKNOWN;
+
 
     if (isAccountOptionsLoading || isLoadingUserData) {
         return (
@@ -136,7 +148,7 @@ const ProfilePage: React.FC = () => {
             </div>
 
             {/* Sección del nombre del usuario */}
-            <div className="mb-6 px-4">
+            <div className="mb-3 px-4">
                 {isEditingName ? (
                     <div className="flex items-center gap-2">
                         <input
@@ -179,8 +191,28 @@ const ProfilePage: React.FC = () => {
                     </div>
                 )}
             </div>
+            {/* Estado KYC */}
+            <div className="flex justify-center mb-2 px-2 gap-1 items-center">
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${currentKycInfo.bgColor} ${currentKycInfo.textColor}`}>
+                    {currentKycInfo.label}
+                </span>
+                {/* ✅ Botón de ayuda */}
+                <button
+                    onClick={handleKycStatusInfo}
+                    className="
+                        p-1.5 rounded-full
+                        hover:bg-gray-200 hover:scale-110
+                        active:bg-gray-300
+                        transition-all duration-200
+                        flex items-center justify-center
+                    "
+                    title="Información del estado KYC"
+                >
+                    <BiHelpCircle className="w-5 h-5 text-gray-600" />
+                </button>
+            </div>
 
-            <div className="flex flex-col p-2 mt-2">
+            <div className="flex flex-col p-2">
                 <TileAppMenu
                     title="Moneda"
                     subtitle="Moneda de preferencia"
@@ -228,10 +260,12 @@ const ProfilePage: React.FC = () => {
                     />
                 </div>
             </div>
-            {/* 
+
+            {/* SECCIÓN DE CUENTAS Y WALLETS */}
+            {/* Wallets 
             <div className="mb-6 px-2">
                 <div className="text-sm font-bold text-[#020F1E] truncate mb-2">
-                    Wallet
+                    Direcciones guardadas
                 </div>
 
                 {walletAddresses && walletAddresses.length > 0 ? (
@@ -239,7 +273,6 @@ const ProfilePage: React.FC = () => {
                         options={walletComboBoxOptions}
                         selectedId={selectedWalletAddress}
                         onSelect={onWalletSelect}
-                        disabled={true}
                     />
                 ) : (
                     <button
@@ -267,6 +300,7 @@ const ProfilePage: React.FC = () => {
             </div>
             */}
 
+            {/* Banks */}
             <div className="mb-6 px-2">
                 <div className="text-sm font-bold text-[#020F1E] truncate mb-2">
                     Cuenta bancaria

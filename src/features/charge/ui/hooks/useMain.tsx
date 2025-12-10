@@ -114,5 +114,6 @@ export const useMain = () => {
         tokens,
         tokensError,
         isLoading,
+        dynamicTokens,
     };
 }

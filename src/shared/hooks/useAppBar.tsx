@@ -15,9 +15,14 @@ export const useAppBar = () => {
         navigate('/set-amount')
     }
 
+    const goToTeam = () => {
+        navigate('/team')
+    }
+
     return {
         goToHistory,
         goToProfile,
         goToCharge,
+        goToTeam,
     }
 }

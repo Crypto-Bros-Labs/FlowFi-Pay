@@ -7,6 +7,7 @@ import userRepository from "../../features/login/data/repositories/userRepositor
 
 interface WalletAddress {
     id: string;
+    name: string;
     address: string;
     network: string;
 }
@@ -34,16 +35,19 @@ export const useAccountOptions = () => {
         const mockAddresses: WalletAddress[] = [
             {
                 id: 'addr-1',
+                name: 'Mi Wallet',
                 address: '0x9Fc5b510185E7a218A2e5BDc8F7A14a2B8b90F123',
                 network: 'Starknet'
             },
             {
                 id: 'addr-2',
+                name: 'Jorge Wallet',
                 address: '0xA7b2C5d8F3e4B9c6D1E8f5A2B9C6d3E8F1A4B7C5',
                 network: 'Arbitrum'
             },
             {
                 id: 'addr-3',
+                name: 'Carlos Wallet',
                 address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
                 network: 'Arbitrum'
             }

@@ -4,6 +4,7 @@ import InputApp from "../../../../shared/components/InputApp";
 import ComboBoxApp from "../../../../shared/components/ComboBoxApp";
 import ButtonApp from "../../../../shared/components/ButtonApp";
 import { useAddWallet } from "../hooks/useAddWallet";
+import AppHeader from "../../../../shared/components/AppHeader";
 
 const AddWalletPage: React.FC = () => {
     const {
@@ -20,6 +21,7 @@ const AddWalletPage: React.FC = () => {
 
     return (
         <div className="flex flex-col h-full p-4">
+            <AppHeader title="Agregar Wallet" showBackButton={true} />
 
             {/* Imagen placeholder */}
             <div className="w-20 h-20 bg-gray-200 rounded-full mx-auto mb-6 flex items-center justify-center">

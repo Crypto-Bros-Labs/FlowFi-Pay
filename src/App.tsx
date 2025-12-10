@@ -18,6 +18,8 @@ import ReceivePage from './features/wallet/ui/pages/ReceivePage';
 import QRScannerPage from './features/wallet/ui/pages/QRScannerPage';
 import { CurrencyProvider } from './shared/contexts/CurrencyProvider';
 import SellInfoPage from './features/charge/ui/pages/SellInfoPage';
+import TeamPage from './features/profile/ui/pages/TeamPage';
+import AddMemberPage from './features/profile/ui/pages/AddMemberPage';
 
 
 function App() {
@@ -157,6 +159,25 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            <Route
+              path="/team"
+              element={
+                <ProtectedRoute>
+                  <TeamPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path='/add-member'
+              element={
+                <ProtectedRoute>
+                  <AddMemberPage />
+                </ProtectedRoute>
+              }
+            />
+
           </Routes>
         </DialogProvider>
       </CurrencyProvider>

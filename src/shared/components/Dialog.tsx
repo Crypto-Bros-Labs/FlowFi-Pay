@@ -45,7 +45,7 @@ const Dialog: React.FC<DialogProps> = ({
                 {onClose && (
                     <button
                         onClick={onClose}
-                        className="absolute top-2 right-2 p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
+                        className="absolute top-4 right-3 p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors"
                         aria-label="Cerrar"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

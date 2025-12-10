@@ -1,7 +1,7 @@
 import React from "react";
 import { IoPerson } from "react-icons/io5";
 import { BiHistory } from "react-icons/bi";
-import { GoArrowDownLeft, GoArrowUpRight } from "react-icons/go";
+import { MdGroups } from "react-icons/md"; import { GoArrowDownLeft, GoArrowUpRight } from "react-icons/go";
 import { IoCashOutline } from "react-icons/io5";
 import { BiMoneyWithdraw, BiDollar } from "react-icons/bi";
 import AppHeader from "../../../../shared/components/AppHeader";
@@ -30,7 +30,7 @@ const MainPage: React.FC = () => {
         usdToMxnRate,
     } = useCurrency();
 
-    const { goToHistory, goToProfile } = useAppBar();
+    const { goToHistory, goToProfile, goToTeam } = useAppBar();
 
 
     if (isAccountOptionsLoading || isLoading) {
@@ -47,13 +47,18 @@ const MainPage: React.FC = () => {
             <div className="p-2">
                 <AppHeader
                     title="Billetera"
-                    leftAction={
+                    leftActions={[
                         {
                             icon: BiHistory,
                             onClick: goToHistory,
                             className: 'text-gray-700'
+                        },
+                        {
+                            icon: MdGroups,
+                            onClick: goToTeam,
+                            className: 'text-gray-700'
                         }
-                    }
+                    ]}
                     rightActions={[
                         {
                             icon: IoPerson,
