@@ -1,4 +1,5 @@
 import React from 'react';
+import { BiQrScan } from 'react-icons/bi';
 
 interface InputAppProps {
     type?: string;
@@ -9,6 +10,7 @@ interface InputAppProps {
     name?: string;
     value?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onScanQR?: () => void;
     className?: string;
     error?: string | null;
     disabled?: boolean;
@@ -23,6 +25,7 @@ const InputApp: React.FC<InputAppProps> = ({
     name,
     value,
     onChange,
+    onScanQR,
     className = '',
     error = null,
     disabled = false
@@ -32,12 +35,23 @@ const InputApp: React.FC<InputAppProps> = ({
     return (
         <div className={`w-full ${className}`}>
             {showLabel && label && (
-                <label
-                    htmlFor={id}
-                    className="block text-sm font-medium text-[#020F1E] mb-2"
-                >
-                    {label}
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                    <label
+                        htmlFor={id}
+                        className="block text-sm font-medium text-[#020F1E] mb-2"
+                    >
+                        {label}
+                    </label>
+                    {onScanQR && (
+                        <button
+                            onClick={onScanQR}
+                            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                            title="Escanear QR"
+                        >
+                            <BiQrScan className="w-5 h-5 text-blue-600" />
+                        </button>
+                    )}
+                </div>
             )}
             <input
                 type={type}

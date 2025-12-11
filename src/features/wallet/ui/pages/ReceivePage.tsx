@@ -115,7 +115,7 @@ const ReceivePage: React.FC = () => {
             <div className="flex flex-col items-center mb-6">
                 <div className="bg-white p-4 rounded-lg shadow-md border border-gray-200">
                     <QRCode
-                        data={walletAddress}
+                        data={'ethereum:' + walletAddress}
                         size={200}
                         foregroundColor="2563eb"
                         backgroundColor="ffffff"

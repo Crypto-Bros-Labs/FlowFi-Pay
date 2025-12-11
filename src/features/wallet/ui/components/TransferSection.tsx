@@ -40,7 +40,7 @@ const TransferSection: React.FC<TransferSectionProps> = ({
                 onChange={(e) => onChange(e.target.value)}
                 placeholder="0x1234567890abcdef1234567890abcdef"
                 className="
-                    w-full mt-3 px-4 py-3
+                    w-full mt-1 px-4 py-3
                     border border-[#666666] rounded-[10px]
                     bg-white
                     text-sm font-medium text-gray-900

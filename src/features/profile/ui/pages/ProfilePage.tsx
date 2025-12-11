@@ -18,12 +18,11 @@ const ProfilePage: React.FC = () => {
         onBankSelect,
         isAccountOptionsLoading,
         handleAddBank,
-        /*
         walletAddresses,
         walletComboBoxOptions,
         selectedWalletAddress,
         onWalletSelect,
-        */
+        handleAddWallet,
     } = useAccountOptions();
 
     const {
@@ -262,7 +261,7 @@ const ProfilePage: React.FC = () => {
             </div>
 
             {/* SECCIÓN DE CUENTAS Y WALLETS */}
-            {/* Wallets 
+            {/* Wallets */}
             <div className="mb-6 px-2">
                 <div className="text-sm font-bold text-[#020F1E] truncate mb-2">
                     Direcciones guardadas
@@ -277,7 +276,7 @@ const ProfilePage: React.FC = () => {
                 ) : (
                     <button
                         type="button"
-                        onClick={() => console.log('Agregar wallet')}
+                        onClick={handleAddWallet}
                         className={`
                         w-full p-2.5 flex items-center justify-center gap-3
                         border border-[#666666] rounded-[10px]
@@ -298,7 +297,6 @@ const ProfilePage: React.FC = () => {
                     </button>
                 )}
             </div>
-            */}
 
             {/* Banks */}
             <div className="mb-6 px-2">

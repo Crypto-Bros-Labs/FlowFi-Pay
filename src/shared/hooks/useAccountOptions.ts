@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { createBankOptions, createWalletOptions } from "../utils/AccountComponents";
 import type { ComboBoxOption } from "../components/ComboBoxApp";
 import bankRepository from "../../features/profile/data/repositories/bankRepository";
+import savedWalletsRepository from "../../features/profile/data/repositories/savedWalletsRepository";
 import userRepository from "../../features/login/data/repositories/userRepository";
 
 interface WalletAddress {
@@ -30,33 +31,21 @@ export const useAccountOptions = () => {
 
     const fetchWalletAddresses = async () => {
         setIsLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 1000));
 
-        const mockAddresses: WalletAddress[] = [
-            {
-                id: 'addr-1',
-                name: 'Mi Wallet',
-                address: '0x9Fc5b510185E7a218A2e5BDc8F7A14a2B8b90F123',
-                network: 'Starknet'
-            },
-            {
-                id: 'addr-2',
-                name: 'Jorge Wallet',
-                address: '0xA7b2C5d8F3e4B9c6D1E8f5A2B9C6d3E8F1A4B7C5',
-                network: 'Arbitrum'
-            },
-            {
-                id: 'addr-3',
-                name: 'Carlos Wallet',
-                address: '0x1234567890ABCDEF1234567890ABCDEF12345678',
-                network: 'Arbitrum'
-            }
-        ];
+        const userUuid = (await userRepository.getCurrentUserData())?.userUuid || 'default-uuid';
 
-        setWalletAddresses(mockAddresses);
+        const wallets = await savedWalletsRepository.getSavedWallets(userUuid);
+        const formattedWallets = wallets.map((wallet, index) => ({
+            id: index.toString(),
+            name: wallet.alias,
+            address: wallet.walletAddress,
+            network: wallet.network,
+        }));
 
-        if (mockAddresses.length > 0) {
-            setSelectedWalletAddress(mockAddresses[0].id);
+        setWalletAddresses(formattedWallets);
+
+        if (formattedWallets.length > 0) {
+            setSelectedWalletAddress(formattedWallets[0].id);
         }
         setIsLoading(false);
     };
@@ -157,6 +146,7 @@ export const useAccountOptions = () => {
         selectedBankAccount,
         onBankSelect: handleBankSelect,
         handleAddBank,
+        handleAddWallet,
 
     }
 }
