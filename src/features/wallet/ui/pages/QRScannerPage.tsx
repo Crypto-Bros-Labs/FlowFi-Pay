@@ -32,7 +32,7 @@ const QRScannerPage: React.FC<SetAmountDynamicPageProps> = (props) => {
         if (!isMountedRef.current) return;
 
         // Validar formato ethereum:[dirección]
-        const ethereumPattern = /^ethereum:(0x[a-fA-F0-9]{1,63})$/;
+        const ethereumPattern = /^ethereum:(0x[a-fA-F0-9]{1,64})$/;
 
         if (ethereumPattern.test(decodedText)) {
             setIsProcessing(true);

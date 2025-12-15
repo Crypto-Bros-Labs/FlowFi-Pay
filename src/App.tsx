@@ -20,6 +20,7 @@ import { CurrencyProvider } from './shared/contexts/CurrencyProvider';
 import SellInfoPage from './features/charge/ui/pages/SellInfoPage';
 import TeamPage from './features/profile/ui/pages/TeamPage';
 import AddMemberPage from './features/profile/ui/pages/AddMemberPage';
+import SelectWalletDynamicPage from './features/wallet/ui/pages/SelectWalletDynamicPage';
 
 
 function App() {
@@ -138,6 +139,15 @@ function App() {
               element={
                 <ProtectedRoute>
                   <SelectTokenDynamicPage />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/select-wallet-dynamic"
+              element={
+                <ProtectedRoute>
+                  <SelectWalletDynamicPage />
                 </ProtectedRoute>
               }
             />

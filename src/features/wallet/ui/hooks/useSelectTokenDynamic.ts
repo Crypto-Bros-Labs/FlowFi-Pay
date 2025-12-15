@@ -46,7 +46,7 @@ export const useSelectTokenDynamic = ({
         if (selected) {
             // Ejecutar callback si existe
             if (transactionType == 'transfer') {
-                navigate('/set-amount-dynamic', {
+                navigate('/select-wallet-dynamic', {
                     state: {
                         token: getSelectedToken(),
                         availableCrypto: 0.0,
