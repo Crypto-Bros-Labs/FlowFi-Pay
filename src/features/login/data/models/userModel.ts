@@ -36,4 +36,12 @@ export interface UserPictureResponse {
 export type KycStatusResponse = {
     status: string;
     kycDetails: string;
+    kycUrl: string;
+};
+
+export type TeamMemberRequest = {
+    ownerUserUuid: string;
+    memberFullName: string;
+    memberEmail: string;
+    roleType: string;
 };

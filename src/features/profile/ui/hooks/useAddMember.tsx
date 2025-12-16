@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDialog } from '../../../../shared/hooks/useDialog';
 import type { ComboBoxOption } from '../../../../shared/components/ComboBoxApp';
 import TileApp from '../../../../shared/components/TileApp';
+import userRepository from '../../../login/data/repositories/userRepository';
 
 export type RoleOption = {
     id: string;
@@ -14,9 +15,8 @@ export const useAddMember = () => {
     const navigate = useNavigate();
     const { showDialog } = useDialog();
     const roleOptions: RoleOption[] = useMemo(() => [
-        { id: 'admin', label: 'Administrador' },
-        { id: 'seller', label: 'Vendedor' },
-        { id: 'cashier', label: 'Cajero' },
+        { id: 'EMPLOYEE', label: 'Empleado' },
+        { id: 'CASHIER', label: 'Cajero' },
     ], []);
 
     const [fullName, setFullName] = useState<string>('');
@@ -93,31 +93,31 @@ export const useAddMember = () => {
         setError(null);
 
         try {
-            // TODO: Reemplazar con llamada a API real
-            // const response = await teamRepository.addMember({
-            //     fullName,
-            //     email,
-            //     rol: selectedRole,
-            // });
+            const userUuid = await (await userRepository.getCurrentUserData()).userUuid || 'user-uuid-placeholder';
 
             console.log('Agregando miembro:', { fullName, email, rol: selectedRole });
 
-            // Simular delay de API
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            const success = await userRepository.createTeamMember({
+                ownerUserUuid: userUuid,
+                memberFullName: fullName,
+                memberEmail: email,
+                roleType: selectedRole,
+            });
 
-            // ✅ Mostrar diálogo de éxito
+            if (!success) {
+                throw new Error('No se pudo agregar el miembro. Intenta nuevamente.');
+            }
+
             showDialog({
                 title: 'Miembro agregado',
                 subtitle: `${fullName} ha sido agregado al equipo exitosamente.`,
                 hideBack: true,
                 nextText: 'Aceptar',
                 onNext: () => {
-                    // Navegar de vuelta al equipo
-                    navigate('/profile/team');
+                    navigate(-1);
                 },
             });
 
-            // Reset del formulario
             setFullName('');
             setEmail('');
             setSelectedRole('');

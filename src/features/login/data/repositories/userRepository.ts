@@ -1,6 +1,6 @@
 import userApiService from "../api/userApiService";
 import userLocalService from "../local/userLocalService";
-import type { KycStatusResponse, UserData } from "../models/userModel";
+import type { KycStatusResponse, TeamMemberRequest, UserData } from "../models/userModel";
 
 class UserRepository {
     async updateUser(userData: {
@@ -83,6 +83,17 @@ class UserRepository {
         catch (error) {
             console.error('Get KYC status failed:', error);
             throw error;
+        }
+    }
+
+    async createTeamMember(memberData: TeamMemberRequest): Promise<boolean> {
+        try {
+            await userApiService.createTeamMember(memberData);
+            return true;
+        }
+        catch (error) {
+            console.error('Create team member failed:', error);
+            return false;
         }
     }
 }

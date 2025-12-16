@@ -5,12 +5,10 @@ import userLocalService from "../../../login/data/local/userLocalService";
 import userRepository from "../../../login/data/repositories/userRepository";
 import { base64ToFile } from "../../../../shared/utils/dataUtils";
 import type { DialogOptions } from "../../../../shared/contexts/DialogContext";
-import { useMain } from "../../../charge/ui/hooks/useMain";
 
 export const useProfile = () => {
     const navigate = useNavigate();
     const { showDialog } = useDialog();
-    const { dynamicTokens } = useMain();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Estado para la imagen de perfil
@@ -29,6 +27,7 @@ export const useProfile = () => {
 
     // Estado kyc CAPA
     const [kycStatus, setKycStatus] = useState<string>("");
+    const [kycUrl, setKycUrl] = useState<string>("");
 
     const [isLoadingUserData, setIsLoadingUserData] = useState<boolean>(true);
 
@@ -58,7 +57,7 @@ export const useProfile = () => {
             label: 'KYC No Iniciado',
             bgColor: 'bg-gray-100',
             textColor: 'text-gray-800',
-            description: 'No has iniciado tu proceso de verificación. Debes completar el KYC para realizar ciertas operaciones. Este proceso se realiza al hacer un Retiro. ¿Quieres iniciarlo ahora?',
+            description: 'No has iniciado tu proceso de verificación. Debes completar el KYC para realizar ciertas operaciones.',
             icon: '?',
         },
     }), []);
@@ -85,38 +84,21 @@ export const useProfile = () => {
                 subtitle: info.description,
                 nextText: 'Reintentar',
                 backText: 'Cancelar',
-                onNext: () => {
-                    console.log('Reintentar KYC');
-                    navigate("/select-token-dynamic", {
-                        state: {
-                            title: 'Selecciona el token que deseas vender',
-                            tokens: dynamicTokens,
-                            transactionType: 'sell'
-                        }
-                    });
-                },
+                onNext: () => window.open(`${kycUrl}`, '_blank'),
+
             },
             UNKNOWN: {
                 title: 'KYC No Iniciado',
                 subtitle: info.description,
-                nextText: 'Iniciar Retiro',
+                nextText: 'Iniciar KYC',
                 backText: 'Más tarde',
-                onNext: () => {
-                    console.log('Iniciar KYC');
-                    navigate("/select-token-dynamic", {
-                        state: {
-                            title: 'Selecciona el token que deseas vender',
-                            tokens: dynamicTokens,
-                            transactionType: 'sell'
-                        }
-                    });
-                },
+                onNext: () => window.open(`${kycUrl}`, '_blank'),
             },
         };
 
         const config = dialogConfig[kycStatus] || dialogConfig.UNKNOWN;
         showDialog(config);
-    }, [dynamicTokens, kycStatus, kycStatusInfo, navigate, showDialog]);
+    }, [kycStatus, kycStatusInfo, kycUrl, showDialog]);
 
 
     async function fetchUserData() {
@@ -155,9 +137,11 @@ export const useProfile = () => {
             const kycData = await userRepository.getKycStatus(userUuid);
 
             setKycStatus(kycData.status || "");
+            setKycUrl(kycData.kycUrl || "");
         } catch (error) {
             console.error('Error fetching KYC status:', error);
             setKycStatus("unknown");
+            setKycUrl("");
         } finally {
             setIsLoadingUserData(false);
         }

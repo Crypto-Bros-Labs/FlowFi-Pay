@@ -88,8 +88,8 @@ const AddMemberPage: React.FC = () => {
             <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <h3 className="text-sm font-semibold text-blue-900 mb-2">Roles disponibles:</h3>
                 <ul className="text-xs text-blue-800 space-y-1">
-                    <li><strong>Administrador:</strong> Acceso total a todas las funciones</li>
-                    <li><strong>Vendedor:</strong> Puede vender y ver reportes</li>
+                    <li><strong>Administrador (Tu):</strong> Acceso total a todas las funciones</li>
+                    <li><strong>Empleado:</strong> Puede gestionar transacciones pero no modificar datos personales del negocio</li>
                     <li><strong>Cajero:</strong> Solo puede procesar transacciones</li>
                 </ul>
             </div>

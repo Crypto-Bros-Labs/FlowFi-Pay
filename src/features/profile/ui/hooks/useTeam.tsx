@@ -32,13 +32,13 @@ export const useTeam = () => {
             id: '2',
             fullName: 'María López',
             email: 'maria.lopez@example.com',
-            rol: 'vendedor'
+            rol: 'empleado'
         },
         {
             id: '3',
             fullName: 'Carlos Rodríguez',
             email: 'carlos.rodriguez@example.com',
-            rol: 'editor'
+            rol: 'cajero'
         },
     ]);
 

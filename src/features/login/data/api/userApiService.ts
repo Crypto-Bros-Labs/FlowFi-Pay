@@ -1,5 +1,5 @@
 import { axiosInstance, axiosFormDataInstance } from '../../../../shared/api/axiosService';
-import type { UserData, UpdateUserData, UserPictureResponse, KycStatusResponse } from '../models/userModel';
+import type { UserData, UpdateUserData, UserPictureResponse, KycStatusResponse, TeamMemberRequest } from '../models/userModel';
 
 class UserService {
     async updateUser(userData: UpdateUserData): Promise<UserData> {
@@ -24,6 +24,10 @@ class UserService {
 
     async deleteUserPicture(userUuid: string): Promise<void> {
         await axiosInstance.delete(`/user/remove-picture/${userUuid}`);
+    }
+
+    async createTeamMember(memberData: TeamMemberRequest): Promise<void> {
+        await axiosInstance.post('/user/team-member/', memberData);
     }
 }
 
