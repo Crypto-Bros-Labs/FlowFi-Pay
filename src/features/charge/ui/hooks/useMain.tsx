@@ -12,7 +12,10 @@ export const useMain = () => {
 
     const [tokens, setTokens] = useState<Token[]>([]);
     const [tokensError, setTokensError] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true); 
+
+
+
     const goToSelectToken = () => {
         navigate("/select-token");
     };

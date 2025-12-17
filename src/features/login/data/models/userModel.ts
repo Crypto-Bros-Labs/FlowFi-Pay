@@ -8,6 +8,7 @@ export interface UpdateUserData {
 
 export interface UserDataResponse {
     userUuid: string;
+    role: string;
     phone: string;
     fullName: string;
     email: string;

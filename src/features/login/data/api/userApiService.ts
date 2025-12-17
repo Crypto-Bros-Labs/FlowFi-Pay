@@ -1,4 +1,4 @@
-import { axiosInstance, axiosFormDataInstance } from '../../../../shared/api/axiosService';
+import { axiosInstance, axiosFormDataInstance, axiosWithAuthInstance } from '../../../../shared/api/axiosService';
 import type { UserData, UpdateUserData, UserPictureResponse, KycStatusResponse, TeamMemberRequest } from '../models/userModel';
 
 class UserService {
@@ -27,7 +27,7 @@ class UserService {
     }
 
     async createTeamMember(memberData: TeamMemberRequest): Promise<void> {
-        await axiosInstance.post('/user/team-member/', memberData);
+        await axiosWithAuthInstance.post('/user/team-member/', memberData);
     }
 }
 

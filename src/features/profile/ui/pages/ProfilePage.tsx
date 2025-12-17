@@ -42,6 +42,7 @@ const ProfilePage: React.FC = () => {
         isLoadingUserData,
         isUploadingImage,
         walletAddress,
+        role,
         kycStatus,
         handleKycStatusInfo,
         kycStatusInfo,
@@ -51,12 +52,13 @@ const ProfilePage: React.FC = () => {
 
     const [isCopied, setIsCopied] = useState(false);
 
+    // ✅ Determinar si es cashier
+    const isCashier = role?.toUpperCase() === 'CASHIER';
 
     const handleCopyAddress = () => {
         navigator.clipboard.writeText(walletAddress);
         setIsCopied(true);
 
-        // ✅ Resetear el estado después de 2 segundos
         setTimeout(() => {
             setIsCopied(false);
         }, 2000);
@@ -64,7 +66,6 @@ const ProfilePage: React.FC = () => {
 
     const [selectedType, setSelectedType] = useState<string | null>(currency);
 
-    // ✅ Definir opciones del menú de monedas
     const currencyMenuOptions: MenuOption[] = availableCurrencies.map((curr) => ({
         id: curr,
         label: curr,
@@ -78,7 +79,6 @@ const ProfilePage: React.FC = () => {
 
     const currentKycInfo = kycStatusInfo[kycStatus as keyof typeof kycStatusInfo] || kycStatusInfo.UNKNOWN;
 
-
     if (isAccountOptionsLoading || isLoadingUserData) {
         return (
             <div className="flex h-full flex-col items-center justify-center p-4">
@@ -88,11 +88,72 @@ const ProfilePage: React.FC = () => {
         );
     }
 
+    // ✅ Vista CASHIER - Solo datos básicos y cerrar sesión
+    if (isCashier) {
+        return (
+            <div className="flex flex-col h-full p-4">
+                <AppHeader title="Perfil" />
+
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileSelect}
+                    className="hidden"
+                />
+
+                {/* Imagen de perfil */}
+                <div className="relative w-30 h-30 mx-auto mb-6 mt-4">
+                    <div className="w-30 h-30 bg-gray-200 rounded-full flex items-center justify-center overflow-hidden">
+                        {profileImage ? (
+                            <img
+                                src={profileImage}
+                                alt="Profile"
+                                className="w-full h-full object-cover object-center"
+                            />
+                        ) : (
+                            <img
+                                src={blueUser}
+                                alt="User Icon"
+                                className="w-full h-full object-cover"
+                            />
+                        )}
+                    </div>
+                </div>
+
+                {/* Nombre */}
+                <div className="mb-6 px-4">
+                    <h2 className="text-xl font-semibold text-gray-900 text-center">
+                        {isLoadingUserData ? 'Cargando...' : fullName}
+                    </h2>
+                </div>
+
+                {/* Divider */}
+                <div className="border-t border-gray-700 mx-2 my-4"></div>
+
+                {/* Cerrar sesión */}
+                <div className="flex flex-col p-2 mt-auto mb-4">
+                    <TileApp
+                        title="Cerrar sesión"
+                        titleClassName="text-red-600 font-bold truncate max-w-[70%]"
+                        titleSize="lg"
+                        onClick={logOut}
+                        trailing={
+                            <div className="flex items-center gap-1">
+                                <BiChevronRight className="w-8 h-8" />
+                            </div>
+                        }
+                    />
+                </div>
+            </div>
+        );
+    }
+
+    // ✅ Vista ADMIN y EMPLOYEE - Layout completo
     return (
         <div className="flex flex-col h-full p-4">
             <AppHeader title="Perfil" />
 
-            {/* Input file oculto */}
             <input
                 ref={fileInputRef}
                 type="file"
@@ -125,7 +186,6 @@ const ProfilePage: React.FC = () => {
                     </div>
                 )}
 
-                {/* Botón de editar */}
                 <button
                     onClick={handleAddProfileImage}
                     disabled={isUploadingImage}
@@ -134,7 +194,6 @@ const ProfilePage: React.FC = () => {
                     <BiEdit className="w-4 h-4 text-white" />
                 </button>
 
-                {/* Botón de eliminar (solo se muestra si hay imagen personalizada) */}
                 {profileImage && !isUploadingImage && (
                     <button
                         onClick={handleRemoveProfileImage}
@@ -146,7 +205,7 @@ const ProfilePage: React.FC = () => {
                 )}
             </div>
 
-            {/* Sección del nombre del usuario */}
+            {/* Sección del nombre */}
             <div className="mb-3 px-4">
                 {isEditingName ? (
                     <div className="flex items-center gap-2">
@@ -190,12 +249,12 @@ const ProfilePage: React.FC = () => {
                     </div>
                 )}
             </div>
-            {/* Estado KYC */}
+
+            {/* KYC Status */}
             <div className="flex justify-center mb-2 px-2 gap-1 items-center">
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${currentKycInfo.bgColor} ${currentKycInfo.textColor}`}>
                     {currentKycInfo.label}
                 </span>
-                {/* ✅ Botón de ayuda */}
                 <button
                     onClick={handleKycStatusInfo}
                     className="
@@ -219,14 +278,13 @@ const ProfilePage: React.FC = () => {
                     menuOptions={currencyMenuOptions}
                     onMenuSelect={onCurrencySelect}
                     selectedMenuId={selectedType}
-
                 />
             </div>
 
             {/* Divider */}
             <div className="border-t border-gray-700 mx-2 my-4"></div>
 
-            {/* ✅ SECCIÓN DE DIRECCIÓN - Tile con Copy */}
+            {/* Dirección */}
             <div className="flex flex-col items-center mb-6 px-2">
                 <div className="w-full">
                     <TileApp
@@ -260,7 +318,6 @@ const ProfilePage: React.FC = () => {
                 </div>
             </div>
 
-            {/* SECCIÓN DE CUENTAS Y WALLETS */}
             {/* Wallets */}
             <div className="mb-6 px-2">
                 <div className="text-sm font-bold text-[#020F1E] truncate mb-2">
@@ -338,6 +395,7 @@ const ProfilePage: React.FC = () => {
             {/* Divider */}
             <div className="border-t border-gray-700 mx-2 my-4"></div>
 
+            {/* Logout */}
             <div className="flex flex-col p-2 mt-2">
                 <TileApp
                     title="Cerrar sesión"

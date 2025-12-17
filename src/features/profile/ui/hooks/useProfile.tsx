@@ -19,6 +19,7 @@ export const useProfile = () => {
     const [fullName, setFullName] = useState<string>("");
     const [isEditingName, setIsEditingName] = useState<boolean>(false);
     const [tempName, setTempName] = useState<string>("");
+    const [role, setRole] = useState<string>("");
 
     // Estado wallet 
     const [walletAddress, setWalletAddress] = useState<string>("");
@@ -109,12 +110,14 @@ export const useProfile = () => {
 
             if (userData.success) {
                 setFullName(userData.data.fullName || "Usuario");
+                setRole(userData.data.role || "");
                 setProfileImage(userData.data.image || null);
                 setWalletAddress(userData.data.normalizedPublicKey || "");
                 setFormatedBalance(parseFloat(userData.data.formatBalance) || 0.0);
                 setBalance(parseFloat(userData.data.balance) || 0.0);
             } else {
                 setFullName("Usuario");
+                setRole("");
                 setProfileImage(null);
                 setWalletAddress("");
                 setFormatedBalance(0.0);
@@ -380,6 +383,7 @@ export const useProfile = () => {
         fullName,
         isEditingName,
         tempName,
+        role,
         handleEditName,
         handleNameChange,
         handleConfirmNameChange,

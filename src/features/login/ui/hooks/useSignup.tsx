@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import userLocalService from "../../data/local/userLocalService";
 import userRepository from "../../data/repositories/userRepository";
 import { COUNTRY_CODES } from "../../../../shared/constants/countryCodes";
+import { useProfile } from "../../../profile/ui/hooks/useProfile";
 
 export const useSignup = () => {
     const [fullname, setFullname] = useState('');
@@ -16,6 +17,7 @@ export const useSignup = () => {
     const [error, setError] = useState<string | null>(null);
 
     const navigate = useNavigate();
+    const { fullName } = useProfile();
 
     useEffect(() => {
         try {
@@ -24,6 +26,8 @@ export const useSignup = () => {
 
             if (userData && userData.email) {
                 setEmail(userData.email);
+                setFullname(fullName || '');
+
                 console.log('✅ Email loaded:', userData.email);
             } else {
                 setEmail('test@example.com');
@@ -32,7 +36,7 @@ export const useSignup = () => {
             console.error('Error loading user data:', error);
             setEmail('');
         }
-    }, []);
+    }, [fullName]);
 
     const handleFullnameChange = (value: string) => {
         setFullname(value);

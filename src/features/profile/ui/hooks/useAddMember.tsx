@@ -105,7 +105,7 @@ export const useAddMember = () => {
             });
 
             if (!success) {
-                throw new Error('No se pudo agregar el miembro. Intenta nuevamente.');
+                throw new Error('No se pudo agregar el miembro este correo ya esta en uso. Intenta nuevamente con otro correo.');
             }
 
             showDialog({

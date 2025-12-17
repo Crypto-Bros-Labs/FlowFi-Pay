@@ -1,7 +1,8 @@
 import React from "react";
 import { IoPerson } from "react-icons/io5";
 import { BiHistory } from "react-icons/bi";
-import { MdGroups } from "react-icons/md"; import { GoArrowDownLeft, GoArrowUpRight } from "react-icons/go";
+import { MdGroups } from "react-icons/md";
+import { GoArrowDownLeft, GoArrowUpRight } from "react-icons/go";
 import { IoCashOutline } from "react-icons/io5";
 import { BiMoneyWithdraw, BiDollar } from "react-icons/bi";
 import AppHeader from "../../../../shared/components/AppHeader";
@@ -23,6 +24,10 @@ const MainPage: React.FC = () => {
 
     const {
         formatedBalance,
+        isLoadingUserData,
+        role,
+        kycStatus,
+        handleKycStatusInfo,
     } = useProfile();
 
     const {
@@ -32,8 +37,12 @@ const MainPage: React.FC = () => {
 
     const { goToHistory, goToProfile, goToTeam } = useAppBar();
 
+    // ✅ Determinar si es cashier
+    const isCashier = role?.toUpperCase() === 'CASHIER';
+    // ✅ Determinar si es admin
+    const isAdmin = role?.toUpperCase() === 'USER' 
 
-    if (isAccountOptionsLoading || isLoading) {
+    if (isAccountOptionsLoading || isLoading || isLoadingUserData) {
         return (
             <div className="flex h-full flex-col items-center justify-center p-4">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -42,6 +51,53 @@ const MainPage: React.FC = () => {
         );
     }
 
+    // ✅ Vista para CASHIER - Solo botón de cobrar
+    if (isCashier) {
+        return (
+            <div className="flex flex-col h-full">
+                <div className="p-2">
+                    <AppHeader
+                        title="Billetera"
+                        rightActions={[
+                            {
+                                icon: IoPerson,
+                                onClick: goToProfile,
+                                className: 'text-gray-700'
+                            }
+                        ]}
+                    />
+                </div>
+
+                {/* ✅ SECCIÓN CENTRAL - Botón Cobrar centrado */}
+                <div className="flex flex-col items-center justify-center flex-1 px-4">
+                    <button
+                        className="
+                            w-50 h-50 
+                            bg-white 
+                            rounded-full 
+                            shadow-lg 
+                            hover:shadow-xl 
+                            active:shadow-md
+                            transition-all duration-200 ease-in-out
+                            flex flex-col items-center justify-center gap-2
+                            hover:scale-105
+                            active:scale-95
+                            border-0 outline-none
+                            focus:ring-4 focus:ring-blue-100
+                        "
+                        onClick={goToSelectToken}
+                    >
+                        <BiMoneyWithdraw className="w-8 h-8 text-blue-600" />
+                        <span className="text-sm font-medium text-gray-700">
+                            Cobrar
+                        </span>
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    // ✅ Vista para EMPLOYEE y ADMIN - Layout completo sin team
     return (
         <div className="flex flex-col h-full">
             <div className="p-2">
@@ -53,11 +109,12 @@ const MainPage: React.FC = () => {
                             onClick: goToHistory,
                             className: 'text-gray-700'
                         },
-                        {
+                        // ✅ Solo mostrar Team para ADMIN
+                        ...(isAdmin ? [{
                             icon: MdGroups,
                             onClick: goToTeam,
                             className: 'text-gray-700'
-                        }
+                        }] : [])
                     ]}
                     rightActions={[
                         {
@@ -184,7 +241,13 @@ const MainPage: React.FC = () => {
                                 border-0 outline-none
                                 focus:ring-4 focus:ring-blue-100
                             "
-                            onClick={onHandleSell}
+                            onClick={() => {
+                                if (kycStatus !== 'APPROVED') {
+                                    handleKycStatusInfo();
+                                } else {
+                                    onHandleSell();
+                                }
+                            }}
                         >
                             <IoCashOutline className="w-6 h-6 text-blue-600" />
                             <span className="text-xs font-medium text-gray-700 text-center">

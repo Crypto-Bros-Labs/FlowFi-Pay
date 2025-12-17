@@ -4,6 +4,7 @@ import LoginPage from './features/login/ui/pages/LoginPage';
 import SignUpPage from './features/login/ui/pages/SignUpPage';
 import OtpPage from './features/login/ui/pages/OtpPage';
 import ProtectedRoute from './shared/pages/ProtectedRoute';
+import ProtectedLogin from './shared/pages/ProtectedLogin';
 import SetAmountPage from './features/charge/ui/pages/SetAmountPage';
 import HistoryPage from './features/history/ui/pages/HistoryPage';
 import ProfilePage from './features/profile/ui/pages/ProfilePage';
@@ -41,17 +42,17 @@ function App() {
             <Route
               path="/login"
               element={
-                <ProtectedRoute requireAuth={false}>
+                <ProtectedLogin requireAuth={false}>
                   <LoginPage />
-                </ProtectedRoute>
+                </ProtectedLogin>
               }
             />
             <Route
               path="/otp"
               element={
-                <ProtectedRoute requireAuth={false}>
+                <ProtectedLogin requireAuth={false}>
                   <OtpPage />
-                </ProtectedRoute>
+                </ProtectedLogin>
               }
             />
 
@@ -101,7 +102,10 @@ function App() {
             <Route
               path="/history"
               element={
-                <ProtectedRoute >
+                <ProtectedRoute 
+                                allowedRoles={['USER', 'EMPLOYEE']}
+
+                >
                   <HistoryPage />
                 </ProtectedRoute>
               }
@@ -128,7 +132,10 @@ function App() {
             <Route
               path="/set-amount-dynamic"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                                allowedRoles={['USER', 'EMPLOYEE']}
+
+                >
                   <SetAmountDynamicPage />
                 </ProtectedRoute>
               }
@@ -137,7 +144,10 @@ function App() {
             <Route
               path="/select-token-dynamic"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                                allowedRoles={['USER', 'EMPLOYEE']}
+
+                >
                   <SelectTokenDynamicPage />
                 </ProtectedRoute>
               }
@@ -146,7 +156,9 @@ function App() {
             <Route
               path="/select-wallet-dynamic"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                                allowedRoles={['USER', 'EMPLOYEE']}
+>
                   <SelectWalletDynamicPage />
                 </ProtectedRoute>
               }
@@ -155,7 +167,9 @@ function App() {
             <Route
               path="wallet/qr-scanner"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                                allowedRoles={['USER', 'EMPLOYEE']}
+>
                   <QRScannerPage />
                 </ProtectedRoute>
               }
@@ -164,7 +178,9 @@ function App() {
             <Route
               path="/receive"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                allowedRoles={['USER', 'EMPLOYEE']}
+                >
                   <ReceivePage />
                 </ProtectedRoute>
               }
@@ -173,7 +189,9 @@ function App() {
             <Route
               path="/team"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                allowedRoles={['USER']} 
+                >
                   <TeamPage />
                 </ProtectedRoute>
               }
@@ -182,7 +200,9 @@ function App() {
             <Route
               path='/add-member'
               element={
-                <ProtectedRoute>
+                <ProtectedRoute
+                allowedRoles={['USER']}
+                >
                   <AddMemberPage />
                 </ProtectedRoute>
               }
