@@ -58,6 +58,13 @@ const MainPage: React.FC = () => {
                 <div className="p-2">
                     <AppHeader
                         title="Billetera"
+                        leftActions={[
+                        {
+                            icon: BiHistory,
+                            onClick: goToHistory,
+                            className: 'text-gray-700'
+                        },
+                        ]}
                         rightActions={[
                             {
                                 icon: IoPerson,

@@ -5,6 +5,7 @@ import DescriptionApp from "../../../../shared/components/DescriptionApp";
 import { useSignup } from "../hooks/useSignup";
 import crypto from "/illustrations/crypto.png";
 import AppHeader from "../../../../shared/components/AppHeader";
+import { useProfile } from "../../../profile/ui/hooks/useProfile";
 
 const SignUpPage: React.FC = () => {
     const {
@@ -24,7 +25,16 @@ const SignUpPage: React.FC = () => {
         handleUpdateUser,
     } = useSignup();
 
+    const { isLoadingUserData } = useProfile();
 
+    if (isLoadingUserData || isLoading) {
+            return (
+                <div className="flex h-full flex-col items-center justify-center p-4">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                    <span className="ml-2 text-gray-500">Cargando...</span>
+                </div>
+            );
+        }
 
     return (
         <div className="flex flex-col min-h-full p-4">

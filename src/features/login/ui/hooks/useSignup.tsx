@@ -21,6 +21,7 @@ export const useSignup = () => {
 
     useEffect(() => {
         try {
+            setIsLoading(true);
             const userData = userLocalService.getUserData();
             console.log('🔍 UserData:', userData);
 
@@ -32,9 +33,12 @@ export const useSignup = () => {
             } else {
                 setEmail('test@example.com');
             }
+            
         } catch (error) {
             console.error('Error loading user data:', error);
             setEmail('');
+        } finally {
+            setIsLoading(false);
         }
     }, [fullName]);
 
