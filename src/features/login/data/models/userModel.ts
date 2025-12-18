@@ -46,3 +46,11 @@ export type TeamMemberRequest = {
     memberEmail: string;
     roleType: string;
 };
+
+export type TeamMemberResponse = {
+    memberUserUuid: string;
+    role: string;
+    fullName: string;
+    email: string;
+    isSignedIn: boolean;
+};

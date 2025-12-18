@@ -1,180 +1,201 @@
-import { useState, useCallback, useEffect, useMemo } from 'react';
-import { useDialog } from '../../../../shared/hooks/useDialog';
-import { BiTrash, BiPencil, BiCheckCircle } from "react-icons/bi";
-import { useNavigate } from 'react-router-dom';
+import { useState, useCallback, useEffect, useMemo } from "react";
+import { useDialog } from "../../../../shared/hooks/useDialog";
+import { BiTrash, BiPencil } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
+import userRepository from "../../../login/data/repositories/userRepository";
+import type { TeamMemberResponse } from "../../data/remote/teamRemoteService";
 
 export interface TeamMember {
-    id: string;
-    fullName: string;
-    email: string;
-    rol: string;
+  id: string;
+  fullName: string;
+  email: string;
+  rol: string;
+  isSignedIn?: boolean;
 }
 
 export interface TeamMemberAction {
-    id: string;
-    label: string;
-    icon: React.ReactNode;
-    color?: string;
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+  color?: string;
 }
 
+const translateRole = (role: string | undefined): string => {
+  if (!role) return "empleado";
+
+  const roleMap: Record<string, string> = {
+    employee: "Empleado",
+    EMPLOYEE: "Empleado",
+    cashier: "Cajero",
+    CASHIER: "Cajero",
+    admin: "Administrador",
+    ADMIN: "Administrador",
+    user: "Administrador",
+    USER: "Administrador",
+    administrador: "Administrador",
+    ADMINISTRADOR: "Administrador",
+    empleado: "Empleado",
+    EMPLEADO: "Empleado",
+    cajero: "Cajero",
+    CAJERO: "Cajero",
+  };
+
+  return roleMap[role] || "empleado";
+};
+
 export const useTeam = () => {
-    const { showDialog } = useDialog();
-    const navigate = useNavigate();
+  const { showDialog } = useDialog();
+  const navigate = useNavigate();
 
-    const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
-        {
-            id: '1',
-            fullName: 'Juan García',
-            email: 'juan.garcia@example.com',
-            rol: 'administrador'
-        },
-        {
-            id: '2',
-            fullName: 'María López',
-            email: 'maria.lopez@example.com',
-            rol: 'empleado'
-        },
-        {
-            id: '3',
-            fullName: 'Carlos Rodríguez',
-            email: 'carlos.rodriguez@example.com',
-            rol: 'cajero'
-        },
-    ]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-    // ✅ Obtener miembros del equipo
-    const fetchTeamMembers = useCallback(async () => {
-        setIsLoading(true);
-        setError(null);
+  const fetchTeamMembers = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
 
-        try {
-            // TODO: Reemplazar con llamada a API real
-            // const response = await teamRepository.getTeamMembers();
-            // setTeamMembers(response);
+    try {
+      // ✅ Obtener datos del usuario actual (Admin/Owner)
+      const userData = await userRepository.getCurrentUserData();
+      const userUuid = userData?.userUuid;
 
-            console.log('Fetching team members...');
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Error al cargar equipo';
-            setError(errorMessage);
-            console.error('Error fetching team members:', err);
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
+      if (!userUuid) {
+        throw new Error("No se pudo obtener el UUID del usuario");
+      }
 
-    // ✅ Eliminar miembro del equipo
-    const removeMember = useCallback(async (memberId: string) => {
-        try {
-            // TODO: Llamar a API para eliminar
-            // await teamRepository.removeMember(memberId);
+      // ✅ Crear miembro estático del admin/owner
+      const adminMember: TeamMember = {
+        id: userUuid,
+        fullName: userData?.fullName || "Administrador",
+        email: userData?.email || "",
+        rol: "Administrador",
+        isSignedIn: true,
+      };
 
-            setTeamMembers(prev => prev.filter(member => member.id !== memberId));
-            console.log('Miembro eliminado:', memberId);
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Error al eliminar miembro';
-            setError(errorMessage);
-            console.error('Error removing member:', err);
-        }
-    }, []);
+      // ✅ Obtener miembros del equipo
+      const response = await userRepository.getTeamMembers(userUuid);
 
-    // ✅ Cambiar rol del miembro
-    const changeMemberRole = useCallback(async (memberId: string, newRole: string) => {
-        try {
-            // TODO: Llamar a API para cambiar rol
-            // await teamRepository.updateMemberRole(memberId, newRole);
+      // ✅ VALIDAR que response sea un array
+      if (!Array.isArray(response)) {
+        console.warn("Response no es un array:", response);
+        setTeamMembers([adminMember]);
+        return;
+      }
 
-            setTeamMembers(prev =>
-                prev.map(member =>
-                    member.id === memberId ? { ...member, rol: newRole } : member
-                )
-            );
-            console.log('Rol actualizado:', memberId, newRole);
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Error al cambiar rol';
-            setError(errorMessage);
-            console.error('Error changing role:', err);
-        }
-    }, []);
+      // ✅ Mapear el response a TeamMember
+      const mappedMembers: TeamMember[] = response.map(
+        (member: TeamMemberResponse) => ({
+          id: member.id || member.userId || member.memberUserUuid || "",
+          fullName: member.fullName || member.name || "",
+          email: member.email || "",
+          rol: translateRole(member.rol || member.role), // ✅ Traducir rol
+          isSignedIn: member.isSignedIn || false,
+        })
+      );
 
-    // ✅ Agregar nuevo miembro
-    const addNewMember = useCallback(() => {
-        console.log('Navegar a agregar nuevo miembro');
-        navigate('/add-member');
-    }, [navigate]);
+      // ✅ Agregar el admin al inicio de la lista
+      const finalMembers = [adminMember, ...mappedMembers];
 
-    // ✅ Editar miembro
-    const editMember = useCallback((memberId: string) => {
-        console.log('Editar miembro:', memberId);
-        // navigate(`/team/edit/${memberId}`);
-    }, []);
+      setTeamMembers(finalMembers);
+      console.log("✅ Team members loaded:", finalMembers);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Error al cargar equipo";
+      setError(errorMessage);
+      console.error("❌ Error fetching team members:", err);
+      setTeamMembers([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
-    useEffect(() => {
-        fetchTeamMembers();
-    }, [fetchTeamMembers]);
+  // ✅ Eliminar miembro del equipo
+  const removeMember = useCallback(async (memberId: string) => {
+    try {
+      // TODO: Llamar a API para eliminar
+      // await teamRepository.removeMember(memberId);
 
-    // ✅ Definir acciones disponibles para cada miembro
-    const memberActions = useMemo(() => [
-        {
-            id: 'edit',
-            label: 'Editar',
-            icon: <BiPencil className="w-4 h-4" />,
-        },
-        {
-            id: 'change-role',
-            label: 'Cambiar rol',
-            icon: <BiCheckCircle className="w-4 h-4" />,
-        },
-        {
-            id: 'remove',
-            label: 'Eliminar',
-            icon: <BiTrash className="w-4 h-4" />,
-            color: 'red',
-        },
-    ], []);
+      setTeamMembers((prev) => prev.filter((member) => member.id !== memberId));
+      console.log("Miembro eliminado:", memberId);
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : "Error al eliminar miembro";
+      setError(errorMessage);
+      console.error("Error removing member:", err);
+    }
+  }, []);
 
-    // ✅ Manejar acciones del menú
-    const handleMemberAction = (memberId: string, actionId: string) => {
-        const member = teamMembers.find(m => m.id === memberId);
+  // ✅ Agregar nuevo miembro
+  const addNewMember = useCallback(() => {
+    console.log("Navegar a agregar nuevo miembro");
+    navigate("/add-member");
+  }, [navigate]);
 
-        switch (actionId) {
-            case 'edit':
-                editMember(memberId);
-                break;
+  // ✅ Editar miembro
+  const editMember = useCallback((memberId: string) => {
+    console.log("Editar miembro:", memberId);
+    // navigate(`/team/edit/${memberId}`);
+  }, []);
 
-            case 'change-role':
-                changeMemberRole(memberId, member?.rol === 'administrador' ? 'vendedor' : 'administrador');
-                break;
+  useEffect(() => {
+    fetchTeamMembers();
+  }, [fetchTeamMembers]);
 
-            case 'remove':
-                showDialog({
-                    title: 'Eliminar miembro',
-                    subtitle: `¿Estás seguro de que deseas eliminar a ${member?.fullName} del equipo?`,
-                    onNext: () => {
-                        removeMember(memberId);
-                    },
-                    nextText: 'Eliminar',
-                    backText: 'Cancelar',
-                });
-                break;
+  // ✅ Definir acciones disponibles para cada miembro
+  const memberActions = useMemo(
+    () => [
+      {
+        id: "edit",
+        label: "Editar",
+        icon: <BiPencil className="w-4 h-4" />,
+      },
+      {
+        id: "remove",
+        label: "Eliminar",
+        icon: <BiTrash className="w-4 h-4" />,
+        color: "red",
+      },
+    ],
+    []
+  );
 
-            default:
-                console.log('Acción desconocida:', actionId);
-        }
-    };
+  // ✅ Manejar acciones del menú
+  const handleMemberAction = (memberId: string, actionId: string) => {
+    const member = teamMembers.find((m) => m.id === memberId);
 
-    return {
-        teamMembers,
-        isLoading,
-        error,
-        removeMember,
-        changeMemberRole,
-        addNewMember,
-        editMember,
-        fetchTeamMembers,
-        memberActions,
-        handleMemberAction,
-    };
+    switch (actionId) {
+      case "edit":
+        editMember(memberId);
+        break;
+
+      case "remove":
+        showDialog({
+          title: "Eliminar miembro",
+          subtitle: `¿Estás seguro de que deseas eliminar a ${member?.fullName} del equipo?`,
+          onNext: () => {
+            removeMember(memberId);
+          },
+          nextText: "Eliminar",
+          backText: "Cancelar",
+        });
+        break;
+
+      default:
+        console.log("Acción desconocida:", actionId);
+    }
+  };
+
+  return {
+    teamMembers,
+    isLoading,
+    error,
+    removeMember,
+    addNewMember,
+    editMember,
+    fetchTeamMembers,
+    memberActions,
+    handleMemberAction,
+  };
 };
