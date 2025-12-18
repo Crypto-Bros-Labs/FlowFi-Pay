@@ -3,7 +3,7 @@ import { useDialog } from "../../../../shared/hooks/useDialog";
 import { BiTrash, BiPencil } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import userRepository from "../../../login/data/repositories/userRepository";
-import type { TeamMemberResponse } from "../../data/remote/teamRemoteService";
+import type { TeamMemberResponse } from "../../../login/data/models/userModel";
 
 export interface TeamMember {
   id: string;
@@ -87,10 +87,10 @@ export const useTeam = () => {
       // ✅ Mapear el response a TeamMember
       const mappedMembers: TeamMember[] = response.map(
         (member: TeamMemberResponse) => ({
-          id: member.id || member.userId || member.memberUserUuid || "",
-          fullName: member.fullName || member.name || "",
+          id: member.memberUserUuid || "",
+          fullName: member.fullName || "",
           email: member.email || "",
-          rol: translateRole(member.rol || member.role), // ✅ Traducir rol
+          rol: translateRole(member.role),
           isSignedIn: member.isSignedIn || false,
         })
       );
