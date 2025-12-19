@@ -14,7 +14,7 @@ import type {
 
 class UserService {
   async updateUser(userData: UpdateUserData): Promise<UserData> {
-    const response = await axiosInstance.put("/user", userData);
+    const response = await axiosWithAuthInstance.put("/user", userData);
     return response.data;
   }
 

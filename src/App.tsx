@@ -1,28 +1,27 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "./shared/pages/LandingPage";
-import LoginPage from './features/login/ui/pages/LoginPage';
-import SignUpPage from './features/login/ui/pages/SignUpPage';
-import OtpPage from './features/login/ui/pages/OtpPage';
-import ProtectedRoute from './shared/pages/ProtectedRoute';
-import ProtectedLogin from './shared/pages/ProtectedLogin';
-import SetAmountPage from './features/charge/ui/pages/SetAmountPage';
-import HistoryPage from './features/history/ui/pages/HistoryPage';
-import ProfilePage from './features/profile/ui/pages/ProfilePage';
-import MainPage from './features/charge/ui/pages/MainPage';
-import SelectTokenPage from './features/charge/ui/pages/SelectTokenPage';
-import AddAccountPage from './features/profile/ui/pages/AddAccountPage';
-import AddWalletPage from './features/profile/ui/pages/AddWalletPage';
-import { DialogProvider } from './shared/contexts/DialogProvider';
-import SetAmountDynamicPage from './features/wallet/ui/pages/SetAmountDynamicPage';
-import SelectTokenDynamicPage from './features/wallet/ui/pages/SelectTokenDynamicPage';
-import ReceivePage from './features/wallet/ui/pages/ReceivePage';
-import QRScannerPage from './features/wallet/ui/pages/QRScannerPage';
-import { CurrencyProvider } from './shared/contexts/CurrencyProvider';
-import SellInfoPage from './features/charge/ui/pages/SellInfoPage';
-import TeamPage from './features/profile/ui/pages/TeamPage';
-import AddMemberPage from './features/profile/ui/pages/AddMemberPage';
-import SelectWalletDynamicPage from './features/wallet/ui/pages/SelectWalletDynamicPage';
-
+import LoginPage from "./features/login/ui/pages/LoginPage";
+import SignUpPage from "./features/login/ui/pages/SignUpPage";
+import OtpPage from "./features/login/ui/pages/OtpPage";
+import ProtectedRoute from "./shared/pages/ProtectedRoute";
+import ProtectedLogin from "./shared/pages/ProtectedLogin";
+import SetAmountPage from "./features/charge/ui/pages/SetAmountPage";
+import HistoryPage from "./features/history/ui/pages/HistoryPage";
+import ProfilePage from "./features/profile/ui/pages/ProfilePage";
+import MainPage from "./features/charge/ui/pages/MainPage";
+import SelectTokenPage from "./features/charge/ui/pages/SelectTokenPage";
+import AddAccountPage from "./features/profile/ui/pages/AddAccountPage";
+import AddWalletPage from "./features/profile/ui/pages/AddWalletPage";
+import { DialogProvider } from "./shared/contexts/DialogProvider";
+import SetAmountDynamicPage from "./features/wallet/ui/pages/SetAmountDynamicPage";
+import SelectTokenDynamicPage from "./features/wallet/ui/pages/SelectTokenDynamicPage";
+import ReceivePage from "./features/wallet/ui/pages/ReceivePage";
+import QRScannerPage from "./features/wallet/ui/pages/QRScannerPage";
+import { CurrencyProvider } from "./shared/contexts/CurrencyProvider";
+import SellInfoPage from "./features/charge/ui/pages/SellInfoPage";
+import TeamPage from "./features/profile/ui/pages/TeamPage";
+import AddMemberPage from "./features/profile/ui/pages/AddMemberPage";
+import SelectWalletDynamicPage from "./features/wallet/ui/pages/SelectWalletDynamicPage";
 
 function App() {
   return (
@@ -31,12 +30,7 @@ function App() {
         <DialogProvider>
           <Routes>
             <Route path="/" element={<LandingPage />} />
-            <Route
-              path="/recovery-order/:id"
-              element={
-                <SellInfoPage />
-              }
-            />
+            <Route path="/recovery-order/:id" element={<SellInfoPage />} />
 
             {/* Rutas públicas (redirigen si está autenticado) */}
             <Route
@@ -57,7 +51,8 @@ function App() {
             />
 
             {/* Rutas privadas */}
-            <Route path='/signup'
+            <Route
+              path="/signup"
               element={
                 <ProtectedRoute>
                   <SignUpPage />
@@ -65,7 +60,7 @@ function App() {
               }
             />
             <Route
-              path='/select-token'
+              path="/select-token"
               element={
                 <ProtectedRoute>
                   <SelectTokenPage />
@@ -74,7 +69,7 @@ function App() {
             />
 
             <Route
-              path='/add-account'
+              path="/add-account"
               element={
                 <ProtectedRoute>
                   <AddAccountPage />
@@ -82,7 +77,7 @@ function App() {
               }
             />
             <Route
-              path='/add-wallet'
+              path="/add-wallet"
               element={
                 <ProtectedRoute>
                   <AddWalletPage />
@@ -93,7 +88,7 @@ function App() {
             <Route
               path="/set-amount"
               element={
-                <ProtectedRoute >
+                <ProtectedRoute>
                   <SetAmountPage />
                 </ProtectedRoute>
               }
@@ -102,10 +97,7 @@ function App() {
             <Route
               path="/history"
               element={
-                <ProtectedRoute 
-                                allowedRoles={['USER', 'EMPLOYEE']}
-
-                >
+                <ProtectedRoute>
                   <HistoryPage />
                 </ProtectedRoute>
               }
@@ -114,7 +106,7 @@ function App() {
             <Route
               path="/profile"
               element={
-                <ProtectedRoute >
+                <ProtectedRoute>
                   <ProfilePage />
                 </ProtectedRoute>
               }
@@ -123,7 +115,7 @@ function App() {
             <Route
               path="/main"
               element={
-                <ProtectedRoute >
+                <ProtectedRoute>
                   <MainPage />
                 </ProtectedRoute>
               }
@@ -132,10 +124,7 @@ function App() {
             <Route
               path="/set-amount-dynamic"
               element={
-                <ProtectedRoute
-                                allowedRoles={['USER', 'EMPLOYEE']}
-
-                >
+                <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
                   <SetAmountDynamicPage />
                 </ProtectedRoute>
               }
@@ -144,10 +133,7 @@ function App() {
             <Route
               path="/select-token-dynamic"
               element={
-                <ProtectedRoute
-                                allowedRoles={['USER', 'EMPLOYEE']}
-
-                >
+                <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
                   <SelectTokenDynamicPage />
                 </ProtectedRoute>
               }
@@ -156,9 +142,7 @@ function App() {
             <Route
               path="/select-wallet-dynamic"
               element={
-                <ProtectedRoute
-                                allowedRoles={['USER', 'EMPLOYEE']}
->
+                <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
                   <SelectWalletDynamicPage />
                 </ProtectedRoute>
               }
@@ -167,9 +151,7 @@ function App() {
             <Route
               path="wallet/qr-scanner"
               element={
-                <ProtectedRoute
-                                allowedRoles={['USER', 'EMPLOYEE']}
->
+                <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
                   <QRScannerPage />
                 </ProtectedRoute>
               }
@@ -178,9 +160,7 @@ function App() {
             <Route
               path="/receive"
               element={
-                <ProtectedRoute
-                allowedRoles={['USER', 'EMPLOYEE']}
-                >
+                <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
                   <ReceivePage />
                 </ProtectedRoute>
               }
@@ -189,25 +169,20 @@ function App() {
             <Route
               path="/team"
               element={
-                <ProtectedRoute
-                allowedRoles={['USER']} 
-                >
+                <ProtectedRoute allowedRoles={["USER"]}>
                   <TeamPage />
                 </ProtectedRoute>
               }
             />
 
             <Route
-              path='/add-member'
+              path="/add-member"
               element={
-                <ProtectedRoute
-                allowedRoles={['USER']}
-                >
+                <ProtectedRoute allowedRoles={["USER"]}>
                   <AddMemberPage />
                 </ProtectedRoute>
               }
             />
-
           </Routes>
         </DialogProvider>
       </CurrencyProvider>
