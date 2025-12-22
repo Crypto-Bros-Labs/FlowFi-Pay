@@ -1,0 +1,192 @@
+import React, { useState } from "react";
+import HeaderModal from "../../../../shared/components/HeaderModal";
+import ButtonApp from "../../../../shared/components/ButtonApp";
+import { useBuyInfo } from "../hooks/useBuyInfo";
+import TileApp from "../../../../shared/components/TileApp";
+import type { Token } from "../../../charge/data/local/tokenLocalService";
+import { BiCheck, BiCopy } from "react-icons/bi";
+
+export interface BuyInfoData {
+  amountFiat: string;
+  amountToken: string;
+  tokenSymbol: string;
+  networkName: string;
+  orderId: string;
+  clabe: string;
+  beneficiaryName: string;
+}
+
+interface BuyInfoPanelProps {
+  onClose?: () => void;
+  onContinue?: () => void;
+  token?: Token;
+  buyInfoData?: BuyInfoData;
+  orderId?: string;
+  clabe?: string;
+  beneficiaryName?: string;
+}
+
+const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
+  onClose,
+  onContinue,
+  token,
+  buyInfoData,
+  orderId,
+  clabe,
+  beneficiaryName,
+}) => {
+  const { amounts } = useBuyInfo();
+
+  const [isCopiedClabe, setIsCopiedClabe] = useState(false);
+
+  const amountFiat = buyInfoData?.amountFiat || amounts?.amountFiat;
+  const amountToken = buyInfoData?.amountToken || amounts?.amountToken;
+  const tokenSymbol = buyInfoData?.tokenSymbol || token?.symbol;
+  const networkName = buyInfoData?.networkName || token?.network;
+  const orderIdValue = buyInfoData?.orderId || orderId;
+  const clabeValue = buyInfoData?.clabe || clabe;
+  const beneficiaryNameValue = buyInfoData?.beneficiaryName || beneficiaryName;
+
+  const handleCopyClabe = () => {
+    navigator.clipboard.writeText(clabeValue || "");
+    setIsCopiedClabe(true);
+
+    setTimeout(() => {
+      setIsCopiedClabe(false);
+    }, 2000);
+  };
+
+  return (
+    <div className="bg-white rounded-[1.25rem] w-full h-[80vh] md:h-[90vh] max-w-md p-4 flex flex-col border-2 border-[#3E5EF5] shadow-lg">
+      {/* Header */}
+      <HeaderModal isModal={true} onBack={onClose} onClose={onClose} />
+
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Contenido scrollable */}
+        <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center p-2">
+          {/* Título principal */}
+          <div className="text-center mb-6 w-full py-2">
+            <h1 className="text-2xl font-bold text-[#020F1E]">
+              Completa tu compra
+            </h1>
+            <p className="text-sm text-gray-500 mt-2">
+              Transfiere los fondos a la siguiente cuenta bancaria
+            </p>
+          </div>
+
+          {/* Información de cuenta bancaria */}
+          <div className="w-full max-w-xs">
+            {/* CLABE */}
+            <TileApp
+              title="CLABE"
+              subtitle={clabeValue}
+              subtitleClassName="text-sm font-mono text-[#020F1E] break-all"
+              titleClassName="text-base text-[#666666]"
+              className="mb-3"
+              trailing={
+                <button
+                  onClick={handleCopyClabe}
+                  className="
+                    flex items-center justify-center
+                    w-10 h-10
+                    rounded-full
+                    bg-blue-100
+                    hover:bg-blue-200
+                    transition-colors duration-200
+                    cursor-pointer
+                    flex-shrink-0
+                  "
+                  title="Copiar CLABE"
+                >
+                  {isCopiedClabe ? (
+                    <BiCheck className="w-5 h-5 text-green-600" />
+                  ) : (
+                    <BiCopy className="w-5 h-5 text-blue-600" />
+                  )}
+                </button>
+              }
+            />
+
+            {/* Beneficiario */}
+            <TileApp
+              title="A nombre de"
+              titleClassName="text-base text-[#666666]"
+              trailing={
+                <span className="text-base font-semibold text-[#020F1E]">
+                  {beneficiaryNameValue || "—"}
+                </span>
+              }
+              className="mb-3"
+            />
+
+            {/* Monto a enviar (Fiat) */}
+            <TileApp
+              title="Monto a enviar"
+              titleClassName="text-base text-[#666666]"
+              trailing={
+                <span className="text-base font-semibold text-[#020F1E]">
+                  {amountFiat} MXN
+                </span>
+              }
+              className="mb-3"
+            />
+
+            {/* Recibirás (Crypto) */}
+            <TileApp
+              title={`Recibirás (${tokenSymbol})`}
+              titleClassName="text-base text-[#666666]"
+              trailing={
+                <span className="text-base font-semibold text-[#020F1E]">
+                  {amountToken}
+                </span>
+              }
+              className="mb-3"
+            />
+
+            {/* Red */}
+            <TileApp
+              title="Red"
+              titleClassName="text-base text-[#666666]"
+              trailing={
+                <span className="text-base font-semibold text-[#020F1E]">
+                  {networkName}
+                </span>
+              }
+              className="mb-3"
+            />
+
+            {/* ID de orden */}
+            <TileApp
+              title="ID de orden"
+              titleClassName="text-base text-[#666666]"
+              trailing={
+                <span className="text-xs font-mono text-[#666666]">
+                  {orderIdValue || "—"}
+                </span>
+              }
+            />
+          </div>
+        </div>
+
+        {/* Footer - fijo al final */}
+        <div className="flex-shrink-0 space-y-3 border-t border-gray-200 pt-4 mt-4">
+          <div className="px-2">
+            <p className="text-sm text-[#666666] text-center">
+              Realiza la transferencia y confirma una vez completada
+            </p>
+          </div>
+
+          <ButtonApp
+            text="He realizado la transferencia"
+            textSize="text-sm"
+            paddingVertical="py-2"
+            isMobile={true}
+            onClick={onContinue}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BuyInfoPanel;
