@@ -211,7 +211,6 @@ const MainPage: React.FC = () => {
 
             {/* Botón Comprar */}
             <button
-              disabled={true}
               className="
                                 flex flex-col items-center justify-center gap-2
                                 w-20 h-20
