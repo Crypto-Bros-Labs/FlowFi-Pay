@@ -35,7 +35,6 @@ axiosInstance.interceptors.response.use(
 
       // Opcional: redirigir al login
       window.location.href = "/login";
-
       // O si usas React Router, podrías usar:
       // window.location.reload();
     }

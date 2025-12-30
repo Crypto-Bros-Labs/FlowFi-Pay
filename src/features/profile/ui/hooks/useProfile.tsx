@@ -66,6 +66,14 @@ export const useProfile = () => {
           "No has iniciado tu proceso de verificación. Debes completar el KYC para realizar ciertas operaciones.",
         icon: "?",
       },
+      INVALID: {
+        label: "KYC No Disponible",
+        bgColor: "bg-gray-100",
+        textColor: "text-gray-800",
+        description:
+          "El servicio de verificación KYC no está disponible en este momento. Por favor, intenta más tarde o contacta al soporte.",
+        icon: "!",
+      },
     }),
     []
   );
@@ -116,6 +124,12 @@ export const useProfile = () => {
         nextText: "Iniciar KYC",
         backText: "Más tarde",
         onNext: openKycUrl,
+      },
+      INVALID: {
+        title: "KYC No Disponible",
+        subtitle: info.description,
+        nextText: "Entendido",
+        hideBack: true,
       },
     };
 

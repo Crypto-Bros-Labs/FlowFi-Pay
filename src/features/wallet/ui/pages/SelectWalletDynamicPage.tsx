@@ -42,6 +42,7 @@ const SelectWalletDynamicPage: React.FC<SelectWalletDynamicPageProps> = (
     isValidAddress,
     canContinue,
     title,
+    typeTransaction,
   } = useSelectWalletDynamic(props);
 
   // ✅ Hook de cuentas
@@ -89,7 +90,7 @@ const SelectWalletDynamicPage: React.FC<SelectWalletDynamicPageProps> = (
         />
 
         {/* Descripción/Título */}
-        {props.typeTransaction == "transfer" ? (
+        {typeTransaction === "transfer" ? (
           <div className="px-4 mt-4">
             <DescriptionApp
               title="¿A qué wallet deseas enviar?"
