@@ -138,21 +138,20 @@ export const useProfile = () => {
   }, [kycStatus, kycStatusInfo, openKycUrl, showDialog]);
 
   async function fetchUserData() {
-    setIsLoadingUserData(true);
     try {
       const userUuid =
         (await userRepository.getCurrentUserData())?.userUuid || "default-uuid";
       const userData = await userRepository.fetchUserData(userUuid);
 
       if (userData.success) {
-        setFullName(userData.data.fullName || "Usuario");
+        setFullName(userData.data.fullName || "");
         setRole(userData.data.role || "");
         setProfileImage(userData.data.image || null);
         setWalletAddress(userData.data.normalizedPublicKey || "");
         setFormatedBalance(parseFloat(userData.data.formatBalance) || 0.0);
         setBalance(parseFloat(userData.data.balance) || 0.0);
       } else {
-        setFullName("Usuario");
+        setFullName("");
         setRole("");
         setProfileImage(null);
         setWalletAddress("");
@@ -162,16 +161,13 @@ export const useProfile = () => {
       }
     } catch (error) {
       console.error("Error in fetchUserData:", error);
-      setFullName("Usuario");
+      setFullName("");
       setProfileImage(null);
-    } finally {
-      setIsLoadingUserData(false);
-    }
+    } 
   }
 
   async function fetchKycStatus() {
     try {
-      setIsLoadingUserData(true);
       const userUuid =
         (await userRepository.getCurrentUserData())?.userUuid || "default-uuid";
       const kycData = await userRepository.getKycStatus(userUuid);
@@ -182,15 +178,27 @@ export const useProfile = () => {
       console.error("Error fetching KYC status:", error);
       setKycStatus("unknown");
       setKycUrl("");
-    } finally {
-      setIsLoadingUserData(false);
-    }
+    } 
   }
 
   useEffect(() => {
-    fetchUserData();
-    fetchKycStatus();
-  }, []);
+  let active = true;
+
+  (async () => {
+    setIsLoadingUserData(true);
+    try {
+      await fetchUserData();          // se espera esta
+      if (!active) return;
+      await fetchKycStatus();         // luego esta
+    } finally {
+      if (active) setIsLoadingUserData(false);
+    }
+  })();
+
+  return () => {
+    active = false; // evita updates si el componente desmonta
+  };
+}, []);
 
   const logOut = () => {
     showDialog({
