@@ -5,18 +5,22 @@ import { AxiosError } from "axios";
 import type { RecoveryOrderModel } from "../../../history/data/models/historyModel";
 
 class SellRepository {
-    async createOffRamp(data: OffRampData): Promise<{ success: boolean, kycUrl: string | null, status: string | null }> {
+    async createOffRamp(data: OffRampData): Promise<{ success: boolean, kycUrl: string | null, status: string | null, destinationWalletAddress: string | null }> {
         try {
             const response = await sellApiService.createOffRamp(data);
             console.log('📨 API Response completa:', response);
-            if (response.kycStatus === "APPROVED") {
+            if (response.destinationWalletAddress !== undefined) {
+                console.log('🏦 Destination Wallet Address:', response.destinationWalletAddress);
+                return { success: true, kycUrl: null, status: null, destinationWalletAddress: response.destinationWalletAddress };
+            }
+            else if (response.kycStatus === "APPROVED") {
                 if (response.successTransfer) {
-                    return { success: true, kycUrl: null, status: response.kycStatus };
+                    return { success: true, kycUrl: null, status: response.kycStatus, destinationWalletAddress: null };
                 } else {
-                    return { success: false, kycUrl: null, status: response.kycStatus };
+                    return { success: false, kycUrl: null, status: response.kycStatus, destinationWalletAddress: null };
                 }
             } else {
-                return { success: false, kycUrl: response.kycUrl, status: response.kycStatus };
+                return { success: false, kycUrl: response.kycUrl, status: response.kycStatus, destinationWalletAddress: null };
             }
         } catch (error) {
             console.error('Failed to create off-ramp:', error);
@@ -27,17 +31,17 @@ class SellRepository {
                 const data = response?.data?.data as OffRampResponse | undefined;
                 if (data && data.kycStatus === "APPROVED") {
                     if (data.successTransfer) {
-                        return { success: true, kycUrl: null, status: data.kycStatus };
+                        return { success: true, kycUrl: null, status: data.kycStatus, destinationWalletAddress: data.destinationWalletAddress || null };
                     } else {
-                        return { success: false, kycUrl: null, status: data.kycStatus };
+                        return { success: false, kycUrl: null, status: data.kycStatus, destinationWalletAddress: data.destinationWalletAddress || null };
                     }
                 } else if (data) {
-                    return { success: false, kycUrl: data.kycUrl, status: data.kycStatus };
+                    return { success: false, kycUrl: data.kycUrl, status: data.kycStatus, destinationWalletAddress: data.destinationWalletAddress || null };
                 } else {
-                    return { success: false, kycUrl: null, status: null };
+                    return { success: false, kycUrl: null, status: null, destinationWalletAddress: null };
                 }
             } else {
-                return { success: false, kycUrl: null, status: null };
+                return { success: false, kycUrl: null, status: null, destinationWalletAddress: null };
             }
         }
     }

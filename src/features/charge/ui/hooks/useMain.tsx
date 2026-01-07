@@ -3,9 +3,11 @@ import { useAccountOptions } from "../../../../shared/hooks/useAccountOptions";
 import { useCallback, useEffect, useState } from "react";
 import type { Token } from "../../data/local/tokenLocalService";
 import tokenRepository from "../../data/repositories/tokenRepository";
+import { useDialog } from "../../../../shared/hooks/useDialog";
 
 export const useMain = () => {
   const navigate = useNavigate();
+  const { showDialog } = useDialog();
   const { isAccountOptionsLoading } = useAccountOptions();
 
   const [tokens, setTokens] = useState<Token[]>([]);
@@ -74,12 +76,32 @@ export const useMain = () => {
   };
 
   const onHandleSell = () => {
-    navigate("/select-token-dynamic", {
-      state: {
-        title: "Selecciona el token que deseas vender",
-        tokens: dynamicTokens,
-        transactionType: "sell",
+    showDialog({
+      title: "¿Retiras en Starknet con FlowFi Pay?",
+      subtitle:
+        "Si tienes balance puedes retirar directamente con FlowFi Pay sin necesidad de transferir tus criptomonedas a través de nuestro proveedor externo.",
+      onNext: () => {
+        navigate("/select-token-dynamic", {
+          state: {
+            title: "Selecciona el token que deseas vender",
+            tokens: dynamicTokens,
+            transactionType: "sell",
+            externalAddress: false,
+          },
+        });
       },
+      nextText: "Sí",
+      onBack: () => {
+        navigate("/select-token-dynamic", {
+          state: {
+            title: "Selecciona el token que deseas vender",
+            tokens: buyTokens,
+            transactionType: "sell",
+            externalAddress: true,
+          },
+        });
+      },
+      backText: "No",
     });
   };
 

@@ -16,6 +16,7 @@ import type { DynamicToken } from "../hooks/useSelectTokenDynamic";
 import { useProfile } from "../../../profile/ui/hooks/useProfile";
 import ModalWrapper from "../../../../shared/components/ModalWrapper";
 import BuyInfoPanel from "../components/BuyInfoPanel";
+import ExternalSellInfoPanel from "../components/ExternalSellInfoPanel";
 
 export interface SetAmountDynamicPageProps {
   title?: string;
@@ -23,6 +24,7 @@ export interface SetAmountDynamicPageProps {
   availableCrypto?: number;
   showSwitchCoin?: boolean;
   typeTransaction?: TransactionType;
+  externalAddress?: boolean;
   onContinue?: (amount: string, token: DynamicToken) => void;
 }
 
@@ -42,6 +44,8 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
   const typeTransaction =
     props.typeTransaction || location.state?.typeTransaction || "buy";
   const onContinue = props.onContinue || location.state?.onContinue;
+  const externalAddress =
+    props.externalAddress ?? location.state?.externalAddress;
 
   const {
     amountFiat,
@@ -71,7 +75,11 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
     showModalBuyResult,
     handleCloseBuyModal,
     buyResponse,
-  } = useSetAmountDynamic(token, typeTransaction);
+    sellInfoData,
+    showSellInfoModal,
+    closeSellModal,
+    handleContinueTransaction,
+  } = useSetAmountDynamic(token, typeTransaction, externalAddress);
 
   const { formatedBalance } = useProfile();
 
@@ -161,7 +169,7 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
       <div className="flex-1 overflow-y-auto px-4 py-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none]">
         <div className="flex flex-col h-full">
           {/* Available Crypto Section */}
-          {availableCrypto !== undefined && (
+          {availableCrypto !== undefined && !externalAddress && (
             <div className="flex items-center gap-2 justify-center mb-6">
               <AvailableCryptoSection
                 symbol={token.symbol}
@@ -359,7 +367,7 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
       {/* Fixed Bottom Section */}
       <div className="flex-shrink-0 px-4 ">
         {/* ✅ Error Balance Message */}
-        {errorBalance && (
+        {errorBalance && !externalAddress && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-center">
             <p className="text-sm font-medium text-red-600">{errorBalance}</p>
           </div>
@@ -461,6 +469,18 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
           />
         </ModalWrapper>
       )}
+
+            {showSellInfoModal && (
+        <ModalWrapper onClose={closeSellModal}>
+          <ExternalSellInfoPanel
+            onClose={closeSellModal}
+            onContinue={handleContinueTransaction}
+            sellData={sellInfoData ?? undefined}
+            token={token}
+          />
+        </ModalWrapper>
+      )}
+
     </div>
   );
 };

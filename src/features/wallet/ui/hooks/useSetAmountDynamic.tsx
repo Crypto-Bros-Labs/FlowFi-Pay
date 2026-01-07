@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import sellRepository from "../../../charge/data/repositories/sellRepository";
 import { useProfile } from "../../../profile/ui/hooks/useProfile";
 import type { BuyInfoData } from "../components/BuyInfoPanel";
+import type { SellData } from "../../../charge/data/local/sellLocalService";
 
 export type TransactionType = "transfer" | "buy" | "sell";
 export type CurrencyMode = "fiat" | "crypto";
@@ -25,6 +26,7 @@ export interface SetAmountDynamicPageParams {
   availableCrypto?: number;
   showSwitchCoin?: boolean;
   typeTransaction: TransactionType;
+  externalAddress?: boolean;
   onContinue?: (amount: string, token: DynamicToken) => void;
   redirectPath?: string;
 }
@@ -33,7 +35,8 @@ const MXN_UUID = "92b61c69-a81f-475a-9bc7-37c85efc74c6";
 
 export const useSetAmountDynamic = (
   token: DynamicToken,
-  typeTransaction: TransactionType
+  typeTransaction: TransactionType,
+  externalAddress?: boolean
 ) => {
   const [amountFiat, setAmountFiat] = useState<string>("0");
   const [amountToken, setAmountToken] = useState<string>("0.00");
@@ -87,6 +90,8 @@ export const useSetAmountDynamic = (
 
   // Estado para retirar
   const [kycUrl, setKycUrl] = useState<string | null>(null);
+  const [showSellInfoModal, setShowSellInfoModal] = useState<boolean>(false);
+  const [sellInfoData, setSellInfoData] = useState<SellData | null>(null);
 
   const selectedCurrency = useMemo(
     () => ({
@@ -563,6 +568,7 @@ export const useSetAmountDynamic = (
           fiatCurrencyUuid: "92b61c69-a81f-475a-9bc7-37c85efc74c6",
           userBankInformationUuid: bankAccountUuid,
           amount: parseFloat(amountToken) || 0,
+          isExternalWallet: externalAddress || false,
         });
 
         if (response.kycUrl !== null) {
@@ -605,14 +611,25 @@ export const useSetAmountDynamic = (
               return;
           }
         } else if (response.success && response.kycUrl === null) {
-          showDialog({
-            title: "Transacción exitosa",
-            subtitle:
-              "Tu retiro ha sido procesado exitosamente. Se acreditará en tu cuenta bancaria en breve.",
-            hideBack: true,
-            nextText: "Aceptar",
-            icon: <Check className="w-8 h-8 text-green-600" />,
-          });
+          if (response.destinationWalletAddress !== null) {
+            const sellData: SellData = {
+              id: "123456",
+              destinationWalletAddress:
+                response.destinationWalletAddress.replace("ethereum:", ""),
+              kycUrl: "www.example.com/kyc",
+            };
+            setSellInfoData(sellData);
+            setShowSellInfoModal(true);
+          } else {
+            showDialog({
+              title: "Transacción exitosa",
+              subtitle:
+                "Tu retiro ha sido procesado exitosamente. Se acreditará en tu cuenta bancaria en breve.",
+              hideBack: true,
+              nextText: "Aceptar",
+              icon: <Check className="w-8 h-8 text-green-600" />,
+            });
+          }
         } else {
           console.error("Error creating off-ramp:", response);
           setQuoteError("Error al crear off-ramp");
@@ -626,6 +643,12 @@ export const useSetAmountDynamic = (
         }
       } catch (error) {
         console.error("Error processing amount:", error);
+        showDialog({
+          title: "Error al retirar fondos",
+          subtitle:
+            "Por el momento no se puede procesar tu solicitud. Inténtalo más tarde.",
+          hideBack: true,
+        });
       } finally {
         setIsLoading(false);
       }
@@ -653,6 +676,15 @@ export const useSetAmountDynamic = (
     setShowModalBuyResult(false);
     setBuyResponse(null);
   }, []);
+
+  const closeSellModal = () => {
+    setShowSellInfoModal(false);
+  };
+
+  const handleContinueTransaction = () => {
+    closeSellModal();
+    navigate("/history");
+  };
 
   return {
     amountFiat,
@@ -690,5 +722,9 @@ export const useSetAmountDynamic = (
     buyResponse,
     showModalBuyResult,
     handleCloseBuyModal,
+    showSellInfoModal,
+    closeSellModal,
+    handleContinueTransaction,
+    sellInfoData,
   };
 };

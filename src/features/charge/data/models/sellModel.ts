@@ -4,6 +4,7 @@ export interface OffRampResponse {
     details: string,
     kycStatus: string,
     kycUrl: string,
+    destinationWalletAddress?: string,
 }
 
 export interface OffRampData {
@@ -13,7 +14,7 @@ export interface OffRampData {
     fiatCurrencyUuid: string,
     userBankInformationUuid: string,
     amount: number,
-
+    isExternalWallet: boolean,
 }
 
 export interface QuoteData {

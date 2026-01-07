@@ -14,13 +14,15 @@ interface SelectTokenDynamicPageProps {
     tokens?: DynamicToken[];
     redirectPath?: string;
     transactionType?: 'buy' | 'sell' | 'transfer';
+    externalAddress?: boolean;
 }
 
 const SelectTokenDynamicPage: React.FC<SelectTokenDynamicPageProps> = ({
     title,
     tokens = [],
     redirectPath,
-    transactionType
+    transactionType,
+    externalAddress,
 }) => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -34,6 +36,7 @@ const SelectTokenDynamicPage: React.FC<SelectTokenDynamicPageProps> = ({
     const passedTitle = title || location.state?.title;
     const passedRedirectPath = redirectPath || location.state?.redirectPath;
     const passedTransactionType = transactionType || location.state?.transactionType;
+    const passedExternalAddress = externalAddress ?? location.state?.externalAddress;
 
     const {
         selectedToken,
@@ -43,7 +46,8 @@ const SelectTokenDynamicPage: React.FC<SelectTokenDynamicPageProps> = ({
     } = useSelectTokenDynamic({
         tokens: passedTokens,
         redirectPath: passedRedirectPath,
-        transactionType: passedTransactionType
+        transactionType: passedTransactionType,
+        externalAddress: passedExternalAddress,
     });
 
     const { goToHistory, goToProfile } = useAppBar();

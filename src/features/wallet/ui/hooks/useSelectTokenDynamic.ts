@@ -13,12 +13,14 @@ interface UseSelectTokenDynamicProps {
   tokens: DynamicToken[];
   redirectPath?: string;
   transactionType?: "buy" | "sell" | "transfer";
+  externalAddress?: boolean;
 }
 
 export const useSelectTokenDynamic = ({
   tokens,
   redirectPath,
   transactionType,
+  externalAddress,
 }: UseSelectTokenDynamicProps) => {
   const navigate = useNavigate();
   const [selectedToken, setSelectedToken] = useState<string | null>(null);
@@ -74,6 +76,7 @@ export const useSelectTokenDynamic = ({
             availableCrypto: 0.0,
             typeTransaction: "sell",
             title: "Vender",
+            externalAddress: externalAddress ?? false,
           },
         });
       }
