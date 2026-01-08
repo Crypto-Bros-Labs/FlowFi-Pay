@@ -19,13 +19,6 @@ export const useMain = () => {
   };
 
   const buyTokens = [
-    {
-      id: "1",
-      symbol: "USDC",
-      name: "USD Coin",
-      network: "Ethereum",
-      iconUrl: "https://cryptologos.cc/logos/usd-coin-usdc-logo.png",
-    },
     ...tokens
       .filter(
         (token) =>

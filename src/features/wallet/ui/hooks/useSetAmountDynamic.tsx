@@ -618,6 +618,10 @@ export const useSetAmountDynamic = (
                 response.destinationWalletAddress.replace("ethereum:", ""),
               kycUrl: "www.example.com/kyc",
             };
+            sellRepository.setAmounts({
+              amountFiat: amountFiat,
+              amountToken: amountToken,
+            })
             setSellInfoData(sellData);
             setShowSellInfoModal(true);
           } else {
