@@ -22,6 +22,8 @@ export interface QuoteData {
     fromUuuid: string,
     toUuid: string,
     amountFiat: string,
+    type: string,
+    isCryptoResponse: boolean,
 }
 
 export interface QuoteResponse {

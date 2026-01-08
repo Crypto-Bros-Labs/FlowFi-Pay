@@ -115,29 +115,52 @@ export const useSetAmountDynamic = (
   const fetchQuote = useCallback(
     async (fiatAmount: string, cryptoAmount: string) => {
       if (typeTransaction === "sell") {
-        const numericAmount = parseFloat(fiatAmount);
-        if (!numericAmount || numericAmount <= 0) {
-          setAmountFiat("0");
-          return;
-        }
-
         setIsQuoteLoading(true);
         setQuoteError(null);
 
         try {
-          // ✅ Usar la API para obtener el quote automáticamente
-          const response = await sellRepository.getQuote({
-            providerUuid: "237b0541-5521-4fda-8bba-05ee4d484795",
-            fromUuuid: token.id || "",
-            toUuid: MXN_UUID,
-            amountFiat: fiatAmount,
-          });
-
-          if (response.success && response.cryptoAmount) {
-            setAmountToken(response.cryptoAmount);
+          if (editingMode === "fiat") {
+            const numericAmount = parseFloat(fiatAmount);
+            if (!numericAmount || numericAmount <= 0) {
+              setAmountFiat("0");
+              return;
+            }
+            // ✅ Usar la API para obtener el quote automáticamente
+            const response = await sellRepository.getQuote({
+              providerUuid: "237b0541-5521-4fda-8bba-05ee4d484795",
+              fromUuuid: MXN_UUID,
+              toUuid: token.id || "",
+              amountFiat: fiatAmount,
+              type: "OFF_RAMP",
+              isCryptoResponse: true,
+            });
+            if (response.success && response.cryptoAmount) {
+              setAmountToken(response.cryptoAmount);
+            } else {
+              setQuoteError("Error obteniendo cotización");
+              setAmountFiat("0");
+            }
           } else {
-            setQuoteError("Error obteniendo cotización");
-            setAmountFiat("0");
+            const numericAmount = parseFloat(cryptoAmount);
+            if (!numericAmount || numericAmount <= 0) {
+              setAmountToken("0.00");
+              return;
+            }
+            // ✅ Usar la API para obtener el quote automáticamente
+            const response = await sellRepository.getQuote({
+              providerUuid: "237b0541-5521-4fda-8bba-05ee4d484795",
+              fromUuuid:  token.id || "",
+              toUuid: MXN_UUID,
+              amountFiat: cryptoAmount,
+              type: "OFF_RAMP",
+              isCryptoResponse: false,
+            });
+            if (response.success && response.fiatAmount) {
+              setAmountFiat(response.fiatAmount);
+            } else {
+              setQuoteError("Error obteniendo cotización");
+              setAmountFiat("0");
+            }
           }
         } catch (error) {
           console.error("Error fetching quote:", error);
@@ -147,7 +170,63 @@ export const useSetAmountDynamic = (
           setIsQuoteLoading(false);
         }
         return;
-      } else if (typeTransaction === "buy" || typeTransaction === "transfer") {
+      } else if (typeTransaction === "buy"){
+      setIsQuoteLoading(true);
+        setQuoteError(null);
+
+        try {
+          if (editingMode === "fiat") {
+            const numericAmount = parseFloat(fiatAmount);
+            if (!numericAmount || numericAmount <= 0) {
+              setAmountFiat("0");
+              return;
+            }
+            // ✅ Usar la API para obtener el quote automáticamente
+            const response = await sellRepository.getQuote({
+              providerUuid: "237b0541-5521-4fda-8bba-05ee4d484795",
+              fromUuuid: MXN_UUID,
+              toUuid: token.id || "",
+              amountFiat: fiatAmount,
+              type: "ON_RAMP",
+              isCryptoResponse: true,
+            });
+            if (response.success && response.cryptoAmount) {
+              setAmountToken(response.cryptoAmount);
+            } else {
+              setQuoteError("Error obteniendo cotización");
+              setAmountFiat("0");
+            }
+          } else {
+            const numericAmount = parseFloat(cryptoAmount);
+            if (!numericAmount || numericAmount <= 0) {
+              setAmountToken("0.00");
+              return;
+            }
+            // ✅ Usar la API para obtener el quote automáticamente
+            const response = await sellRepository.getQuote({
+              providerUuid: "237b0541-5521-4fda-8bba-05ee4d484795",
+              fromUuuid:  token.id || "",
+              toUuid: MXN_UUID,
+              amountFiat: cryptoAmount,
+              type: "ON_RAMP",
+              isCryptoResponse: false,
+            });
+            if (response.success && response.fiatAmount) {
+              setAmountFiat(response.fiatAmount);
+            } else {
+              setQuoteError("Error obteniendo cotización");
+              setAmountFiat("0");
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching quote:", error);
+          setQuoteError("Error obteniendo cotización");
+          setAmountFiat("0");
+        } finally {
+          setIsQuoteLoading(false);
+        }
+        return;
+    }else if(typeTransaction === "transfer") {
         if (editingMode === "fiat") {
           const numericAmount = parseFloat(fiatAmount);
           if (!numericAmount || numericAmount <= 0) {
@@ -621,7 +700,7 @@ export const useSetAmountDynamic = (
             sellRepository.setAmounts({
               amountFiat: amountFiat,
               amountToken: amountToken,
-            })
+            });
             setSellInfoData(sellData);
             setShowSellInfoModal(true);
           } else {

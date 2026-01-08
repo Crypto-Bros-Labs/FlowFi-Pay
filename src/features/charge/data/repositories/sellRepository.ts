@@ -66,17 +66,20 @@ class SellRepository {
         }
     }
 
-    async getQuote(data: QuoteData): Promise<{ success: boolean; cryptoAmount?: string }> {
+    async getQuote(data: QuoteData): Promise<{ success: boolean; cryptoAmount?: string; fiatAmount?: string }> {
         try {
             const response = await sellApiService.getQuote(data);
 
             const cryptoAmountStr = response.displayCryptoAmount.toString();
+            const fiatAmountStr = response.fiatAmount.toString();
             sellLocalService.setAmountToken(cryptoAmountStr);
+            sellLocalService.setAmountFiat(fiatAmountStr);
 
             // ✅ Retornar el valor obtenido
             return {
                 success: true,
                 cryptoAmount: cryptoAmountStr
+                , fiatAmount: fiatAmountStr
             };
         } catch (error) {
             console.error('Failed to get quote:', error);

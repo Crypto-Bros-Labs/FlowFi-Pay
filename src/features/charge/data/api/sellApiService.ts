@@ -8,12 +8,26 @@ class SellApiService {
         return response.data.data;
     }
 
-    async getQuote(data: QuoteData): Promise<QuoteResponse> {
+    /*async getQuote(data: QuoteData): Promise<QuoteResponse> {
         const response = await axiosWithAuthInstance.get(`/flow/off-ramp/quoting/${data.providerUuid}`, {
             params: {
                 from: data.fromUuuid,
                 to: data.toUuid,
                 amount: data.amountFiat
+                
+            }
+        });
+        return response.data.data;
+    }*/
+
+    async getQuote(data: QuoteData): Promise<QuoteResponse> {
+        const response = await axiosWithAuthInstance.get(`/flow/quoting/${data.providerUuid}`, {
+            params: {
+                from: data.fromUuuid,
+                to: data.toUuid,
+                amount: data.amountFiat,
+                type: data.type,
+                isCryptoResponse: data.isCryptoResponse,
             }
         });
         return response.data.data;

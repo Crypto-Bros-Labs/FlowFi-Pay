@@ -77,6 +77,7 @@ export const useSelectTokenDynamic = ({
             typeTransaction: "sell",
             title: "Vender",
             externalAddress: externalAddress ?? false,
+            showSwitchCoin: true,
           },
         });
       }
