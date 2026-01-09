@@ -225,7 +225,13 @@ const MainPage: React.FC = () => {
                                 border-0 outline-none
                                 focus:ring-4 focus:ring-blue-100
                             "
-              onClick={onHandleBuy}
+              onClick={() => {
+                if (kycStatus !== "APPROVED") {
+                  handleKycStatusInfo();
+                } else {
+                  onHandleBuy();
+                }
+              }}
             >
               <BiDollar className="w-6 h-6 text-blue-600" />
               <span className="text-xs font-medium text-gray-700 text-center">
