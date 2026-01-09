@@ -3,7 +3,7 @@ import AppHeader from "../../../../shared/components/AppHeader";
 import { IoPerson } from "react-icons/io5";
 import TileHistory from "../components/TileHistory";
 import { useHistory } from "../hooks/useHistory";
-import { parseTransactionStatus } from "../../../../shared/utils/historyUtils";
+import { parseTransactionStatus, parseTransactionType } from "../../../../shared/utils/historyUtils";
 import { formatDateRelative } from "../../../../shared/utils/dateUtils";
 import { useNavigate } from "react-router-dom";
 import SellInfoPanel from "../../../charge/ui/components/SellInfoPanel";
@@ -352,6 +352,7 @@ const HistoryPage: React.FC = () => {
                 status={parseTransactionStatus(transaction.status!)}
                 amount={Number(transaction.cryptoAmount)}
                 id={transactionId}
+                type={parseTransactionType(transaction.type!)}
                 onCancelTransaction={cancelTransaction}
                 subtitle={formatDateRelative(transaction.createdAt)}
               />

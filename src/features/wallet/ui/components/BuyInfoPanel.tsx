@@ -177,7 +177,7 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
           </div>
 
           <ButtonApp
-            text="He realizado la transferencia"
+            text="Continuar"
             textSize="text-sm"
             paddingVertical="py-2"
             isMobile={true}

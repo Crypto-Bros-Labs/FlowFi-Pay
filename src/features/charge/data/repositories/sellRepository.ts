@@ -1,17 +1,17 @@
 import sellLocalService, { type Amounts, type SellData } from "../local/sellLocalService";
 import { sellApiService } from "../api/sellApiService";
-import type { OffRampData, OffRampResponse, QuoteData, RecoveryOrderData } from "../models/sellModel";
+import type { OffRampData, OffRampResponse, OnRampData, QuoteData, RecoveryOrderData } from "../models/sellModel";
 import { AxiosError } from "axios";
 import type { RecoveryOrderModel } from "../../../history/data/models/historyModel";
 
 class SellRepository {
-    async createOffRamp(data: OffRampData): Promise<{ success: boolean, kycUrl: string | null, status: string | null, destinationWalletAddress: string | null }> {
+    async createOffRamp(data: OffRampData): Promise<{ success: boolean, kycUrl: string | null, status: string | null, destinationWalletAddress: string | null, transactionId?: string | null }> {
         try {
             const response = await sellApiService.createOffRamp(data);
             console.log('📨 API Response completa:', response);
             if (response.destinationWalletAddress !== undefined) {
                 console.log('🏦 Destination Wallet Address:', response.destinationWalletAddress);
-                return { success: true, kycUrl: null, status: null, destinationWalletAddress: response.destinationWalletAddress };
+                return { success: true, kycUrl: null, status: null, destinationWalletAddress: response.destinationWalletAddress, transactionId: response.transactionId || null };
             }
             else if (response.kycStatus === "APPROVED") {
                 if (response.successTransfer) {
@@ -43,6 +43,16 @@ class SellRepository {
             } else {
                 return { success: false, kycUrl: null, status: null, destinationWalletAddress: null };
             }
+        }
+    }
+
+    async createOnRamp(data: OnRampData): Promise<{ success: boolean, id: string | null, clabeNumber: string | null }> {
+        try {
+            const response = await sellApiService.createOnRamp(data);
+            return { success: true, id: response.id, clabeNumber: response.bankAccountIdentifier };
+        } catch (error) {
+            console.error('Failed to create on-ramp:', error);
+            return { success: false, id: null, clabeNumber: null };
         }
     }
 

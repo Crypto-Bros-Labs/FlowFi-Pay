@@ -31,4 +31,24 @@ export const parseTransactionStatus = (status: string): TransactionStatus => {
     };
 
     return statusMap[status.toLowerCase()] || 'pending'; // Default a pending
+
+
+};
+
+export const parseTransactionType = (type: string): 'ON_RAMP' | 'OFF_RAMP' => {
+    const typeMap: Record<string, 'ON_RAMP' | 'OFF_RAMP'> = {
+        'on_ramp': 'ON_RAMP',
+        'off_ramp': 'OFF_RAMP',
+        'buy': 'ON_RAMP',
+        'sell': 'OFF_RAMP',
+        'purchase': 'ON_RAMP',
+        'withdrawal': 'OFF_RAMP',
+        'ON_RAMP': 'ON_RAMP',
+        'OFF_RAMP': 'OFF_RAMP',
+        'BUY': 'ON_RAMP',
+        'SELL': 'OFF_RAMP',
+        'PURCHASE': 'ON_RAMP',
+        'WITHDRAWAL': 'OFF_RAMP',
+    };  
+    return typeMap[type.toUpperCase()] || 'OFF_RAMP'; // Default a OFF_RAMP
 };

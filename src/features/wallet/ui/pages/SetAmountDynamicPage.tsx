@@ -74,6 +74,7 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
     errorBalance,
     showModalBuyResult,
     handleCloseBuyModal,
+    handleContinueBuy,
     buyResponse,
     sellInfoData,
     showSellInfoModal,
@@ -460,7 +461,7 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
         <ModalWrapper onClose={handleCloseBuyModal}>
           <BuyInfoPanel
             onClose={handleCloseBuyModal}
-            onContinue={handleCloseBuyModal}
+            onContinue={handleContinueBuy}
             beneficiaryName={buyResponse?.beneficiaryName || ""}
             buyInfoData={buyResponse!}
             clabe={buyResponse?.clabe || ""}

@@ -5,6 +5,7 @@ export interface OffRampResponse {
     kycStatus: string,
     kycUrl: string,
     destinationWalletAddress?: string,
+    transactionId?: string,
 }
 
 export interface OffRampData {
@@ -15,6 +16,25 @@ export interface OffRampData {
     userBankInformationUuid: string,
     amount: number,
     isExternalWallet: boolean,
+}
+
+export type OnRampData = {
+    userUuid: string,
+    providerUuid: string,
+    tokenNetworkUuid: string,
+    fiatCurrencyUuid: string,
+    walletAddress: string,
+    amount: number,
+}
+
+export type OnRampResponse = {
+    details: string,
+    kycUrl: string,
+    destinationWalletAddress: string,
+    bankAccountIdentifier: string,
+    cryptoAmount: string,
+    fiatAmount: string,
+    id: string
 }
 
 export interface QuoteData {

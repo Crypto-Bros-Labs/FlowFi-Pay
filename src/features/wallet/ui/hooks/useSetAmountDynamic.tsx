@@ -66,7 +66,10 @@ export const useSetAmountDynamic = (
   const { showDialog } = useDialog();
   const navigate = useNavigate();
 
-  const { formatedBalance } = useProfile();
+  const { 
+    formatedBalance, 
+    fullName,
+   } = useProfile();
 
   const [errorBalance, setErrorBalance] = useState<string>("");
 
@@ -149,7 +152,7 @@ export const useSetAmountDynamic = (
             // ✅ Usar la API para obtener el quote automáticamente
             const response = await sellRepository.getQuote({
               providerUuid: "237b0541-5521-4fda-8bba-05ee4d484795",
-              fromUuuid:  token.id || "",
+              fromUuuid: token.id || "",
               toUuid: MXN_UUID,
               amountFiat: cryptoAmount,
               type: "OFF_RAMP",
@@ -170,8 +173,8 @@ export const useSetAmountDynamic = (
           setIsQuoteLoading(false);
         }
         return;
-      } else if (typeTransaction === "buy"){
-      setIsQuoteLoading(true);
+      } else if (typeTransaction === "buy") {
+        setIsQuoteLoading(true);
         setQuoteError(null);
 
         try {
@@ -205,7 +208,7 @@ export const useSetAmountDynamic = (
             // ✅ Usar la API para obtener el quote automáticamente
             const response = await sellRepository.getQuote({
               providerUuid: "237b0541-5521-4fda-8bba-05ee4d484795",
-              fromUuuid:  token.id || "",
+              fromUuuid: token.id || "",
               toUuid: MXN_UUID,
               amountFiat: cryptoAmount,
               type: "ON_RAMP",
@@ -226,7 +229,7 @@ export const useSetAmountDynamic = (
           setIsQuoteLoading(false);
         }
         return;
-    }else if(typeTransaction === "transfer") {
+      } else if (typeTransaction === "transfer") {
         if (editingMode === "fiat") {
           const numericAmount = parseFloat(fiatAmount);
           if (!numericAmount || numericAmount <= 0) {
@@ -557,30 +560,32 @@ export const useSetAmountDynamic = (
       }
     } else if (typeTransaction === "buy") {
       if (!isValidAmount || isQuoteLoading) return;
+      if (!transferAddress || transferAddress.trim() === "") {
+        const errorMessage = "La dirección no puede estar vacía";
+        setTransferError(errorMessage);
+        showDialog({
+          title: "No se puede realizar la compra",
+          subtitle: errorMessage,
+          nextText: "Aceptar",
+        });
+        return;
+      }
 
       setIsLoading(true);
 
       try {
-        /*const userUuid =
-                    (await userRepository.getCurrentUserData())?.userUuid ||
-                    "default-uuid"; */
+        const userUuid =
+          (await userRepository.getCurrentUserData())?.userUuid ||
+          "default-uuid";
 
-        // Llamar a tu API para crear on-ramp
-        const response = {
-          success: true,
-          orderId: "ORDER123456",
-          clabe: "123456789012345678",
-          beneficiaryName: "Juan Perez",
-        };
-        /*    TODO:
-                  await walletRepository.createOnRamp({
-                    userUuid: userUuid,
-                    providerUuid: "provider-uuid", // Ajusta según tu proveedor
-                    tokenNetworkUuid: token?.id || "default-network",
-                    fiatCurrencyUuid: MXN_UUID,
-                    userBankInformationUuid: bankAccountUuid,
-                    amount: parseFloat(amountFiat) || 0,
-                  });*/
+        const response = await sellRepository.createOnRamp({
+          userUuid: userUuid,
+          providerUuid: "237b0541-5521-4fda-8bba-05ee4d484795",
+          tokenNetworkUuid: token?.id || "default-network",
+          fiatCurrencyUuid: MXN_UUID,
+          walletAddress: transferAddress,
+          amount: parseFloat(amountFiat) || 0,
+        });
 
         if (response.success) {
           setBuyResponse({
@@ -588,9 +593,9 @@ export const useSetAmountDynamic = (
             amountToken: amountToken,
             tokenSymbol: token.symbol,
             networkName: token.network,
-            orderId: response.orderId || "",
-            clabe: response.clabe || "",
-            beneficiaryName: response.beneficiaryName || "",
+            orderId: response.id || "",
+            clabe: response.clabeNumber || "",
+            beneficiaryName: fullName || "",
           });
           setShowModalBuyResult(true);
         } else {
@@ -692,7 +697,7 @@ export const useSetAmountDynamic = (
         } else if (response.success && response.kycUrl === null) {
           if (response.destinationWalletAddress !== null) {
             const sellData: SellData = {
-              id: "123456",
+              id: response.transactionId || "",
               destinationWalletAddress:
                 response.destinationWalletAddress.replace("ethereum:", ""),
               kycUrl: "www.example.com/kyc",
@@ -769,6 +774,11 @@ export const useSetAmountDynamic = (
     navigate("/history");
   };
 
+  const handleContinueBuy = () => {
+    setShowModalBuyResult(false);
+    navigate("/history");
+  }
+
   return {
     amountFiat,
     setAmountFiat,
@@ -809,5 +819,6 @@ export const useSetAmountDynamic = (
     closeSellModal,
     handleContinueTransaction,
     sellInfoData,
+    handleContinueBuy,
   };
 };

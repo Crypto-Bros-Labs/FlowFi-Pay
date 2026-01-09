@@ -5,10 +5,12 @@ import { HiEllipsisVertical } from 'react-icons/hi2';
 import { BiChevronRight } from 'react-icons/bi';
 
 export type TransactionStatus = 'completed' | 'pending' | 'canceled' | 'order';
+export type TransactionType = 'ON_RAMP' | 'OFF_RAMP';
 
 interface TileHistoryProps {
     status: TransactionStatus;
     amount: number;
+    type?: TransactionType;
     id: string;
     subtitle?: string;
     onCancelTransaction?: (id: string) => void;
@@ -18,6 +20,7 @@ interface TileHistoryProps {
 const TileHistory: React.FC<TileHistoryProps> = ({
     status,
     amount,
+    type = 'OFF_RAMP',
     id,
     subtitle = "Transferencia",
     onCancelTransaction,
@@ -27,15 +30,18 @@ const TileHistory: React.FC<TileHistoryProps> = ({
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
-    // Configuración por estado
-    const getStatusConfig = (status: TransactionStatus) => {
+    // Configuración por estado y tipo de transacción
+    const getStatusConfig = (status: TransactionStatus, type: TransactionType) => {
+        const isOnRamp = type === 'ON_RAMP';
+        const actionType = isOnRamp ? 'Deposito' : 'Retiro';
+
         switch (status) {
             case 'completed':
                 return {
                     leadingBg: 'bg-green-100',
                     leadingIcon: IoCheckmarkCircleOutline,
                     iconColor: 'text-[#00A855]',
-                    title: 'Retiro exitoso',
+                    title: `${actionType} exitoso`,
                     chipBg: 'bg-green-100',
                     chipText: 'text-green-700',
                     chipLabel: 'Completado'
@@ -45,7 +51,7 @@ const TileHistory: React.FC<TileHistoryProps> = ({
                     leadingBg: 'bg-yellow-100',
                     leadingIcon: FaClock,
                     iconColor: 'text-orange-600',
-                    title: 'Retiro pendiente',
+                    title: `${actionType} pendiente`,
                     chipBg: 'bg-yellow-100',
                     chipText: 'text-yellow-700',
                     chipLabel: 'Pendiente'
@@ -55,7 +61,7 @@ const TileHistory: React.FC<TileHistoryProps> = ({
                     leadingBg: 'bg-red-200',
                     leadingIcon: IoCloseCircleOutline,
                     iconColor: 'text-red-600',
-                    title: 'Retiro cancelado',
+                    title: `${actionType} cancelado`,
                     chipBg: 'bg-red-100',
                     chipText: 'text-red-700',
                     chipLabel: 'Cancelado'
@@ -83,7 +89,7 @@ const TileHistory: React.FC<TileHistoryProps> = ({
         }
     };
 
-    const config = getStatusConfig(status);
+    const config = getStatusConfig(status, type);
     const IconComponent = config.leadingIcon;
 
     // ✅ Cerrar menú al hacer click fuera

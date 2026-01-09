@@ -1,10 +1,15 @@
 import { axiosWithAuthInstance, publicAxiosInstance } from "../../../../shared/api/axiosService";
 import type { RecoveryOrderModel } from "../../../history/data/models/historyModel";
-import type { OffRampData, OffRampResponse, QuoteData, QuoteResponse, RecoveryOrderData } from "../models/sellModel";
+import type { OffRampData, OffRampResponse, OnRampData, OnRampResponse, QuoteData, QuoteResponse, RecoveryOrderData } from "../models/sellModel";
 
 class SellApiService {
     async createOffRamp(data: OffRampData): Promise<OffRampResponse> {
         const response = await axiosWithAuthInstance.post("/flow/off-ramp", data);
+        return response.data.data;
+    }
+
+    async createOnRamp(data: OnRampData): Promise<OnRampResponse> {
+        const response = await axiosWithAuthInstance.post("/flow/on-ramp", data);
         return response.data.data;
     }
 
