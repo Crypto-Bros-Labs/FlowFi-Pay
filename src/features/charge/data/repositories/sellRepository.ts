@@ -81,7 +81,7 @@ class SellRepository {
             const response = await sellApiService.getQuote(data);
 
             const cryptoAmountStr = response.displayCryptoAmount.toString();
-            const fiatAmountStr = response.fiatAmount.toString();
+            const fiatAmountStr = response.displayFiatAmount.toString();
             sellLocalService.setAmountToken(cryptoAmountStr);
             sellLocalService.setAmountFiat(fiatAmountStr);
 

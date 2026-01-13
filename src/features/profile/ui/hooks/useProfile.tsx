@@ -189,6 +189,7 @@ export const useProfile = () => {
     try {
       await fetchUserData();          // se espera esta
       if (!active) return;
+      if (role === "CASHIER") return; // no fetch KYC para cajeros
       await fetchKycStatus();         // luego esta
     } finally {
       if (active) setIsLoadingUserData(false);
