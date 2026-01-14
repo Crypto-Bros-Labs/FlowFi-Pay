@@ -252,7 +252,7 @@ const ProfilePage: React.FC = () => {
 
             {/* KYC Status */}
             <div className="flex justify-center mb-2 px-2 gap-1 items-center">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${currentKycInfo.bgColor} ${currentKycInfo.textColor}`}>
+                <span onClick={handleKycStatusInfo} className={`px-3 py-1 rounded-full text-sm font-medium ${currentKycInfo.bgColor} ${currentKycInfo.textColor} cursor-pointer`}>
                     {currentKycInfo.label}
                 </span>
                 <button
