@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { Token } from "../../data/local/tokenLocalService";
 import tokenRepository from "../../data/repositories/tokenRepository";
 import { useDialog } from "../../../../shared/hooks/useDialog";
+import { useProfile } from "../../../profile/ui/hooks/useProfile";
 
 export const useMain = () => {
   const navigate = useNavigate();
@@ -14,9 +15,7 @@ export const useMain = () => {
   const [tokensError, setTokensError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const goToSelectToken = () => {
-    navigate("/select-token");
-  };
+  const { kycStatus, handleKycStatusInfo } = useProfile();
 
   const buyTokens = [
     ...tokens
@@ -48,6 +47,35 @@ export const useMain = () => {
       iconUrl: token.iconUrl,
     }));
 
+   const goToSelectToken = () => {
+    showDialog({
+      title: "¿Donde quieres recibir el cobro?",
+      subtitle:
+        "Selecciona si deseas recibir el dinero en tu cuenta bancaria o en esta billetera.",
+      onNext: () => {
+        if (kycStatus !== "APPROVED") {
+          handleKycStatusInfo();
+        } else {
+          navigate("/select-token-dynamic", {
+            state: {
+              title: "Selecciona el token que deseas vender",
+              tokens: buyTokens,
+              transactionType: "sell",
+              externalAddress: true,
+            },
+          });
+        }
+      },
+      nextText: "Mi cuenta de banco",
+      onBack: () => {
+        navigate("/select-token");
+      },
+      backText: "Esta billetera",
+      buttonsOrientation: "vertical",
+    });
+
+  };
+
   const onHandleSend = () => {
     navigate("/select-token-dynamic", {
       state: {
@@ -69,32 +97,13 @@ export const useMain = () => {
   };
 
   const onHandleSell = () => {
-    showDialog({
-      title: "¿Retiras en Starknet con FlowFi Pay?",
-      subtitle:
-        "Si tienes balance puedes retirar directamente con FlowFi Pay sin necesidad de transferir tus criptomonedas a través de nuestro proveedor externo.",
-      onNext: () => {
-        navigate("/select-token-dynamic", {
-          state: {
-            title: "Selecciona el token que deseas vender",
-            tokens: dynamicTokens,
-            transactionType: "sell",
-            externalAddress: false,
-          },
-        });
+    navigate("/select-token-dynamic", {
+      state: {
+        title: "Selecciona el token que deseas vender",
+        tokens: dynamicTokens,
+        transactionType: "sell",
+        externalAddress: false,
       },
-      nextText: "Sí",
-      onBack: () => {
-        navigate("/select-token-dynamic", {
-          state: {
-            title: "Selecciona el token que deseas vender",
-            tokens: buyTokens,
-            transactionType: "sell",
-            externalAddress: true,
-          },
-        });
-      },
-      backText: "No",
     });
   };
 

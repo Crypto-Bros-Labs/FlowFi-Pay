@@ -14,9 +14,6 @@ export const DialogProvider = ({ children }: { children: ReactNode }) => {
             <Dialog
                 open={!!dialogOptions}
                 onClose={() => {
-                    if (dialogOptions?.onBack) {
-                        dialogOptions.onBack();
-                    }
                     closeDialog();
                 }}
                 title={dialogOptions?.title ?? ""}
@@ -42,6 +39,7 @@ export const DialogProvider = ({ children }: { children: ReactNode }) => {
                 backText={dialogOptions?.backText}
                 hideBack={dialogOptions?.hideBack}
                 hideNext={dialogOptions?.hideNext}
+                buttonsOrientation={dialogOptions?.buttonsOrientation}
             >
                 {dialogOptions?.children}
             </Dialog>
