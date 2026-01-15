@@ -4,7 +4,8 @@ import { BiHistory } from "react-icons/bi";
 import { MdGroups } from "react-icons/md";
 import { GoArrowDownLeft, GoArrowUpRight } from "react-icons/go";
 import { IoCashOutline } from "react-icons/io5";
-import { BiMoneyWithdraw, BiDollar } from "react-icons/bi";
+import { BiMoneyWithdraw /*BiDollar*/ } from "react-icons/bi";
+import { PiHandDeposit } from "react-icons/pi";
 import AppHeader from "../../../../shared/components/AppHeader";
 import { useMain } from "../hooks/useMain";
 import { useAppBar } from "../../../../shared/hooks/useAppBar";
@@ -16,7 +17,7 @@ const MainPage: React.FC = () => {
     goToSelectToken,
     isAccountOptionsLoading,
     onHandleSend,
-    onHandleBuy,
+    // onHandleBuy,
     onHandleSell,
     onHandleReceive,
     isLoading,
@@ -209,7 +210,7 @@ const MainPage: React.FC = () => {
               </span>
             </button>
 
-            {/* Botón Comprar */}
+            {/* Botón Comprar 
             <button
               className="
                                 flex flex-col items-center justify-center gap-2
@@ -236,6 +237,26 @@ const MainPage: React.FC = () => {
               <BiDollar className="w-6 h-6 text-blue-600" />
               <span className="text-xs font-medium text-gray-700 text-center">
                 Comprar
+              </span>
+            </button>
+            */}
+            <button
+              className="
+                          flex flex-col items-center justify-center gap-2
+                          w-20 h-20
+                          bg-white 
+                          rounded-full 
+                          shadow-md 
+                          transition-all duration-200 ease-in-out
+                          border-0 outline-none
+                          opacity-50 cursor-not-allowed
+                        "
+              onClick={() => {}}
+              disabled
+            >
+              <PiHandDeposit className="w-6 h-6 text-gray-400" />
+              <span className="text-xs font-medium text-gray-400 text-center">
+                Depositar
               </span>
             </button>
 
