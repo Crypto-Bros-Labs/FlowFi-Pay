@@ -47,7 +47,18 @@ export const useMain = () => {
       iconUrl: token.iconUrl,
     }));
 
-   const goToSelectToken = () => {
+  const onHandleSell = () => {
+    navigate("/select-token-dynamic", {
+      state: {
+        title: "Selecciona el token que deseas vender",
+        tokens: buyTokens,
+        transactionType: "sell",
+        externalAddress: true,
+      },
+    });
+  };
+
+  const goToSelectToken = () => {
     showDialog({
       title: "¿Donde quieres recibir el cobro?",
       subtitle:
@@ -56,14 +67,7 @@ export const useMain = () => {
         if (kycStatus !== "APPROVED") {
           handleKycStatusInfo();
         } else {
-          navigate("/select-token-dynamic", {
-            state: {
-              title: "Selecciona el token que deseas vender",
-              tokens: buyTokens,
-              transactionType: "sell",
-              externalAddress: true,
-            },
-          });
+          onHandleSell();
         }
       },
       nextText: "Mi cuenta de banco",
@@ -73,7 +77,6 @@ export const useMain = () => {
       backText: "Esta billetera",
       buttonsOrientation: "vertical",
     });
-
   };
 
   const onHandleSend = () => {
@@ -96,7 +99,7 @@ export const useMain = () => {
     });
   };
 
-  const onHandleSell = () => {
+  const onHandleWithdraw = () => {
     navigate("/select-token-dynamic", {
       state: {
         title: "Selecciona el token que deseas vender",
@@ -159,8 +162,9 @@ export const useMain = () => {
     isAccountOptionsLoading,
     onHandleSend,
     onHandleBuy,
-    onHandleSell,
+    onHandleWithdraw,
     onHandleReceive,
+    onHandleSell,
     tokens,
     tokensError,
     isLoading,

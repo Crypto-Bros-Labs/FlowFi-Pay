@@ -4,7 +4,7 @@ import { BiHistory } from "react-icons/bi";
 import { MdGroups } from "react-icons/md";
 import { GoArrowDownLeft, GoArrowUpRight } from "react-icons/go";
 import { IoCashOutline } from "react-icons/io5";
-import { BiMoneyWithdraw /*BiDollar*/ } from "react-icons/bi";
+import { BiMoneyWithdraw, BiDollar } from "react-icons/bi";
 import { PiHandDeposit } from "react-icons/pi";
 import AppHeader from "../../../../shared/components/AppHeader";
 import { useMain } from "../hooks/useMain";
@@ -17,9 +17,10 @@ const MainPage: React.FC = () => {
     goToSelectToken,
     isAccountOptionsLoading,
     onHandleSend,
-    // onHandleBuy,
-    onHandleSell,
+    onHandleBuy,
+    onHandleWithdraw,
     onHandleReceive,
+    onHandleSell,
     isLoading,
   } = useMain();
 
@@ -134,7 +135,7 @@ const MainPage: React.FC = () => {
       </div>
 
       {/* ✅ SECCIÓN SUPERIOR - Balance y botones */}
-      <div className="px-4 py-6 space-y-6">
+      <div className="px-4 py-6 space-y-3">
         {/* ✅ SECCIÓN DE BALANCE */}
         <div className="w-full">
           <div className="text-center">
@@ -210,36 +211,7 @@ const MainPage: React.FC = () => {
               </span>
             </button>
 
-            {/* Botón Comprar 
-            <button
-              className="
-                                flex flex-col items-center justify-center gap-2
-                                w-20 h-20
-                                bg-white 
-                                rounded-full 
-                                shadow-md 
-                                hover:shadow-lg 
-                                active:shadow-sm
-                                transition-all duration-200 ease-in-out
-                                hover:scale-105
-                                active:scale-95
-                                border-0 outline-none
-                                focus:ring-4 focus:ring-blue-100
-                            "
-              onClick={() => {
-                if (kycStatus !== "APPROVED") {
-                  handleKycStatusInfo();
-                } else {
-                  onHandleBuy();
-                }
-              }}
-            >
-              <BiDollar className="w-6 h-6 text-blue-600" />
-              <span className="text-xs font-medium text-gray-700 text-center">
-                Comprar
-              </span>
-            </button>
-            */}
+            {/* Botón Comprar */}
             <button
               className="
                           flex flex-col items-center justify-center gap-2
@@ -280,7 +252,7 @@ const MainPage: React.FC = () => {
                 if (kycStatus !== "APPROVED") {
                   handleKycStatusInfo();
                 } else {
-                  onHandleSell();
+                  onHandleWithdraw();
                 }
               }}
             >
@@ -293,29 +265,119 @@ const MainPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ✅ SECCIÓN CENTRAL - Botón Cobrar centrado */}
-      <div className="flex flex-col items-center justify-center px-4 mt-20">
-        <button
-          className="
-                        w-50 h-50 
-                        bg-white 
-                        rounded-full 
-                        shadow-lg 
-                        hover:shadow-xl 
-                        active:shadow-md
-                        transition-all duration-200 ease-in-out
-                        flex flex-col items-center justify-center gap-2
-                        hover:scale-105
-                        active:scale-95
-                        border-0 outline-none
-                        focus:ring-4 focus:ring-blue-100
-                    "
-          onClick={goToSelectToken}
-        >
-          <BiMoneyWithdraw className="w-8 h-8 text-blue-600" />
+      {/* ✅ SECCIÓN CENTRAL - Botón Cobrar y sección de Compra/Venta */}
+      <div className="flex flex-col items-center justify-center px-4 flex-1 space-y-6">
+        {/* Botón Cobrar */}
+        <div className="flex flex-col items-center gap-3">
+          <p className="text-sm font-medium text-gray-500 text-center pb-5">
+            Recibe pagos al instante
+          </p>
+          <button
+            className="
+                          w-50 h-50 
+                          bg-white
+                          rounded-full 
+                          shadow-lg 
+                          hover:shadow-xl 
+                          active:shadow-md
+                          transition-all duration-200 ease-in-out
+                          flex flex-col items-center justify-center gap-2
+                          hover:scale-105
+                          active:scale-95
+                          border-0 outline-none
+                          focus:ring-4 focus:ring-blue-100
+                      "
+            onClick={goToSelectToken}
+          >
+            <BiMoneyWithdraw className="w-8 h-8 text-blue-600" />
+            <span className="text-sm ">Cobrar</span>
+          </button>
+        </div>
 
-          <span className="text-sm font-medium text-gray-700">Cobrar</span>
-        </button>
+        {/* Divisor visual */}
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-1 rounded-full bg-blue-300"></div>
+          <div className="w-1 h-1 rounded-full bg-blue-400"></div>
+          <div className="w-1 h-1 rounded-full bg-blue-500"></div>
+          <div className="w-1 h-1 rounded-full bg-blue-400"></div>
+          <div className="w-1 h-1 rounded-full bg-blue-300"></div>
+        </div>
+
+        {/* Sección de Compra y Venta */}
+        <div className="w-full max-w-sm">
+          {/* Título y Subtítulo */}
+          <div className="text-center">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
+              Compra y vende USDC
+            </h2>
+            <p className="text-sm md:text-base text-gray-500">
+              Hacia y desde cualquier billetera
+            </p>
+          </div>
+
+          {/* Botones Comprar y Vender */}
+          <div className="flex gap-6 justify-center">
+            {/* Botón Comprar */}
+            <button
+              className="
+                flex flex-col items-center justify-center gap-2
+                w-24 h-24
+                bg-white 
+                rounded-full 
+                shadow-md 
+                hover:shadow-lg 
+                active:shadow-sm
+                transition-all duration-200 ease-in-out
+                hover:scale-105
+                active:scale-95
+                border-0 outline-none
+                focus:ring-4 focus:ring-blue-100
+              "
+              onClick={() => {
+                if (kycStatus !== "APPROVED") {
+                  handleKycStatusInfo();
+                } else {
+                  onHandleBuy();
+                }
+              }}
+            >
+              <BiDollar className="w-6 h-6 text-blue-600" />
+              <span className="text-xs font-medium text-gray-700 text-center">
+                Comprar
+              </span>
+            </button>
+
+            {/* Botón Vender */}
+            <button
+              className="
+                flex flex-col items-center justify-center gap-2
+                w-24 h-24
+                bg-white 
+                rounded-full 
+                shadow-md 
+                hover:shadow-lg 
+                active:shadow-sm
+                transition-all duration-200 ease-in-out
+                hover:scale-105
+                active:scale-95
+                border-0 outline-none
+                focus:ring-4 focus:ring-blue-100
+              "
+              onClick={() => {
+                if (kycStatus !== "APPROVED") {
+                  handleKycStatusInfo();
+                } else {
+                  onHandleSell();
+                }
+              }}
+            >
+              <IoCashOutline className="w-6 h-6 text-blue-600" />
+              <span className="text-xs font-medium text-gray-700 text-center">
+                Vender
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
