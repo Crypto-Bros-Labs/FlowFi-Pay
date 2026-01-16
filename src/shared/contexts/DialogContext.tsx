@@ -1,23 +1,26 @@
 import { createContext } from "react";
 
 type DialogOptions = {
-    title: string;
-    subtitle?: string;
-    icon?: React.ReactNode;
-    onNext?: () => void;
-    onBack?: () => void;
-    nextText?: string;
-    backText?: string;
-    hideBack?: boolean;
-    hideNext?: boolean;
-    children?: React.ReactNode;
-    buttonsOrientation?: "horizontal" | "vertical";
+  title: string;
+  subtitle?: string;
+  icon?: React.ReactNode;
+  onNext?: () => void;
+  onBack?: () => void;
+  nextText?: string;
+  backText?: string;
+  hideBack?: boolean;
+  hideNext?: boolean;
+  children?: React.ReactNode;
+  buttonsOrientation?: "horizontal" | "vertical";
+  shouldClose?: boolean;
 };
 
 type DialogContextType = {
-    showDialog: (options: DialogOptions) => void;
-    closeDialog: () => void;
+  showDialog: (options: DialogOptions) => void;
+  closeDialog: () => void;
 };
 
-export const DialogContext = createContext<DialogContextType | undefined>(undefined);
+export const DialogContext = createContext<DialogContextType | undefined>(
+  undefined
+);
 export type { DialogOptions, DialogContextType };

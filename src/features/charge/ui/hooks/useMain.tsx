@@ -76,6 +76,7 @@ export const useMain = () => {
       },
       backText: "Esta billetera",
       buttonsOrientation: "vertical",
+      shouldClose: false,
     });
   };
 
