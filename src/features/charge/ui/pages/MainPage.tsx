@@ -32,6 +32,7 @@ const MainPage: React.FC = () => {
     isLoadingUserData,
     role,
     kycStatus,
+    kycStatusInfo,
     handleKycStatusInfo,
   } = useProfile();
 
@@ -147,6 +148,9 @@ const MainPage: React.FC = () => {
               : formatedBalance * usdToMxnRate
           }
           currency={currency}
+          kycStatus={kycStatus}
+          kycStatusInfo={kycStatusInfo}
+          onKycStatusClick={handleKycStatusInfo}
         />
 
         <div className="w-full flex justify-center gap-2">
@@ -209,7 +213,7 @@ const MainPage: React.FC = () => {
                 className="w-6 h-6 text-blue-600"
               />
             }
-            title="Comprar/Vender USDC"
+            title="Comprar / Vender USDC"
             subtitle="Hacia y desde cualquier billetera"
             onClick={() => {
               if (kycStatus !== "APPROVED") {

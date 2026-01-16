@@ -4,9 +4,21 @@ import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 interface BalanceCardProps {
   balance: number;
   currency: string;
+  kycStatus?: string;
+  kycStatusInfo?: Record<
+    string,
+    { label: string; bgColor: string; textColor: string }
+  >;
+  onKycStatusClick?: () => void;
 }
 
-const BalanceCard: React.FC<BalanceCardProps> = ({ balance, currency }) => {
+const BalanceCard: React.FC<BalanceCardProps> = ({
+  balance,
+  currency,
+  kycStatus = "UNKNOWN",
+  kycStatusInfo = {},
+  onKycStatusClick,
+}) => {
   const [isPrivate, setIsPrivate] = useState(false);
 
   const formattedBalance = balance.toLocaleString("es-MX", {
@@ -14,13 +26,18 @@ const BalanceCard: React.FC<BalanceCardProps> = ({ balance, currency }) => {
     maximumFractionDigits: 2,
   });
 
-  // Crear puntos con la misma longitud que el balance formateado
   const displayBalance = isPrivate
     ? formattedBalance
         .split("")
         .map((char) => (char === "," || char === "." ? char : "•"))
         .join("")
     : formattedBalance;
+
+  const currentKycInfo = kycStatusInfo[kycStatus] || {
+    label: "Desconocido",
+    bgColor: "bg-gray-200",
+    textColor: "text-gray-700",
+  };
 
   return (
     <div className="w-full py-3">
@@ -69,11 +86,31 @@ const BalanceCard: React.FC<BalanceCardProps> = ({ balance, currency }) => {
           </div>
         </div>
 
-        {/* ✅ SEGUNDA FILA - Balance */}
-        <div className="flex items-center">
-          <div className="flex items-start justify-center gap-1">
+        {/* ✅ SEGUNDA FILA - Balance y KYC Status */}
+        <div className="flex items-end justify-between gap-4">
+          {/* Balance */}
+          <div className="flex items-start justify-center">
             <span className="text-5xl font-bold text-white tracking-tight">
               $ {displayBalance}
+            </span>
+          </div>
+
+          {/* KYC Status */}
+          <div className="flex">
+            <span
+              onClick={onKycStatusClick}
+              className="
+                px-3 py-1.5 rounded-full text-xs font-semibold
+                bg-white/20
+                backdrop-blur-sm
+                text-white
+                cursor-pointer
+                transition-all duration-200
+                hover:bg-white/30
+                active:scale-95
+              "
+            >
+              {currentKycInfo.label}
             </span>
           </div>
         </div>

@@ -37,6 +37,7 @@ export const useProfile = () => {
       APPROVED: {
         label: "KYC Verificado",
         bgColor: "bg-green-100",
+        bgTransparent: "bg-green-50/30",
         textColor: "text-green-800",
         description:
           "Tu identidad ha sido verificada exitosamente. Puedes realizar todas las operaciones sin restricciones.",
@@ -45,6 +46,7 @@ export const useProfile = () => {
       REVIEW: {
         label: "KYC en Proceso",
         bgColor: "bg-yellow-100",
+        bgTransparent: "bg-yellow-50/30",
         textColor: "text-yellow-800",
         description:
           "Tu solicitud de verificación está en revisión. Esto generalmente toma 24-48 horas.",
@@ -53,6 +55,7 @@ export const useProfile = () => {
       DECLINED: {
         label: "KYC Rechazado",
         bgColor: "bg-red-100",
+        bgTransparent: "bg-red-50/30",
         textColor: "text-red-800",
         description:
           "Tu verificación ha sido rechazada. Por favor, revisa los documentos y vuelve a intentarlo. Si tienes dudas, contacta al soporte.",
@@ -61,6 +64,7 @@ export const useProfile = () => {
       UNKNOWN: {
         label: "KYC No Iniciado",
         bgColor: "bg-gray-100",
+        bgTransparent: "bg-gray-50/30",
         textColor: "text-gray-800",
         description:
           "No has iniciado tu proceso de verificación. Debes completar el KYC para realizar ciertas operaciones.",
@@ -69,6 +73,7 @@ export const useProfile = () => {
       INVALID: {
         label: "KYC No Disponible",
         bgColor: "bg-gray-100",
+        bgTransparent: "bg-gray-50/30",
         textColor: "text-gray-800",
         description:
           "El servicio de verificación KYC no está disponible en este momento. Por favor, intenta más tarde o contacta al soporte.",
@@ -163,7 +168,7 @@ export const useProfile = () => {
       console.error("Error in fetchUserData:", error);
       setFullName("");
       setProfileImage(null);
-    } 
+    }
   }
 
   async function fetchKycStatus() {
@@ -178,28 +183,28 @@ export const useProfile = () => {
       console.error("Error fetching KYC status:", error);
       setKycStatus("unknown");
       setKycUrl("");
-    } 
+    }
   }
 
   useEffect(() => {
-  let active = true;
+    let active = true;
 
-  (async () => {
-    setIsLoadingUserData(true);
-    try {
-      await fetchUserData();          // se espera esta
-      if (!active) return;
-      if (role === "CASHIER") return; // no fetch KYC para cajeros
-      await fetchKycStatus();         // luego esta
-    } finally {
-      if (active) setIsLoadingUserData(false);
-    }
-  })();
+    (async () => {
+      setIsLoadingUserData(true);
+      try {
+        await fetchUserData(); // se espera esta
+        if (!active) return;
+        if (role === "CASHIER") return; // no fetch KYC para cajeros
+        await fetchKycStatus(); // luego esta
+      } finally {
+        if (active) setIsLoadingUserData(false);
+      }
+    })();
 
-  return () => {
-    active = false; // evita updates si el componente desmonta
-  };
-}, []);
+    return () => {
+      active = false; // evita updates si el componente desmonta
+    };
+  }, []);
 
   const logOut = () => {
     showDialog({
