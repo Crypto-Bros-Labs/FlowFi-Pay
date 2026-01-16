@@ -115,6 +115,21 @@ export const useMain = () => {
     navigate("/receive");
   };
 
+  const onHandleBuySell = () => {
+    showDialog({
+      title: "¿Que deseas realizar?",
+      onNext: () => {
+        onHandleSell();
+      },
+      nextText: "Vender",
+      onBack: () => {
+        onHandleBuy();
+      },
+      backText: "Comprar",
+      buttonsOrientation: "vertical",
+    });
+  };
+
   // Función para obtener tokens
   const fetchTokens = useCallback(async (): Promise<Token[]> => {
     try {
@@ -166,6 +181,7 @@ export const useMain = () => {
     onHandleWithdraw,
     onHandleReceive,
     onHandleSell,
+    onHandleBuySell,
     tokens,
     tokensError,
     isLoading,
