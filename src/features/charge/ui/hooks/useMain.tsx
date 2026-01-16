@@ -76,7 +76,7 @@ export const useMain = () => {
       },
       backText: "Esta billetera",
       buttonsOrientation: "vertical",
-      shouldClose: false,
+      shouldCloseOnNext: kycStatus !== "APPROVED" ? false : true,
     });
   };
 

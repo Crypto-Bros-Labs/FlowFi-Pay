@@ -25,7 +25,7 @@ export const DialogProvider = ({ children }: { children: ReactNode }) => {
           if (dialogOptions?.onNext) {
             dialogOptions.onNext();
           }
-          if (dialogOptions?.shouldClose !== false) {
+          if (dialogOptions?.shouldCloseOnNext !== false) {
             closeDialog();
           }
         }}
@@ -33,7 +33,7 @@ export const DialogProvider = ({ children }: { children: ReactNode }) => {
           if (dialogOptions?.onBack) {
             dialogOptions.onBack();
           }
-          if (dialogOptions?.shouldClose !== false) {
+          if (dialogOptions?.shouldCloseOnBack !== false) {
             closeDialog();
           }
         }}

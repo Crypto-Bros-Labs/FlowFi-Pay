@@ -12,7 +12,8 @@ type DialogOptions = {
   hideNext?: boolean;
   children?: React.ReactNode;
   buttonsOrientation?: "horizontal" | "vertical";
-  shouldClose?: boolean;
+  shouldCloseOnNext?: boolean;
+  shouldCloseOnBack?: boolean;
 };
 
 type DialogContextType = {
