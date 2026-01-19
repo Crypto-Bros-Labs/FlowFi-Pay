@@ -22,7 +22,7 @@ export const useMain = () => {
       .filter(
         (token) =>
           token.network.toLowerCase() != "starknet" &&
-          token.symbol.toUpperCase() === "USDC"
+          token.symbol.toUpperCase() === "USDC",
       )
       .sort((a, b) => {
         // Solana primero (índice 0)
@@ -42,14 +42,14 @@ export const useMain = () => {
   const wldToken = tokens.find(
     (token) =>
       token.symbol.toUpperCase() === "WLD" &&
-      token.network.toLowerCase() === "worldcoin"
+      token.network.toLowerCase() === "worldcoin",
   );
 
   const dynamicTokens = tokens
     .filter(
       (token) =>
         token.symbol.toUpperCase() === "USDC" &&
-        token.network.toLowerCase() === "starknet"
+        token.network.toLowerCase() === "starknet",
     )
     .map((token) => ({
       id: token.uuid,
@@ -171,7 +171,7 @@ export const useMain = () => {
     } catch (error) {
       throw new Error(
         "Failed to fetch tokens " +
-          (error instanceof Error ? error.message : "Unknown error")
+          (error instanceof Error ? error.message : "Unknown error"),
       );
     }
   }, []);
@@ -187,7 +187,7 @@ export const useMain = () => {
       setIsLoading(false);
     } catch (error) {
       setTokensError(
-        error instanceof Error ? error.message : "Error loading tokens"
+        error instanceof Error ? error.message : "Error loading tokens",
       );
       setIsLoading(false);
       console.error("Error fetching tokens:", error);

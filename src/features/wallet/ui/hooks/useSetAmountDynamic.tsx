@@ -38,8 +38,12 @@ export const useSetAmountDynamic = (
   typeTransaction: TransactionType,
   externalAddress?: boolean,
 ) => {
+  const isWLDToken = token.symbol.toUpperCase() === "WLD";
+
   const [amountFiat, setAmountFiat] = useState<string>("0");
-  const [amountToken, setAmountToken] = useState<string>("0.00");
+  const [amountToken, setAmountToken] = useState<string>(
+    isWLDToken ? "10" : "0.00",
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [transferAddress, setTransferAddress] = useState<string>("");
@@ -55,11 +59,13 @@ export const useSetAmountDynamic = (
   const { currency, usdToMxnRate, mxnToUsdRate } = useCurrency();
 
   const [editingMode, setEditingMode] = useState<CurrencyMode>(
-    typeTransaction === "sell"
-      ? "fiat"
-      : currency === "USD"
-        ? "crypto"
-        : "fiat",
+    isWLDToken
+      ? "crypto"
+      : typeTransaction === "sell"
+        ? "fiat"
+        : currency === "USD"
+          ? "crypto"
+          : "fiat",
   );
   // ✅ Estados para manejo de errores y respuesta de transferencia
   const [transferError, setTransferError] = useState<string>("");
@@ -73,6 +79,7 @@ export const useSetAmountDynamic = (
   const { formatedBalance, fullName } = useProfile();
 
   const [errorBalance, setErrorBalance] = useState<string>("");
+  const [minimumAmountMessage, setMinimumAmountMessage] = useState<string>("");
 
   // Estados para comprar
   const [buyResponse, setBuyResponse] = useState<BuyInfoData | null>(null);
@@ -80,6 +87,7 @@ export const useSetAmountDynamic = (
 
   useEffect(() => {
     const numericAmount = parseFloat(amountToken);
+    const numericFiatAmount = parseFloat(amountFiat);
     console.log("Validando balance:", { formatedBalance, numericAmount });
     if (formatedBalance < numericAmount) {
       if (typeTransaction != "buy") {
@@ -90,7 +98,19 @@ export const useSetAmountDynamic = (
     } else {
       setErrorBalance("");
     }
-  }, [amountToken, formatedBalance, typeTransaction]);
+
+    if (numericFiatAmount < 250) {
+      if (typeTransaction != "transfer") {
+        const transactionText =
+          typeTransaction === "buy" ? "la compra" : "el retiro";
+        setMinimumAmountMessage(
+          `El monto mínimo para ${transactionText} es de $250 MXN.`,
+        );
+      }
+    } else {
+      setMinimumAmountMessage("");
+    }
+  }, [amountToken, formatedBalance, typeTransaction, amountFiat]);
 
   // Estado para retirar
   const [kycUrl, setKycUrl] = useState<string | null>(null);
@@ -169,7 +189,11 @@ export const useSetAmountDynamic = (
         } catch (error) {
           console.error("Error fetching quote:", error);
           setQuoteError("Error obteniendo cotización");
-          setAmountFiat("0");
+          if (isWLDToken) {
+            setAmountToken("10");
+          } else {
+            setAmountFiat("0");
+          }
         } finally {
           setIsQuoteLoading(false);
         }
@@ -225,7 +249,11 @@ export const useSetAmountDynamic = (
         } catch (error) {
           console.error("Error fetching quote:", error);
           setQuoteError("Error obteniendo cotización");
-          setAmountFiat("0");
+          if (isWLDToken) {
+            setAmountToken("10");
+          } else {
+            setAmountFiat("0");
+          }
         } finally {
           setIsQuoteLoading(false);
         }
@@ -304,7 +332,14 @@ export const useSetAmountDynamic = (
         }
       }
     },
-    [editingMode, mxnToUsdRate, token.id, typeTransaction, usdToMxnRate],
+    [
+      editingMode,
+      mxnToUsdRate,
+      token.id,
+      typeTransaction,
+      usdToMxnRate,
+      isWLDToken,
+    ],
   );
 
   useEffect(() => {
@@ -505,8 +540,13 @@ export const useSetAmountDynamic = (
 
   const isValidAmount = useMemo(() => {
     const fiatValue = parseFloat(amountFiat) || 0;
+    const tokenValue = parseFloat(amountToken) || 0;
+
+    if (isWLDToken) {
+      return tokenValue >= 10;
+    }
     return fiatValue > 0;
-  }, [amountFiat]);
+  }, [amountFiat, amountToken, isWLDToken]);
 
   // ✅ Validación y envío de transferencia
   const handleContinue = useCallback(async () => {
@@ -823,5 +863,6 @@ export const useSetAmountDynamic = (
     handleContinueTransaction,
     sellInfoData,
     handleContinueBuy,
+    minimumAmountMessage,
   };
 };

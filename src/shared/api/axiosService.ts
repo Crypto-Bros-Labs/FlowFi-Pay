@@ -41,7 +41,7 @@ axiosInstance.interceptors.response.use(
 
     // Rechazar la promesa para que el error se propague
     return Promise.reject(error);
-  }
+  },
 );
 
 const axiosWithAuthInstance = axios.create({
@@ -68,7 +68,7 @@ axiosWithAuthInstance.interceptors.response.use(
     // Para esta instancia, NO redirigir en 401
     // Solo rechazar la promesa para que el error se propague
     return Promise.reject(error);
-  }
+  },
 );
 
 // Para multipart/form-data (imágenes, archivos, etc.)
@@ -103,7 +103,7 @@ axiosFormDataInstance.interceptors.response.use(
       window.location.href = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 // Instancia pública

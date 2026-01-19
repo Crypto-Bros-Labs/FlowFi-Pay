@@ -80,6 +80,7 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
     showSellInfoModal,
     closeSellModal,
     handleContinueTransaction,
+    minimumAmountMessage,
   } = useSetAmountDynamic(token, typeTransaction, externalAddress);
 
   const { formatedBalance } = useProfile();
@@ -232,7 +233,7 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
                               style={{
                                 width: `${Math.max(
                                   200,
-                                  (amountFiat?.length || 1) * 20 + 100
+                                  (amountFiat?.length || 1) * 20 + 100,
                                 )}px`,
                               }}
                             />
@@ -266,7 +267,7 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
                               style={{
                                 width: `${Math.max(
                                   200,
-                                  (amountToken?.length || 1) * 20 + 100
+                                  (amountToken?.length || 1) * 20 + 100,
                                 )}px`,
                               }}
                             />
@@ -373,6 +374,13 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
             <p className="text-sm font-medium text-red-600">{errorBalance}</p>
           </div>
         )}
+        {minimumAmountMessage && (
+          <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+            <p className="text-sm font-medium text-yellow-800">
+              {minimumAmountMessage}
+            </p>
+          </div>
+        )}
         {/* Transaction Type Sections */}
         {typeTransaction === "transfer" && (
           <TransferSection
@@ -440,7 +448,12 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
           isMobile={true}
           onClick={handleContinueClick}
           loading={isLoading || isTransferLoading}
-          disabled={!isValidAmount || isLoading || isTransferLoading}
+          disabled={
+            !isValidAmount ||
+            isLoading ||
+            isTransferLoading ||
+            !!minimumAmountMessage
+          }
         />
       </div>
 
@@ -471,7 +484,7 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
         </ModalWrapper>
       )}
 
-            {showSellInfoModal && (
+      {showSellInfoModal && (
         <ModalWrapper onClose={closeSellModal}>
           <ExternalSellInfoPanel
             onClose={closeSellModal}
@@ -481,7 +494,6 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
           />
         </ModalWrapper>
       )}
-
     </div>
   );
 };
