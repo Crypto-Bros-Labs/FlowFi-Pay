@@ -278,55 +278,6 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </section>
-
-        {/* Waitlist Section */}
-        <section
-          className="px-4 sm:px-8 lg:px-12 xl:px-16 py-20 bg-gradient-to-br from-blue-600 to-blue-800"
-          id="waitlist"
-        >
-          <div className="max-w-4xl mx-auto text-center text-white">
-            <h2 className="text-3xl md:text-5xl xl:text-6xl font-bold mb-6">
-              Únete a la <span className="text-blue-200">waitlist</span>
-            </h2>
-            <p className="text-lg md:text-xl lg:text-2xl mb-12 text-blue-100 max-w-2xl mx-auto">
-              Sé de los primeros en acceder a FlowFi Pay y revoluciona la forma
-              en que realizas transacciones internacionales.
-            </p>
-
-            {/* Formulario */}
-            <div className="max-w-md mx-auto space-y-4">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <input
-                  type="text"
-                  placeholder="Tu nombre"
-                  className="w-full sm:flex-1 px-4 py-3 rounded-lg border border-blue-300 bg-white/90 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-transparent transition-all duration-200"
-                />
-                <input
-                  type="email"
-                  placeholder="tu@email.com"
-                  className="w-full sm:flex-1 px-4 py-3 rounded-lg border border-blue-300 bg-white/90 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-transparent transition-all duration-200"
-                />
-              </div>
-
-              <div className="flex justify-center">
-                <ButtonApp
-                  paddingVertical="py-3"
-                  paddingHorizontal="px-8"
-                  text="Unirme a la lista"
-                  textSize="text-base"
-                  backgroundColor="bg-white"
-                  textColor="text-blue-600"
-                  onClick={() => console.log("Joined waitlist")}
-                />
-              </div>
-            </div>
-
-            <p className="text-sm text-blue-200 mt-6">
-              * Te notificaremos cuando FlowFi Pay esté disponible.
-            </p>
-          </div>
-        </section>
-
         <Footer />
       </div>
     </div>

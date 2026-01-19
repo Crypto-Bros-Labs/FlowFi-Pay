@@ -25,6 +25,8 @@ const MainPage: React.FC = () => {
     onHandleReceive,
     onHandleBuySell,
     isLoading,
+    onHandleSellWld,
+    wldToken,
   } = useMain();
 
   const {
@@ -224,36 +226,23 @@ const MainPage: React.FC = () => {
             }}
           />
         </div>
-        {/* 
+
         <div className="w-full mb-2">
           <TileButton
-            icon={<BiDollar className="w-6 h-6 text-blue-600" />}
-            title="Comprar USDC"
-            subtitle="Hacia y desde cualquier billetera"
+            icon={
+              <img src={wldToken?.iconUrl} className="w-6 h-6 text-blue-600" />
+            }
+            title="Vender WLD"
+            subtitle="Desde la World App a tu cuenta de banco"
             onClick={() => {
               if (kycStatus !== "APPROVED") {
                 handleKycStatusInfo();
               } else {
-                onHandleBuy();
+                onHandleSellWld();
               }
             }}
           />
         </div>
-        <div className="w-full mb-2">
-          <TileButton
-            icon={<FaMoneyBillTransfer className="w-6 h-6 text-blue-600" />}
-            title="Vender USDC"
-            subtitle="Hacia y desde cualquier billetera"
-            onClick={() => {
-              if (kycStatus !== "APPROVED") {
-                handleKycStatusInfo();
-              } else {
-                onHandleSell();
-              }
-            }}
-          />
-        </div>
-        */}
       </div>
     </div>
   );

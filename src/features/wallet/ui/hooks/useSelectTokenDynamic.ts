@@ -89,7 +89,13 @@ export const useSelectTokenDynamic = ({
     } else {
       console.warn("Ningún token seleccionado");
     }
-  }, [getSelectedToken, navigate, redirectPath, transactionType]);
+  }, [
+    getSelectedToken,
+    navigate,
+    redirectPath,
+    transactionType,
+    externalAddress,
+  ]);
 
   // ✅ Verificar si hay token seleccionado
   const isTokenSelected = useCallback((): boolean => {

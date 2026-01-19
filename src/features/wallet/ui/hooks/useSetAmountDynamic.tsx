@@ -36,7 +36,7 @@ const MXN_UUID = "92b61c69-a81f-475a-9bc7-37c85efc74c6";
 export const useSetAmountDynamic = (
   token: DynamicToken,
   typeTransaction: TransactionType,
-  externalAddress?: boolean
+  externalAddress?: boolean,
 ) => {
   const [amountFiat, setAmountFiat] = useState<string>("0");
   const [amountToken, setAmountToken] = useState<string>("0.00");
@@ -55,7 +55,11 @@ export const useSetAmountDynamic = (
   const { currency, usdToMxnRate, mxnToUsdRate } = useCurrency();
 
   const [editingMode, setEditingMode] = useState<CurrencyMode>(
-    typeTransaction === "sell" ? "fiat" : currency === "USD" ? "crypto" : "fiat"
+    typeTransaction === "sell"
+      ? "fiat"
+      : currency === "USD"
+        ? "crypto"
+        : "fiat",
   );
   // ✅ Estados para manejo de errores y respuesta de transferencia
   const [transferError, setTransferError] = useState<string>("");
@@ -66,10 +70,7 @@ export const useSetAmountDynamic = (
   const { showDialog } = useDialog();
   const navigate = useNavigate();
 
-  const { 
-    formatedBalance, 
-    fullName,
-   } = useProfile();
+  const { formatedBalance, fullName } = useProfile();
 
   const [errorBalance, setErrorBalance] = useState<string>("");
 
@@ -83,7 +84,7 @@ export const useSetAmountDynamic = (
     if (formatedBalance < numericAmount) {
       if (typeTransaction != "buy") {
         setErrorBalance(
-          "Fondos insuficientes, la cantidad excede tu balance disponible."
+          "Fondos insuficientes, la cantidad excede tu balance disponible.",
         );
       }
     } else {
@@ -102,14 +103,14 @@ export const useSetAmountDynamic = (
       code: "MXN",
       name: "Peso Mexicano",
     }),
-    []
+    [],
   );
 
   useEffect(() => {
     const userAgent = navigator.userAgent || navigator.vendor;
     const isMobileDevice =
       /android|webos|iphone|ipad|ipot|blackberry|iemobile|opera mini/i.test(
-        userAgent.toLowerCase()
+        userAgent.toLowerCase(),
       );
     const isSmallScreen = window.innerWidth <= 768;
     setIsMobile(isMobileDevice || isSmallScreen);
@@ -303,7 +304,7 @@ export const useSetAmountDynamic = (
         }
       }
     },
-    [editingMode, mxnToUsdRate, token.id, typeTransaction, usdToMxnRate]
+    [editingMode, mxnToUsdRate, token.id, typeTransaction, usdToMxnRate],
   );
 
   useEffect(() => {
@@ -378,7 +379,7 @@ export const useSetAmountDynamic = (
         });
       }
     },
-    [editingMode]
+    [editingMode],
   );
 
   const handleDeletePress = useCallback(() => {
@@ -454,7 +455,7 @@ export const useSetAmountDynamic = (
         }
       }
     },
-    []
+    [],
   );
 
   const handleKeyDown = useCallback(
@@ -490,7 +491,7 @@ export const useSetAmountDynamic = (
 
       e.preventDefault();
     },
-    [editingMode, amountFiat, amountToken]
+    [editingMode, amountFiat, amountToken],
   );
 
   const handleInputFocus = useCallback(
@@ -499,7 +500,7 @@ export const useSetAmountDynamic = (
         e.target.blur();
       }
     },
-    [isMobile]
+    [isMobile],
   );
 
   const isValidAmount = useMemo(() => {
@@ -540,7 +541,7 @@ export const useSetAmountDynamic = (
           userUuid, // Reemplazar con UUID real del usuario
           token.id, // tokenNetworkUuid
           cryptoAmountNum,
-          transferAddress
+          transferAddress,
         );
 
         if (response.success) {
@@ -752,6 +753,8 @@ export const useSetAmountDynamic = (
     isQuoteLoading,
     selectedCurrency,
     navigate,
+    externalAddress,
+    fullName,
   ]);
 
   const handleCloseTransferModal = useCallback(() => {
@@ -777,7 +780,7 @@ export const useSetAmountDynamic = (
   const handleContinueBuy = () => {
     setShowModalBuyResult(false);
     navigate("/history");
-  }
+  };
 
   return {
     amountFiat,

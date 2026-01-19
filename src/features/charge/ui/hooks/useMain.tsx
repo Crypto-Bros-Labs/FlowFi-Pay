@@ -24,6 +24,12 @@ export const useMain = () => {
           token.network.toLowerCase() != "starknet" &&
           token.symbol.toUpperCase() === "USDC"
       )
+      .sort((a, b) => {
+        // Solana primero (índice 0)
+        if (a.network.toLowerCase() === "solana") return -1;
+        if (b.network.toLowerCase() === "solana") return 1;
+        return 0;
+      })
       .map((token) => ({
         id: token.uuid,
         symbol: token.symbol,
@@ -32,6 +38,12 @@ export const useMain = () => {
         iconUrl: token.iconUrl,
       })),
   ];
+
+  const wldToken = tokens.find(
+    (token) =>
+      token.symbol.toUpperCase() === "WLD" &&
+      token.network.toLowerCase() === "worldcoin"
+  );
 
   const dynamicTokens = tokens
     .filter(
@@ -46,6 +58,19 @@ export const useMain = () => {
       network: token.network,
       iconUrl: token.iconUrl,
     }));
+
+  const onHandleSellWld = () => {
+    navigate("/set-amount-dynamic", {
+      state: {
+        token: wldToken,
+        availableCrypto: 0.0,
+        typeTransaction: "sell",
+        title: "Vender",
+        externalAddress: true,
+        showSwitchCoin: true,
+      },
+    });
+  };
 
   const onHandleSell = () => {
     navigate("/select-token-dynamic", {
@@ -186,5 +211,7 @@ export const useMain = () => {
     tokensError,
     isLoading,
     dynamicTokens,
+    wldToken,
+    onHandleSellWld,
   };
 };
