@@ -85,12 +85,11 @@ const LandingPage: React.FC = () => {
                 </span>
               </h1>
               <p className="text-lg md:text-xl lg:text-2xl text-slate-600 max-w-2xl mx-auto lg:mx-0">
-                Conectamos billeteras cripto de{" "}
+                Conectamos billeteras cripto de con el sistema bancario mexicano.{" "}
                 <span className="text-blue-600 font-semibold">
-                  startups y freelancers globales
+                  Gestiona cobros, nómina y compra-vende USDC 
                 </span>{" "}
-                con el sistema bancario mexicano. Gestiona cobros, nómina y
-                compra-vende USDC con total liquidez.{" "}
+                con total liquidez.{" "}
               </p>
               <div className="flex justify-center lg:justify-start pt-4">
                 <ButtonApp
