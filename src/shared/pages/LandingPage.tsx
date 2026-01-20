@@ -82,14 +82,12 @@ const LandingPage: React.FC = () => {
                 Cobra en USDC. Convierte a pesos.{" "}
                 <span className="text-blue-600">
                   {" "}
-                  Administra tu dinero desde un solo lugar.
+                  Finanzas sin fronteras para negocios digitales
                 </span>
               </h1>
               <p className="text-lg md:text-xl lg:text-2xl text-slate-600 max-w-2xl mx-auto lg:mx-0">
-                Compra y vende{" "}
-                <span className="text-blue-600 font-semibold">USDC</span>, paga
-                a tu equipo o acepta pagos en USDC y conviértelos a MXN de forma
-                simple.{" "}
+                La plataforma financiera para{" "}
+                <span className="text-blue-600 font-semibold">startups y freelancers globales</span> que conecta billeteras cripto con el sistema bancario mexicano. Gestiona pagos y nómina, compra y vende USDC con total liquidez.{" "}
               </p>
               <div className="flex justify-center lg:justify-start pt-4">
                 <ButtonApp
