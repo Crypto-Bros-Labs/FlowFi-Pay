@@ -177,8 +177,8 @@ const LandingPage: React.FC = () => {
             {/* How It Works */}
             <div>
               <h2 className="text-3xl md:text-5xl xl:text-6xl font-bold text-slate-900 mb-16 text-center lg:text-left">
-                Todo lo que necesitas para operar en USDC:{" "}
-                <span className="text-blue-600">FlowFi Pay</span>
+                Todo lo que necesitas para operar en{" "}
+                <span className="text-blue-600"> USDC</span>
               </h2>
 
               <div className="grid xl:grid-cols-2 gap-16 items-center">
