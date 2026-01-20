@@ -86,8 +86,8 @@ const LandingPage: React.FC = () => {
                 </span>
               </h1>
               <p className="text-lg md:text-xl lg:text-2xl text-slate-600 max-w-2xl mx-auto lg:mx-0">
-                La plataforma financiera para{" "}
-                <span className="text-blue-600 font-semibold">startups y freelancers globales</span> que conecta billeteras cripto con el sistema bancario mexicano. Gestiona cobros, nómina y compra vende USDC con total liquidez.{" "}
+                Conectamos billeteras cripto de{" "}
+                <span className="text-blue-600 font-semibold">startups y freelancers globales</span> con el sistema bancario mexicano. Gestiona cobros, nómina y compra vende USDC con total liquidez.{" "}
               </p>
               <div className="flex justify-center lg:justify-start pt-4">
                 <ButtonApp
@@ -177,7 +177,7 @@ const LandingPage: React.FC = () => {
             {/* How It Works */}
             <div>
               <h2 className="text-3xl md:text-5xl xl:text-6xl font-bold text-slate-900 mb-16 text-center lg:text-left">
-                La plataforma ideal para startups que operan en USDC:{" "}
+                Todo lo que necesitas para operar en USDC:{" "}
                 <span className="text-blue-600">FlowFi Pay</span>
               </h2>
 
