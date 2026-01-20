@@ -22,7 +22,7 @@ jobs:
       - name: Deploy to Firebase Dev Site
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          firebaseToken: "${{ secrets.FIREBASE_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_TOKEN }}"
           projectId: cb-wallet-70da0
           target: dev
           channelId: live
