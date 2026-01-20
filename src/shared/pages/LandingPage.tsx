@@ -81,7 +81,8 @@ const LandingPage: React.FC = () => {
             <div className="lg:col-span-8 text-center lg:text-left space-y-6">
               <h1 className="text-4xl md:text-6xl xl:text-7xl font-bold text-slate-900 leading-tight">
                 <span className="text-blue-600">
-                  Finanzas sin fronteras para negocios digitales
+                  Finanzas sin fronteras para negocios digitales HOLA
+                  AJKSJASJASJK ESTO ES UNA PRUEBA
                 </span>
               </h1>
               <p className="text-lg md:text-xl lg:text-2xl text-slate-600 max-w-2xl mx-auto lg:mx-0">

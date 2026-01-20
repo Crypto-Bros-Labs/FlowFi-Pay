@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "cb-wallet-70da0"
-  }
+  },
+  "targets": {
+    "cb-wallet-70da0": {
+      "hosting": {
+        "prod": [
+          "flow-fi-pos"
+        ],
+        "dev": [
+          "flowfi-dev"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
