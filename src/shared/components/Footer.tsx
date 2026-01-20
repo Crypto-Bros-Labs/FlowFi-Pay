@@ -9,7 +9,7 @@ const Footer: React.FC = () => {
           <div className="flex flex-col items-center md:items-start">
             <h3 className="text-2xl font-bold text-white mb-2">FlowFi Pay</h3>
             <p className="text-gray-300 text-center md:text-left">
-              Made by CB Labs team. Built on Starknet. Supported by a Starknet
+              Made by CB Labs team. Supported by a Starknet
               Seed Grant.
             </p>
           </div>
