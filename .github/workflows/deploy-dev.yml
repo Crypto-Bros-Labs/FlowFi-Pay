@@ -8,7 +8,7 @@ on:
 jobs:
   build_and_deploy_dev:
     runs-on: ubuntu-latest
-    environment: production
+    environment: development
 
     env:
       VITE_API_URL: ${{ secrets.VITE_API_URL_DEV || secrets.VITE_API_URL }}
