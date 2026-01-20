@@ -22,168 +22,171 @@ import SellInfoPage from "./features/charge/ui/pages/SellInfoPage";
 import TeamPage from "./features/profile/ui/pages/TeamPage";
 import AddMemberPage from "./features/profile/ui/pages/AddMemberPage";
 import SelectWalletDynamicPage from "./features/wallet/ui/pages/SelectWalletDynamicPage";
+import { AppDataProvider } from "./shared/contexts/AppDataContext";
 
 function App() {
   return (
     <Router>
       <CurrencyProvider>
         <DialogProvider>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/recovery-order/:id" element={<SellInfoPage />} />
+          <AppDataProvider>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/recovery-order/:id" element={<SellInfoPage />} />
 
-            {/* Rutas públicas (redirigen si está autenticado) */}
-            <Route
-              path="/login"
-              element={
-                <ProtectedLogin requireAuth={false}>
-                  <LoginPage />
-                </ProtectedLogin>
-              }
-            />
-            <Route
-              path="/otp"
-              element={
-                <ProtectedLogin requireAuth={false}>
-                  <OtpPage />
-                </ProtectedLogin>
-              }
-            />
+              {/* Rutas públicas (redirigen si está autenticado) */}
+              <Route
+                path="/login"
+                element={
+                  <ProtectedLogin requireAuth={false}>
+                    <LoginPage />
+                  </ProtectedLogin>
+                }
+              />
+              <Route
+                path="/otp"
+                element={
+                  <ProtectedLogin requireAuth={false}>
+                    <OtpPage />
+                  </ProtectedLogin>
+                }
+              />
 
-            {/* Rutas privadas */}
-            <Route
-              path="/signup"
-              element={
-                <ProtectedRoute>
-                  <SignUpPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/select-token"
-              element={
-                <ProtectedRoute>
-                  <SelectTokenPage />
-                </ProtectedRoute>
-              }
-            />
+              {/* Rutas privadas */}
+              <Route
+                path="/signup"
+                element={
+                  <ProtectedRoute>
+                    <SignUpPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/select-token"
+                element={
+                  <ProtectedRoute>
+                    <SelectTokenPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/add-account"
-              element={
-                <ProtectedRoute>
-                  <AddAccountPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/add-wallet"
-              element={
-                <ProtectedRoute>
-                  <AddWalletPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/add-account"
+                element={
+                  <ProtectedRoute>
+                    <AddAccountPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/add-wallet"
+                element={
+                  <ProtectedRoute>
+                    <AddWalletPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/set-amount"
-              element={
-                <ProtectedRoute>
-                  <SetAmountPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/set-amount"
+                element={
+                  <ProtectedRoute>
+                    <SetAmountPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/history"
-              element={
-                <ProtectedRoute>
-                  <HistoryPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/history"
+                element={
+                  <ProtectedRoute>
+                    <HistoryPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/main"
-              element={
-                <ProtectedRoute>
-                  <MainPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/main"
+                element={
+                  <ProtectedRoute>
+                    <MainPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/set-amount-dynamic"
-              element={
-                <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
-                  <SetAmountDynamicPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/set-amount-dynamic"
+                element={
+                  <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
+                    <SetAmountDynamicPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/select-token-dynamic"
-              element={
-                <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
-                  <SelectTokenDynamicPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/select-token-dynamic"
+                element={
+                  <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
+                    <SelectTokenDynamicPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/select-wallet-dynamic"
-              element={
-                <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
-                  <SelectWalletDynamicPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/select-wallet-dynamic"
+                element={
+                  <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
+                    <SelectWalletDynamicPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="wallet/qr-scanner"
-              element={
-                <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
-                  <QRScannerPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="wallet/qr-scanner"
+                element={
+                  <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
+                    <QRScannerPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/receive"
-              element={
-                <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
-                  <ReceivePage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/receive"
+                element={
+                  <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
+                    <ReceivePage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/team"
-              element={
-                <ProtectedRoute allowedRoles={["USER"]}>
-                  <TeamPage />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/team"
+                element={
+                  <ProtectedRoute allowedRoles={["USER"]}>
+                    <TeamPage />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/add-member"
-              element={
-                <ProtectedRoute allowedRoles={["USER"]}>
-                  <AddMemberPage />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
+              <Route
+                path="/add-member"
+                element={
+                  <ProtectedRoute allowedRoles={["USER"]}>
+                    <AddMemberPage />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </AppDataProvider>
         </DialogProvider>
       </CurrencyProvider>
     </Router>

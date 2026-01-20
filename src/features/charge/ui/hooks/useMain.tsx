@@ -1,20 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useAccountOptions } from "../../../../shared/hooks/useAccountOptions";
-import { useCallback, useEffect, useState } from "react";
-import type { Token } from "../../data/local/tokenLocalService";
-import tokenRepository from "../../data/repositories/tokenRepository";
 import { useDialog } from "../../../../shared/hooks/useDialog";
 import { useProfile } from "../../../profile/ui/hooks/useProfile";
+import { useAppData } from "../../../../shared/hooks/useAppData";
 
 export const useMain = () => {
   const navigate = useNavigate();
   const { showDialog } = useDialog();
-  const { isAccountOptionsLoading } = useAccountOptions();
-
-  const [tokens, setTokens] = useState<Token[]>([]);
-  const [tokensError, setTokensError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
+  const { tokens, isLoadingTokens, isLoadingAccounts } = useAppData();
   const { kycStatus, handleKycStatusInfo } = useProfile();
 
   const buyTokens = [
@@ -59,6 +51,10 @@ export const useMain = () => {
       iconUrl: token.iconUrl,
     }));
 
+  const chargingTokens = tokens.filter(
+    (token) => token.symbol.toUpperCase() === "USDC",
+  );
+
   const onHandleSellWld = () => {
     navigate("/set-amount-dynamic", {
       state: {
@@ -97,7 +93,12 @@ export const useMain = () => {
       },
       nextText: "Mi cuenta de banco",
       onBack: () => {
-        navigate("/select-token");
+        navigate("/select-token", {
+          state: {
+            title: "Selecciona tu token para cobrar",
+            tokens: chargingTokens,
+          },
+        });
       },
       backText: "Esta billetera",
       buttonsOrientation: "vertical",
@@ -155,52 +156,9 @@ export const useMain = () => {
     });
   };
 
-  // Función para obtener tokens
-  const fetchTokens = useCallback(async (): Promise<Token[]> => {
-    try {
-      // Simular API call
-      const response = await tokenRepository.fetchTokens();
-
-      if (response) {
-        // Obtener tokens del repositorio
-        const tokens = tokenRepository.getTokens();
-        return tokens;
-      } else {
-        return [];
-      }
-    } catch (error) {
-      throw new Error(
-        "Failed to fetch tokens " +
-          (error instanceof Error ? error.message : "Unknown error"),
-      );
-    }
-  }, []);
-
-  // Cargar tokens
-  const loadTokens = useCallback(async () => {
-    try {
-      setTokensError(null);
-      setIsLoading(true);
-
-      const fetchedTokens = await fetchTokens();
-      setTokens(fetchedTokens);
-      setIsLoading(false);
-    } catch (error) {
-      setTokensError(
-        error instanceof Error ? error.message : "Error loading tokens",
-      );
-      setIsLoading(false);
-      console.error("Error fetching tokens:", error);
-    }
-  }, [fetchTokens]);
-
-  useEffect(() => {
-    loadTokens();
-  }, [loadTokens]);
-
   return {
     goToSelectToken,
-    isAccountOptionsLoading,
+    isAccountOptionsLoading: isLoadingAccounts,
     onHandleSend,
     onHandleBuy,
     onHandleWithdraw,
@@ -208,8 +166,7 @@ export const useMain = () => {
     onHandleSell,
     onHandleBuySell,
     tokens,
-    tokensError,
-    isLoading,
+    isLoading: isLoadingTokens,
     dynamicTokens,
     wldToken,
     onHandleSellWld,

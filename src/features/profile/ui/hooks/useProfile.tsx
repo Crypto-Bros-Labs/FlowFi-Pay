@@ -1,36 +1,38 @@
-import { useState, useRef, useEffect, useCallback, useMemo } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDialog } from "../../../../shared/hooks/useDialog";
 import userLocalService from "../../../login/data/local/userLocalService";
 import userRepository from "../../../login/data/repositories/userRepository";
 import { base64ToFile } from "../../../../shared/utils/dataUtils";
 import type { DialogOptions } from "../../../../shared/contexts/DialogContext";
+import { useAppData } from "../../../../shared/hooks/useAppData";
 
 export const useProfile = () => {
   const navigate = useNavigate();
   const { showDialog } = useDialog();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Estado para la imagen de perfil
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
+  const {
+    userData,
+    isLoadingUserData,
+    setIsPerformingAction,
+    profileImage,
+    setProfileImage,
+    fullName,
+    setFullName,
+  } = useAppData();
 
-  // Estado para el nombre del usuario
-  const [fullName, setFullName] = useState<string>("");
+  const [isUploadingImage, setIsUploadingImage] = useState<boolean>(false);
   const [isEditingName, setIsEditingName] = useState<boolean>(false);
   const [tempName, setTempName] = useState<string>("");
-  const [role, setRole] = useState<string>("");
 
-  // Estado wallet
-  const [walletAddress, setWalletAddress] = useState<string>("");
-  const [formatedBalance, setFormatedBalance] = useState<number>(0.0);
-  const [balance, setBalance] = useState<number>(0.0);
-
-  // Estado kyc CAPA
-  const [kycStatus, setKycStatus] = useState<string>("");
-  const [kycUrl, setKycUrl] = useState<string>("");
-
-  const [isLoadingUserData, setIsLoadingUserData] = useState<boolean>(true);
+  // Usar datos del contexto
+  const role = userData?.role || "";
+  const walletAddress = userData?.walletAddress || "";
+  const formatedBalance = userData?.formatedBalance || 0.0;
+  const balance = userData?.balance || 0.0;
+  const kycStatus = userData?.kycStatus || "";
+  const kycUrl = userData?.kycUrl || "";
 
   const kycStatusInfo = useMemo(
     () => ({
@@ -80,7 +82,7 @@ export const useProfile = () => {
         icon: "!",
       },
     }),
-    []
+    [],
   );
 
   const openKycUrl = useCallback(() => {
@@ -142,70 +144,6 @@ export const useProfile = () => {
     showDialog(config);
   }, [kycStatus, kycStatusInfo, openKycUrl, showDialog]);
 
-  async function fetchUserData() {
-    try {
-      const userUuid =
-        (await userRepository.getCurrentUserData())?.userUuid || "default-uuid";
-      const userData = await userRepository.fetchUserData(userUuid);
-
-      if (userData.success) {
-        setFullName(userData.data.fullName || "");
-        setRole(userData.data.role || "");
-        setProfileImage(userData.data.image || null);
-        setWalletAddress(userData.data.normalizedPublicKey || "");
-        setFormatedBalance(parseFloat(userData.data.formatBalance) || 0.0);
-        setBalance(parseFloat(userData.data.balance) || 0.0);
-      } else {
-        setFullName("");
-        setRole("");
-        setProfileImage(null);
-        setWalletAddress("");
-        setFormatedBalance(0.0);
-        setBalance(0.0);
-        console.error("Error fetching user data");
-      }
-    } catch (error) {
-      console.error("Error in fetchUserData:", error);
-      setFullName("");
-      setProfileImage(null);
-    }
-  }
-
-  async function fetchKycStatus() {
-    try {
-      const userUuid =
-        (await userRepository.getCurrentUserData())?.userUuid || "default-uuid";
-      const kycData = await userRepository.getKycStatus(userUuid);
-
-      setKycStatus(kycData.status || "");
-      setKycUrl(kycData.kycUrl || "");
-    } catch (error) {
-      console.error("Error fetching KYC status:", error);
-      setKycStatus("unknown");
-      setKycUrl("");
-    }
-  }
-
-  useEffect(() => {
-    let active = true;
-
-    (async () => {
-      setIsLoadingUserData(true);
-      try {
-        await fetchUserData(); // se espera esta
-        if (!active) return;
-        if (role === "CASHIER") return; // no fetch KYC para cajeros
-        await fetchKycStatus(); // luego esta
-      } finally {
-        if (active) setIsLoadingUserData(false);
-      }
-    })();
-
-    return () => {
-      active = false; // evita updates si el componente desmonta
-    };
-  }, []);
-
   const logOut = () => {
     showDialog({
       title: "Cerrar sesión",
@@ -222,23 +160,23 @@ export const useProfile = () => {
     });
   };
 
-  async function uploadImageToServer(imageBase64: string) {
+  const uploadImageToServer = async (imageBase64: string) => {
     try {
+      setIsPerformingAction(true);
       setIsUploadingImage(true);
-      const userData = await userRepository.getCurrentUserData();
+      const userCurrentData = await userRepository.getCurrentUserData();
 
-      if (!userData) {
+      if (!userCurrentData) {
         throw new Error("No user data found");
       }
 
       const file = await base64ToFile(imageBase64, "profile-image.jpg");
-
       const formData = new FormData();
       formData.append("picture", file);
 
       const success = await userRepository.uploadUserPicture(
         formData,
-        userData.userUuid || ""
+        userCurrentData.userUuid || "",
       );
 
       if (success) {
@@ -247,6 +185,7 @@ export const useProfile = () => {
           subtitle: "Tu imagen de perfil ha sido actualizada correctamente",
           nextText: "Entendido",
         });
+        // Refrescar datos después del POST
         return true;
       } else {
         throw new Error("Error uploading image");
@@ -260,9 +199,10 @@ export const useProfile = () => {
       });
       return false;
     } finally {
+      setIsPerformingAction(false);
       setIsUploadingImage(false);
     }
-  }
+  };
 
   // Función para manejar la selección de archivo
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -364,17 +304,59 @@ export const useProfile = () => {
     });
   };
 
+  const validateFullName = (
+    name: string,
+  ): { isValid: boolean; error?: string } => {
+    const trimmedName = name.trim();
+
+    // Solo letras, espacios y acentos
+    const nameRegex = /^[a-záéíóúñA-ZÁÉÍÓÚÑ\s]+$/;
+
+    if (!nameRegex.test(trimmedName)) {
+      return {
+        isValid: false,
+        error: "El nombre solo puede contener letras y espacios",
+      };
+    }
+
+    // Validar que tenga mínimo 2 palabras (nombre y apellido)
+    const words = trimmedName.split(/\s+/).filter((word) => word.length > 0);
+    if (words.length < 2) {
+      return {
+        isValid: false,
+        error: "Debes ingresar al menos nombre y apellido",
+      };
+    }
+
+    // Validar que cada palabra tenga mínimo 2 caracteres
+    if (words.some((word) => word.length < 2)) {
+      return {
+        isValid: false,
+        error: "Cada nombre debe tener mínimo 2 caracteres",
+      };
+    }
+
+    return { isValid: true };
+  };
+
   // Función para manejar el cambio en el input del nombre
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTempName(event.target.value);
+    const value = event.target.value;
+
+    // Permitir solo letras, espacios y acentos
+    const filteredValue = value.replace(/[^a-záéíóúñA-ZÁÉÍÓÚÑ\s]/g, "");
+
+    setTempName(filteredValue);
   };
 
   // Función para confirmar el cambio de nombre
   const handleConfirmNameChange = () => {
-    if (tempName.trim() === "") {
+    const validation = validateFullName(tempName);
+
+    if (!validation.isValid) {
       showDialog({
-        title: "Nombre vacío",
-        subtitle: "El nombre no puede estar vacío",
+        title: "Nombre inválido",
+        subtitle: validation.error || "El nombre no es válido",
         nextText: "Entendido",
       });
       return;
@@ -445,7 +427,6 @@ export const useProfile = () => {
     isLoadingUserData,
     isUploadingImage,
 
-    refetchUserData: fetchUserData,
     uploadImageToServer,
 
     // Wallet
