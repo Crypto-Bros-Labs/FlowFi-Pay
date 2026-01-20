@@ -31,7 +31,8 @@ const LandingPage: React.FC = () => {
   const features = [
     {
       title: "Compra y vende USDC con pesos en minutos",
-      description: "Utiliza transferencias SPEI para entrar y salir de cripto de forma sencilla y con liquidez inmediata",
+      description:
+        "Utiliza transferencias SPEI para entrar y salir de cripto de forma sencilla y con liquidez inmediata",
     },
     {
       title: "Paga a tu equipo desde USDC",
@@ -40,12 +41,12 @@ const LandingPage: React.FC = () => {
     },
     {
       title: "Cobros flexibles en USDC",
-      description: "Genera links de pago para clientes remotos o cobra en físico, recibe los pagos en tu billetera o cuenta de banco",
+      description:
+        "Genera links de pago para clientes remotos o cobra en físico, recibe los pagos en tu billetera o cuenta de banco",
     },
     {
       title: "Envía y recibe pagos internacionales",
-      description:
-        "Realiza transacciones a cualquier parte del mundo 24/7",
+      description: "Realiza transacciones a cualquier parte del mundo 24/7",
     },
   ];
 
@@ -79,15 +80,17 @@ const LandingPage: React.FC = () => {
             {/* Texto - Ocupa 8 columnas en desktop */}
             <div className="lg:col-span-8 text-center lg:text-left space-y-6">
               <h1 className="text-4xl md:text-6xl xl:text-7xl font-bold text-slate-900 leading-tight">
-                Cobra en USDC. Convierte a pesos.{" "}
                 <span className="text-blue-600">
-                  {" "}
                   Finanzas sin fronteras para negocios digitales
                 </span>
               </h1>
               <p className="text-lg md:text-xl lg:text-2xl text-slate-600 max-w-2xl mx-auto lg:mx-0">
                 Conectamos billeteras cripto de{" "}
-                <span className="text-blue-600 font-semibold">startups y freelancers globales</span> con el sistema bancario mexicano. Gestiona cobros, nómina y compra-vende USDC con total liquidez.{" "}
+                <span className="text-blue-600 font-semibold">
+                  startups y freelancers globales
+                </span>{" "}
+                con el sistema bancario mexicano. Gestiona cobros, nómina y
+                compra-vende USDC con total liquidez.{" "}
               </p>
               <div className="flex justify-center lg:justify-start pt-4">
                 <ButtonApp
