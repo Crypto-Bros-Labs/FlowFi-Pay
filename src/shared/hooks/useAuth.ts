@@ -1,44 +1,45 @@
-import { useState, useEffect, useCallback } from 'react';
-import authLocalService from '../../features/login/data/local/authLocalService';
-import userLocalService from '../../features/login/data/local/userLocalService';
-import { useLocation } from 'react-router-dom';
+import { useState, useEffect, useCallback } from "react";
+import authLocalService from "../../features/login/data/local/authLocalService";
+import userLocalService from "../../features/login/data/local/userLocalService";
+import { useLocation } from "react-router-dom";
 
 export const useAuth = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const [isSignup, setIsSignup] = useState<boolean>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const location = useLocation();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isSignup, setIsSignup] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const location = useLocation();
 
-    // Estabilizar la función con useCallback
-    const checkAuthStatus = useCallback(() => {
-        try {
-            const hasAllData = userLocalService.getUserData().hasAllData;
-            console.log('Checking auth status:', { hasAllData });
-            setIsSignup(!!hasAllData);
-            const hasTokens = authLocalService.hasTokens();
-            setIsAuthenticated(hasTokens);
-        } catch (error) {
-            console.error('Error checking auth status:', error);
-            setIsAuthenticated(false);
-        } finally {
-            setIsLoading(false);
-        }
-    }, []); // Sin dependencias para evitar recreaciones
+  const checkAuthStatus = useCallback(() => {
+    try {
+      const hasTokens = authLocalService.hasTokens();
+      const userData = userLocalService.getUserData();
+      const hasAllData = userData?.hasAllData || false;
 
-    // Al cargar la app
-    useEffect(() => {
-        checkAuthStatus();
-    }, [checkAuthStatus]);
+      console.log("Auth check:", { hasTokens, hasAllData, userData });
 
-    // En cada cambio de ruta
-    useEffect(() => {
-        checkAuthStatus();
-    }, [location.pathname, checkAuthStatus]);
+      setIsSignup(!!hasAllData);
+      setIsAuthenticated(hasTokens && hasAllData);
+    } catch (error) {
+      console.error("Error checking auth status:", error);
+      setIsAuthenticated(false);
+      setIsSignup(false);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
-    return {
-        isAuthenticated,
-        isLoading,
-        isSignup,
-        checkAuthStatus
-    };
+  useEffect(() => {
+    checkAuthStatus();
+  }, [checkAuthStatus]);
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, [location.pathname, checkAuthStatus]);
+
+  return {
+    isAuthenticated,
+    isLoading,
+    isSignup,
+    checkAuthStatus,
+  };
 };

@@ -23,8 +23,23 @@ import TeamPage from "./features/profile/ui/pages/TeamPage";
 import AddMemberPage from "./features/profile/ui/pages/AddMemberPage";
 import SelectWalletDynamicPage from "./features/wallet/ui/pages/SelectWalletDynamicPage";
 import { AppDataProvider } from "./shared/contexts/AppDataContext";
+import { useEffect } from "react";
+import authLocalService from "./features/login/data/local/authLocalService";
+import userLocalService from "./features/login/data/local/userLocalService";
 
 function App() {
+  useEffect(() => {
+    // Si los tokens han expirado, limpiar todo
+    const hasTokens = authLocalService.hasTokens();
+    const userData = userLocalService.getUserData();
+
+    if (!hasTokens || !userData?.hasAllData) {
+      // Limpiar localStorage completamente
+      localStorage.clear();
+      sessionStorage.clear();
+      console.log("Datos de autenticación limpiados");
+    }
+  }, []);
   return (
     <Router>
       <CurrencyProvider>
