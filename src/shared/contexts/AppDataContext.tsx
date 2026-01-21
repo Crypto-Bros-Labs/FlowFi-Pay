@@ -4,6 +4,7 @@ import tokenRepository from "../../features/charge/data/repositories/tokenReposi
 import bankRepository from "../../features/profile/data/repositories/bankRepository";
 import savedWalletsRepository from "../../features/profile/data/repositories/savedWalletsRepository";
 import userRepository from "../../features/login/data/repositories/userRepository";
+import { useAuth } from "../hooks/useAuth";
 
 interface WalletAddress {
   id: string;
@@ -73,6 +74,8 @@ const AppDataContext = createContext<AppDataContextType | undefined>(undefined);
 export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+
   const [tokens, setTokens] = useState<Token[]>([]);
   const [isLoadingTokens, setIsLoadingTokens] = useState(false);
 
@@ -177,16 +180,35 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
-  // Inicializar datos al montar el provider
   useEffect(() => {
-    if (!hasInitialized) {
+    if (!hasInitialized && isAuthenticated && !isAuthLoading) {
       const initializeData = async () => {
         await Promise.all([fetchTokens(), fetchAccounts(), fetchUserData()]);
         setHasInitialized(true);
       };
       initializeData();
     }
-  }, [hasInitialized, fetchTokens, fetchAccounts, fetchUserData]);
+  }, [
+    hasInitialized,
+    isAuthenticated,
+    isAuthLoading,
+    fetchTokens,
+    fetchAccounts,
+    fetchUserData,
+  ]);
+
+  // Limpiar datos cuando el usuario se desautentica
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setTokens([]);
+      setWalletAddresses([]);
+      setBankAccounts([]);
+      setUserData(null);
+      setProfileImage(null);
+      setFullName("");
+      setHasInitialized(false);
+    }
+  }, [isAuthenticated]);
 
   // Refrescar todo
   const refetchAll = useCallback(async () => {
