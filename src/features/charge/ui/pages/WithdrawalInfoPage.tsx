@@ -68,7 +68,7 @@ const WithdrawalInfoPage = () => {
             </span>
           </div>
         ) : (
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex flex-col overflow-hidden justify-center items-center">
             {/* Contenido scrollable */}
             <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center p-2">
               {/* Título principal */}
@@ -183,7 +183,7 @@ const WithdrawalInfoPage = () => {
             </div>
 
             {/* Footer - sin scroll (leyenda y botones) */}
-            <div className="flex-shrink-0 space-y-3 border-t border-gray-200 pt-4 mt-4">
+            <div className="flex-shrink-0 space-y-3 border-t border-gray-200 pt-4 mt-4 max-w-sm">
               {/* Leyenda */}
               <div className="px-4">
                 <p className="text-sm text-[#666666] text-center">

@@ -198,7 +198,7 @@ const HistoryPage: React.FC = () => {
                 key={transaction.createdAt}
                 status={parseTransactionStatus(transaction.status!)}
                 amount={Number(transaction.cryptoAmount)}
-                id={transaction.orderUuid}
+                id={transaction.transactionId}
                 type={parseTransactionType("OFF_RAMP")}
                 onCancelTransaction={cancelTransaction}
                 subtitle={formatDateRelative(transaction.createdAt)}
@@ -220,10 +220,10 @@ const HistoryPage: React.FC = () => {
                 key={transaction.createdAt}
                 status={parseTransactionStatus(transaction.status!)}
                 amount={Number(transaction.cryptoAmount)}
-                id={transaction.orderUuid}
+                id={transaction.transactionId}
                 type={parseTransactionType("ON_RAMP")}
-                onCancelTransaction={cancelTransaction}
                 subtitle={formatDateRelative(transaction.createdAt)}
+                onCancelTransaction={cancelTransaction}
                 onClick={() => {
                   openDepositModal({
                     amountFiat: transaction.FiatCurrencyAmount,
@@ -243,7 +243,6 @@ const HistoryPage: React.FC = () => {
                 status={parseTransactionStatus(transaction.status!)}
                 amount={Number(transaction.cryptoAmount)}
                 id={transaction.orderUuid}
-                onCancelTransaction={cancelTransaction}
                 subtitle={formatDateRelative(transaction.createdAt)}
                 onClick={() =>
                   openSellModal({

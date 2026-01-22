@@ -67,17 +67,15 @@ const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
       {/* Header - sin scroll */}
       <HeaderModal isModal={true} onBack={onClose} onClose={onClose} />
 
-      {/* Contenido scrollable - Solo QR y info */}
-      <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center">
-        {/* Título principal */}
-        <div className="text-center mb-2 mt-2">
-          <h1 className="text-xl font-bold text-[#020F1E]">
-            ¡Realiza el pago!
-          </h1>
-        </div>
+      {/* Título principal - FIJO */}
+      <div className="text-center border-b border-gray-100 flex-shrink-0">
+        <h1 className="text-xl font-bold text-[#020F1E]">¡Realiza el pago!</h1>
+      </div>
 
+      {/* Contenido scrollable - Solo QR e info */}
+      <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center px-4">
         {/* QR Code */}
-        <div className="mb-6 flex flex-col items-center">
+        <div className="flex flex-col items-center mt-25 md:mt-1">
           <QRCode data={qrData} size={150} className="mb-2" />
           <p className="text-xs text-gray-500 text-center">
             Escanea para enviar crypto a esta dirección
@@ -89,7 +87,7 @@ const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
           <TileApp
             title={formatCryptoAddressCustom(walletAddress, 15, 4)}
             titleClassName="text-base text-[#666666]"
-            className="mb-3"
+            className="mb-1"
             trailing={
               <button
                 onClick={handleCopyAddress}

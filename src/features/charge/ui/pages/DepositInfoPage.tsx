@@ -4,6 +4,7 @@ import TileApp from "../../../../shared/components/TileApp";
 import { BiCheck, BiCopy } from "react-icons/bi";
 import ButtonApp from "../../../../shared/components/ButtonApp";
 import { useDepositInfo } from "../hooks/useDepositInfo";
+import { formatCryptoAddress } from "../../../../shared/utils/cryptoUtils";
 
 const DepositInfoPage = () => {
   const { buyData, isLoadingOrderData, onContinue, error, orderId } =
@@ -45,7 +46,7 @@ const DepositInfoPage = () => {
   }
 
   return (
-    <div className="bg-white rounded-[1.25rem] w-full h-[80vh] md:h-[90vh] max-w-md p-4 flex flex-col border-2 border-[#3E5EF5] shadow-lg">
+    <div className="bg-white w-full">
       {/* Header */}
       <AppHeader title="Orden de depósito" showBackButton={false} />
       {isLoadingOrderData ? (
@@ -56,7 +57,7 @@ const DepositInfoPage = () => {
           </span>
         </div>
       ) : (
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden justify-center items-center max-w-sm mx-auto">
           {/* Contenido scrollable */}
           <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center p-2">
             {/* Título principal */}
@@ -183,7 +184,7 @@ const DepositInfoPage = () => {
                 titleClassName="text-base text-[#666666]"
                 trailing={
                   <span className="text-xs font-mono text-[#666666]">
-                    {orderId || "—"}
+                    {formatCryptoAddress(orderId || "—", "medium")}
                   </span>
                 }
               />

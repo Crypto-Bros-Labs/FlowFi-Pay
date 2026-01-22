@@ -5,6 +5,7 @@ import { useBuyInfo } from "../hooks/useBuyInfo";
 import TileApp from "../../../../shared/components/TileApp";
 import type { Token } from "../../../charge/data/local/tokenLocalService";
 import { BiCheck, BiCopy } from "react-icons/bi";
+import { formatCryptoAddress } from "../../../../shared/utils/cryptoUtils";
 
 export interface BuyInfoData {
   amountFiat: string;
@@ -76,20 +77,20 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
       <HeaderModal isModal={true} onBack={onClose} onClose={onClose} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Contenido scrollable */}
-        <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center p-2">
-          {/* Título principal */}
-          <div className="text-center mb-6 w-full py-2">
-            <h1 className="text-2xl font-bold text-[#020F1E]">
-              Completa tu compra
-            </h1>
-            <p className="text-sm text-gray-500 mt-2">
-              Transfiere los fondos a la siguiente cuenta bancaria
-            </p>
-          </div>
+        {/* Título principal - FIJO */}
+        <div className="text-center border-b border-gray-100 flex-shrink-0">
+          <h1 className="text-xl font-bold text-[#020F1E]">
+            Completa tu compra
+          </h1>
+          <p className="text-sm text-gray-500 mt-2">
+            Transfiere los fondos a la siguiente cuenta bancaria
+          </p>
+        </div>
 
+        {/* Contenido scrollable */}
+        <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center">
           {/* Información de cuenta bancaria */}
-          <div className="w-full max-w-xs">
+          <div className="w-full max-w-xs mt-10 md:mt-1">
             {/* CLABE */}
             <TileApp
               title="CLABE"
@@ -202,7 +203,7 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
               titleClassName="text-base text-[#666666]"
               trailing={
                 <span className="text-xs font-mono text-[#666666]">
-                  {orderIdValue || "—"}
+                  {formatCryptoAddress(orderIdValue || "—", "medium")}
                 </span>
               }
             />
