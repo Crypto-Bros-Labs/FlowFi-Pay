@@ -94,7 +94,7 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({
           <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center p-2">
             {/* Título principal */}
             <div className="text-center mb-2 w-full py-2">
-              <h1 className="text-2xl font-bold text-[#020F1E]">
+              <h1 className="text-xl font-bold text-[#020F1E]">
                 ¡Realiza el pago!
               </h1>
             </div>

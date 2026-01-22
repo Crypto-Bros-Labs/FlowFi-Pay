@@ -26,6 +26,8 @@ import { AppDataProvider } from "./shared/contexts/AppDataContext";
 import { useEffect } from "react";
 import authLocalService from "./features/login/data/local/authLocalService";
 import userLocalService from "./features/login/data/local/userLocalService";
+import DepositInfoPage from "./features/charge/ui/pages/DepositInfoPage";
+import WithdrawalInfoPage from "./features/charge/ui/pages/WithdrawalInfoPage";
 
 function App() {
   useEffect(() => {
@@ -48,6 +50,11 @@ function App() {
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/recovery-order/:id" element={<SellInfoPage />} />
+              <Route
+                path="/withdrawal-order/:id"
+                element={<WithdrawalInfoPage />}
+              />
+              <Route path="/deposit-order/:id" element={<DepositInfoPage />} />
 
               {/* Rutas públicas (redirigen si está autenticado) */}
               <Route

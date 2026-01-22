@@ -12,6 +12,7 @@ export interface BuyInfoData {
   tokenSymbol: string;
   networkName: string;
   orderId: string;
+  id: string;
   clabe: string;
   beneficiaryName: string;
 }
@@ -38,6 +39,7 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
   const { amounts } = useBuyInfo();
 
   const [isCopiedClabe, setIsCopiedClabe] = useState(false);
+  const [isCopiedLink, setIsCopiedLink] = useState(false);
 
   const amountFiat = buyInfoData?.amountFiat || amounts?.amountFiat;
   const amountToken = buyInfoData?.amountToken || amounts?.amountToken;
@@ -47,12 +49,24 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
   const clabeValue = buyInfoData?.clabe || clabe;
   const beneficiaryNameValue = buyInfoData?.beneficiaryName || beneficiaryName;
 
+  const baseUrl = window.location.origin;
+  const paymentLink = `${baseUrl}/deposit-order/${orderIdValue}`;
+
   const handleCopyClabe = () => {
     navigator.clipboard.writeText(clabeValue || "");
     setIsCopiedClabe(true);
 
     setTimeout(() => {
       setIsCopiedClabe(false);
+    }, 2000);
+  };
+
+  const handleCopyPaymentLink = () => {
+    navigator.clipboard.writeText(paymentLink);
+    setIsCopiedLink(true);
+
+    setTimeout(() => {
+      setIsCopiedLink(false);
     }, 2000);
   };
 
@@ -99,6 +113,33 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
                   title="Copiar CLABE"
                 >
                   {isCopiedClabe ? (
+                    <BiCheck className="w-5 h-5 text-green-600" />
+                  ) : (
+                    <BiCopy className="w-5 h-5 text-blue-600" />
+                  )}
+                </button>
+              }
+            />
+            <TileApp
+              title="Link de cobro"
+              titleClassName="text-base text-[#666666]"
+              className="mb-3"
+              trailing={
+                <button
+                  onClick={handleCopyPaymentLink}
+                  className="
+                                        flex items-center justify-center
+                                        w-10 h-10
+                                        rounded-full
+                                        bg-blue-100
+                                        hover:bg-blue-200
+                                        transition-colors duration-200
+                                        cursor-pointer
+                                        flex-shrink-0
+                                    "
+                  title="Copiar link de cobro"
+                >
+                  {isCopiedLink ? (
                     <BiCheck className="w-5 h-5 text-green-600" />
                   ) : (
                     <BiCopy className="w-5 h-5 text-blue-600" />

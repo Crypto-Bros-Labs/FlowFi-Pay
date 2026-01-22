@@ -1,6 +1,7 @@
 export interface HistoryResponse {
   chargingOrders: RecoveryOrderModel[];
-  capaTransactions: CapaOrderModel[];
+  withdrawalOrders: WithdrawalOrderModel[];
+  depositOrders: DepositOrderModel[];
 }
 
 export type RecoveryOrderModel = {
@@ -17,11 +18,32 @@ export type RecoveryOrderModel = {
   userWalletAddress: string;
 };
 
-export type CapaOrderModel = {
-  type: string;
-  createdAt: string;
-  status: string;
+export type WithdrawalOrderModel = {
+  transactionId: string;
+  orderUuid: string;
+  name: string;
+  TokenSymbol: string;
   cryptoAmount: string;
-  fiatAmount: string;
-  id: string;
+  FiatCurrencySymbol: string;
+  FiatCurrencyAmount: string;
+  network: string;
+  exchangeValue: string;
+  createdAt: string;
+  status?: string;
+  capaWallet: string;
+};
+
+export type DepositOrderModel = {
+  transactionId: string;
+  orderUuid: string;
+  name: string;
+  TokenSymbol: string;
+  cryptoAmount: string;
+  FiatCurrencySymbol: string;
+  FiatCurrencyAmount: string;
+  network: string;
+  exchangeValue: string;
+  createdAt: string;
+  status?: string;
+  capaClabe: string;
 };

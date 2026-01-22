@@ -10,6 +10,8 @@ import { formatDateRelative } from "../../../../shared/utils/dateUtils";
 import { useNavigate } from "react-router-dom";
 import SellInfoPanel from "../../../charge/ui/components/SellInfoPanel";
 import ModalWrapper from "../../../../shared/components/ModalWrapper";
+import ExternalSellInfoPanel from "../../../wallet/ui/components/ExternalSellInfoPanel";
+import BuyInfoPanel from "../../../wallet/ui/components/BuyInfoPanel";
 
 // Componente para las tarjetas de estadísticas
 const StatCard: React.FC<{
@@ -96,6 +98,14 @@ const HistoryPage: React.FC = () => {
     closeSellModal,
     sellInfoData,
     openSellModal,
+    showWithdrawalInfoModal,
+    closeWithdrawalModal,
+    withdrawalInfoData,
+    openWithdrawalModal,
+    showDepositInfoModal,
+    closeDepositModal,
+    depositInfoData,
+    openDepositModal,
   } = useHistory();
 
   const navigate = useNavigate();
@@ -183,30 +193,56 @@ const HistoryPage: React.FC = () => {
         {!isLoading &&
           history.length > 0 &&
           history.map((transaction) => {
-            // Determinar qué ID usar según el tipo de transacción
-            const transactionId =
-              "id" in transaction
-                ? transaction.id
-                : "orderUuid" in transaction
-                  ? transaction.orderUuid
-                  : "unknown";
-
-            return "id" in transaction ? (
+            return "capaWallet" in transaction ? (
               <TileHistory
                 key={transaction.createdAt}
                 status={parseTransactionStatus(transaction.status!)}
                 amount={Number(transaction.cryptoAmount)}
-                id={transactionId}
-                type={parseTransactionType(transaction.type!)}
+                id={transaction.orderUuid}
+                type={parseTransactionType("OFF_RAMP")}
                 onCancelTransaction={cancelTransaction}
                 subtitle={formatDateRelative(transaction.createdAt)}
+                onClick={() =>
+                  openWithdrawalModal({
+                    amountFiat: transaction.FiatCurrencyAmount,
+                    amountToken: transaction.cryptoAmount,
+                    tokenSymbol: transaction.TokenSymbol,
+                    networkName: transaction.network,
+                    orderId: transaction.orderUuid,
+                    transactionId: transaction.transactionId,
+                    walletAddress: transaction.capaWallet,
+                    name: transaction.name,
+                  })
+                }
+              />
+            ) : "capaClabe" in transaction ? (
+              <TileHistory
+                key={transaction.createdAt}
+                status={parseTransactionStatus(transaction.status!)}
+                amount={Number(transaction.cryptoAmount)}
+                id={transaction.orderUuid}
+                type={parseTransactionType("ON_RAMP")}
+                onCancelTransaction={cancelTransaction}
+                subtitle={formatDateRelative(transaction.createdAt)}
+                onClick={() => {
+                  openDepositModal({
+                    amountFiat: transaction.FiatCurrencyAmount,
+                    amountToken: transaction.cryptoAmount,
+                    tokenSymbol: transaction.TokenSymbol,
+                    networkName: transaction.network,
+                    orderId: transaction.orderUuid,
+                    transactionId: transaction.transactionId,
+                    clabe: transaction.capaClabe,
+                    name: transaction.name,
+                  });
+                }}
               />
             ) : (
               <TileHistory
                 key={transaction.createdAt}
                 status={parseTransactionStatus(transaction.status!)}
                 amount={Number(transaction.cryptoAmount)}
-                id={transactionId}
+                id={transaction.orderUuid}
                 onCancelTransaction={cancelTransaction}
                 subtitle={formatDateRelative(transaction.createdAt)}
                 onClick={() =>
@@ -230,6 +266,35 @@ const HistoryPage: React.FC = () => {
             onClose={closeSellModal}
             onContinue={closeSellModal}
             sellInfoData={sellInfoData}
+          />
+        </ModalWrapper>
+      )}
+
+      {showWithdrawalInfoModal && (
+        <ModalWrapper onClose={closeWithdrawalModal}>
+          <ExternalSellInfoPanel
+            onClose={closeWithdrawalModal}
+            onContinue={closeWithdrawalModal}
+            withdrawalInfo={withdrawalInfoData}
+          />
+        </ModalWrapper>
+      )}
+
+      {showDepositInfoModal && (
+        <ModalWrapper onClose={closeDepositModal}>
+          <BuyInfoPanel
+            onClose={closeDepositModal}
+            onContinue={closeDepositModal}
+            buyInfoData={{
+              amountFiat: depositInfoData?.amountFiat || "",
+              amountToken: depositInfoData?.amountToken || "",
+              tokenSymbol: depositInfoData?.tokenSymbol || "",
+              networkName: depositInfoData?.networkName || "",
+              orderId: depositInfoData?.orderId || "",
+              id: depositInfoData?.transactionId || "",
+              clabe: depositInfoData?.clabe || "",
+              beneficiaryName: depositInfoData?.name || "",
+            }}
           />
         </ModalWrapper>
       )}

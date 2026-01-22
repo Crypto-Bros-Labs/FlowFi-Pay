@@ -634,7 +634,8 @@ export const useSetAmountDynamic = (
             amountToken: amountToken,
             tokenSymbol: token.symbol,
             networkName: token.network,
-            orderId: response.id || "",
+            id: response.id || "",
+            orderId: response.orderUuid || "",
             clabe: response.clabeNumber || "",
             beneficiaryName: fullName || "",
           });
@@ -742,6 +743,7 @@ export const useSetAmountDynamic = (
               destinationWalletAddress:
                 response.destinationWalletAddress.replace("ethereum:", ""),
               kycUrl: "www.example.com/kyc",
+              orderUuid: response.orderUuid || "",
             };
             sellRepository.setAmounts({
               amountFiat: amountFiat,

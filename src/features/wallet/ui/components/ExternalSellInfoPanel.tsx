@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import HeaderModal from "../../../../shared/components/HeaderModal";
 import ButtonApp from "../../../../shared/components/ButtonApp";
 import QRCode from "../../../../shared/components/QRCode";
@@ -8,12 +8,14 @@ import type { SellData } from "../../../charge/data/local/sellLocalService";
 import type { DynamicToken } from "../hooks/useSelectTokenDynamic";
 import { formatCryptoAddressCustom } from "../../../../shared/utils/cryptoUtils";
 import { BiCheck, BiCopy } from "react-icons/bi";
+import type { WithdrawalInfoData } from "../../../history/ui/hooks/useHistory";
 
 interface SellInfoPanelProps {
   onClose?: () => void;
   onContinue?: () => void;
   token?: DynamicToken;
   sellData?: SellData;
+  withdrawalInfo?: WithdrawalInfoData;
 }
 
 const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
@@ -21,18 +23,42 @@ const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
   onContinue,
   token,
   sellData,
+  withdrawalInfo,
 }) => {
   const { qrData, amounts, cancelTransaction, isCancelLoading } =
     useExternalSellInfo({ sellData });
-  const [isCopied, setIsCopied] = React.useState(false);
+  const [isCopied, setIsCopied] = useState(false);
+  const [isCopiedLink, setIsCopiedLink] = useState(false);
+
+  // ✅ Variables dinámicas que priorizan sellData pero usan withdrawalInfo como fallback
+  const walletAddress =
+    sellData?.destinationWalletAddress || withdrawalInfo?.walletAddress || "";
+  const orderId = sellData?.orderUuid || withdrawalInfo?.orderId || "";
+  const amountFiat = amounts?.amountFiat || withdrawalInfo?.amountFiat || "0";
+  const amountToken =
+    amounts?.amountToken || withdrawalInfo?.amountToken || "0";
+  const tokenSymbol = token?.symbol || withdrawalInfo?.tokenSymbol || "";
+  const networkName = token?.network || withdrawalInfo?.networkName || "";
 
   const handleCopyAddress = () => {
-    navigator.clipboard.writeText(sellData?.destinationWalletAddress ?? "");
+    navigator.clipboard.writeText(walletAddress);
     setIsCopied(true);
 
     // ✅ Resetear el estado después de 2 segundos
     setTimeout(() => {
       setIsCopied(false);
+    }, 2000);
+  };
+
+  const baseUrl = window.location.origin;
+  const paymentLink = `${baseUrl}/withdrawal-order/${orderId}`;
+
+  const handleCopyPaymentLink = () => {
+    navigator.clipboard.writeText(paymentLink);
+    setIsCopiedLink(true);
+
+    setTimeout(() => {
+      setIsCopiedLink(false);
     }, 2000);
   };
 
@@ -44,8 +70,8 @@ const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
       {/* Contenido scrollable - Solo QR y info */}
       <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center">
         {/* Título principal */}
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-[#020F1E] mb-4">
+        <div className="text-center mb-2 mt-2">
+          <h1 className="text-xl font-bold text-[#020F1E]">
             ¡Realiza el pago!
           </h1>
         </div>
@@ -61,11 +87,7 @@ const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
         {/* Información de montos y red */}
         <div className="w-full max-w-xs">
           <TileApp
-            title={formatCryptoAddressCustom(
-              sellData?.destinationWalletAddress ?? "",
-              15,
-              4
-            )}
+            title={formatCryptoAddressCustom(walletAddress, 15, 4)}
             titleClassName="text-base text-[#666666]"
             className="mb-3"
             trailing={
@@ -92,12 +114,39 @@ const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
             }
           />
           <TileApp
+            title="Link de cobro"
+            titleClassName="text-base text-[#666666]"
+            className="mb-3"
+            trailing={
+              <button
+                onClick={handleCopyPaymentLink}
+                className="
+                                        flex items-center justify-center
+                                        w-10 h-10
+                                        rounded-full
+                                        bg-blue-100
+                                        hover:bg-blue-200
+                                        transition-colors duration-200
+                                        cursor-pointer
+                                        flex-shrink-0
+                                    "
+                title="Copiar link de cobro"
+              >
+                {isCopiedLink ? (
+                  <BiCheck className="w-5 h-5 text-green-600" />
+                ) : (
+                  <BiCopy className="w-5 h-5 text-blue-600" />
+                )}
+              </button>
+            }
+          />
+          <TileApp
             title="Monto"
             titleClassName="text-base text-[#666666]"
             trailing={
               <>
                 <span className="text-base font-semibold text-[#020F1E]">
-                  {amounts?.amountFiat} MXN
+                  {amountFiat} MXN
                 </span>
               </>
             }
@@ -105,12 +154,12 @@ const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
           />
 
           <TileApp
-            title={`Monto (${token!.symbol})`}
+            title={`Monto (${tokenSymbol})`}
             titleClassName="text-base text-[#666666]"
             trailing={
               <>
                 <span className="text-base font-semibold text-[#020F1E]">
-                  {amounts?.amountToken}
+                  {amountToken}
                 </span>
               </>
             }
@@ -123,7 +172,7 @@ const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
             trailing={
               <>
                 <span className="text-base font-semibold text-[#020F1E]">
-                  {token?.network}
+                  {networkName}
                 </span>
               </>
             }
@@ -160,7 +209,9 @@ const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
           isMobile={true}
           loading={isCancelLoading}
           onClick={async () => {
-            const success = await cancelTransaction(sellData?.id || "");
+            const transactionId =
+              sellData?.id || withdrawalInfo?.transactionId || "";
+            const success = await cancelTransaction(transactionId);
             if (success) {
               onContinue?.();
             }
