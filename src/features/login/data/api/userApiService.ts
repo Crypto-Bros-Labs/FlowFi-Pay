@@ -19,23 +19,25 @@ class UserService {
   }
 
   async getUser(userUuid: string): Promise<UserData> {
-    const response = await axiosInstance.get(`/user/info/${userUuid}`);
+    const response = await axiosWithAuthInstance.get(`/user/info/${userUuid}`);
     return response.data;
   }
 
   async uploadUserPicture(
     formData: FormData,
-    userUuid: string
+    userUuid: string,
   ): Promise<UserPictureResponse> {
     const response = await axiosFormDataInstance.put(
       `/user/update-picture/${userUuid}`,
-      formData
+      formData,
     );
     return response.data;
   }
 
   async getKycStatus(userUuid: string): Promise<KycStatusResponse> {
-    const response = await axiosInstance.get(`/user/kyc/info/${userUuid}`);
+    const response = await axiosWithAuthInstance.get(
+      `/user/kyc/info/${userUuid}`,
+    );
     return response.data.data;
   }
 
@@ -49,7 +51,7 @@ class UserService {
 
   async getTeamMembers(userUuid: string): Promise<TeamMemberResponse[]> {
     const response = await axiosWithAuthInstance.get(
-      `/user/team-member/list/${userUuid}`
+      `/user/team-member/list/${userUuid}`,
     );
     return response.data.data;
   }
