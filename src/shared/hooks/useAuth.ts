@@ -18,7 +18,7 @@ export const useAuth = () => {
       console.log("Auth check:", { hasTokens, hasAllData, userData });
 
       setIsSignup(!!hasAllData);
-      setIsAuthenticated(hasTokens && hasAllData);
+      setIsAuthenticated(hasTokens);
     } catch (error) {
       console.error("Error checking auth status:", error);
       setIsAuthenticated(false);

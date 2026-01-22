@@ -74,7 +74,7 @@ const AppDataContext = createContext<AppDataContextType | undefined>(undefined);
 export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
+  const { isAuthenticated, isLoading: isAuthLoading, isSignup } = useAuth();
 
   const [tokens, setTokens] = useState<Token[]>([]);
   const [isLoadingTokens, setIsLoadingTokens] = useState(false);
@@ -181,7 +181,7 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   useEffect(() => {
-    if (!hasInitialized && isAuthenticated && !isAuthLoading) {
+    if (!hasInitialized && isAuthenticated && !isAuthLoading && isSignup) {
       const initializeData = async () => {
         await Promise.all([fetchTokens(), fetchAccounts(), fetchUserData()]);
         setHasInitialized(true);
@@ -195,11 +195,12 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
     fetchTokens,
     fetchAccounts,
     fetchUserData,
+    isSignup,
   ]);
 
   // Limpiar datos cuando el usuario se desautentica
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated && !isSignup) {
       setTokens([]);
       setWalletAddresses([]);
       setBankAccounts([]);
@@ -208,7 +209,7 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
       setFullName("");
       setHasInitialized(false);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isSignup]);
 
   // Refrescar todo
   const refetchAll = useCallback(async () => {
