@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = import.meta.env.VITE_API_DEV_URL;
+const baseURL = import.meta.env.VITE_API_URL;
 
 // Instancia con autenticación
 const axiosInstance = axios.create({
