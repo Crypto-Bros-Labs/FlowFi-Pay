@@ -53,7 +53,10 @@ export const useSellInfo = () => {
   const cancelTransaction = async (transactionId: string): Promise<boolean> => {
     setIsCancelLoading(true);
     try {
-      const result = await historyRepository.cancelTransaction(transactionId);
+      const result = await historyRepository.cancelTransaction(
+        transactionId,
+        "OFF_RAMP",
+      );
       if (result.success) {
         console.log("Transacción cancelada con éxito");
         return true;

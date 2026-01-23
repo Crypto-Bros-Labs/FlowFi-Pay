@@ -201,7 +201,9 @@ const HistoryPage: React.FC = () => {
                 amount={Number(transaction.cryptoAmount)}
                 id={transaction.transactionId}
                 type={parseTransactionType("OFF_RAMP")}
-                onCancelTransaction={cancelTransaction}
+                onCancelTransaction={() =>
+                  cancelTransaction(transaction.transactionId, "OFF_RAMP")
+                }
                 subtitle={formatDateRelative(transaction.createdAt)}
                 onClick={() =>
                   openWithdrawalModal({
@@ -225,7 +227,9 @@ const HistoryPage: React.FC = () => {
                 id={transaction.transactionId}
                 type={parseTransactionType("ON_RAMP")}
                 subtitle={formatDateRelative(transaction.createdAt)}
-                onCancelTransaction={cancelTransaction}
+                onCancelTransaction={() =>
+                  cancelTransaction(transaction.transactionId, "ON_RAMP")
+                }
                 onClick={() => {
                   openDepositModal({
                     amountFiat: transaction.FiatCurrencyAmount,

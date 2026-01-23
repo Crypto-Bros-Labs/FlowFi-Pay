@@ -117,7 +117,10 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
   const handleCancelTransaction = async () => {
     setIsCancelLoading(true);
     try {
-      const result = await historyRepository.cancelTransaction(transactionId);
+      const result = await historyRepository.cancelTransaction(
+        transactionId,
+        "ON_RAMP",
+      );
       if (result.success) {
         console.log("Transacción cancelada con éxito");
         onContinue?.();

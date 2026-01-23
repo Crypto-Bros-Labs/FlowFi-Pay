@@ -207,12 +207,18 @@ export const useHistory = () => {
     }
   };
 
-  const cancelTransaction = async (transactionId: string) => {
+  const cancelTransaction = async (
+    transactionId: string,
+    transactionType: string,
+  ) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const result = await historyRepository.cancelTransaction(transactionId);
+      const result = await historyRepository.cancelTransaction(
+        transactionId,
+        transactionType,
+      );
       if (result.success) {
         // Refrescar el historial después de cancelar
         await fetchHistory();
