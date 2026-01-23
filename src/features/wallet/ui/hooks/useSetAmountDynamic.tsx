@@ -12,6 +12,7 @@ import sellRepository from "../../../charge/data/repositories/sellRepository";
 import { useProfile } from "../../../profile/ui/hooks/useProfile";
 import type { BuyInfoData } from "../components/BuyInfoPanel";
 import type { SellData } from "../../../charge/data/local/sellLocalService";
+import { parseTransactionStatus } from "../../../../shared/utils/historyUtils";
 
 export type TransactionType = "transfer" | "buy" | "sell";
 export type CurrencyMode = "fiat" | "crypto";
@@ -638,6 +639,7 @@ export const useSetAmountDynamic = (
             orderId: response.orderUuid || "",
             clabe: response.clabeNumber || "",
             beneficiaryName: fullName || "",
+            status: parseTransactionStatus("pending"),
           });
           setShowModalBuyResult(true);
         } else {
@@ -744,6 +746,7 @@ export const useSetAmountDynamic = (
                 response.destinationWalletAddress.replace("ethereum:", ""),
               kycUrl: "www.example.com/kyc",
               orderUuid: response.orderUuid || "",
+              status: parseTransactionStatus("pending"),
             };
             sellRepository.setAmounts({
               amountFiat: amountFiat,

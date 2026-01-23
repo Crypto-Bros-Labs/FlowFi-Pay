@@ -7,6 +7,7 @@ import historyRepository from "../../data/repositories/historyRepository";
 import userRepository from "../../../login/data/repositories/userRepository";
 import { useEffect, useState, useMemo } from "react";
 import type { SellInfoData } from "../../../charge/ui/components/SellInfoPanel";
+import type { TransactionStatus } from "../components/TileHistory";
 
 export interface WithdrawalInfoData {
   amountFiat: string;
@@ -17,6 +18,7 @@ export interface WithdrawalInfoData {
   transactionId: string;
   walletAddress: string;
   name: string;
+  status: TransactionStatus;
 }
 
 export interface DepositInfoData {
@@ -28,6 +30,7 @@ export interface DepositInfoData {
   transactionId: string;
   clabe: string;
   name: string;
+  status: TransactionStatus;
 }
 
 // Tipos para los filtros - agregamos 'all' como opción

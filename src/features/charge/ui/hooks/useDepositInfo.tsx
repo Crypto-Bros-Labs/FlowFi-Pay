@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import sellRepository from "../../data/repositories/sellRepository";
 import { useNavigate } from "react-router-dom";
 import type { BuyInfoData } from "../../../wallet/ui/components/BuyInfoPanel";
+import { parseTransactionStatus } from "../../../../shared/utils/historyUtils";
 
 export const useDepositInfo = () => {
   // ✅ Obtener el id de la ruta
@@ -38,6 +39,7 @@ export const useDepositInfo = () => {
           id: buyInfoData.transactionId,
           clabe: buyInfoData.capaClabe,
           beneficiaryName: buyInfoData.name,
+          status: parseTransactionStatus(buyInfoData.status || "pending"),
         };
 
         setBuyData(buyData);

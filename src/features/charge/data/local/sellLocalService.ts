@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { OffRampData } from "../models/sellModel";
+import type { TransactionStatus } from "../../../history/ui/components/TileHistory";
 
 export interface Amounts {
   amountFiat: string;
@@ -12,6 +13,7 @@ export interface SellData {
   destinationWalletAddress: string;
   id?: string;
   orderUuid?: string;
+  status: TransactionStatus;
 }
 
 interface SellLocalState {

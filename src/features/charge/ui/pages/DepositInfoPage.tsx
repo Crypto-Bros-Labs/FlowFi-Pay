@@ -5,6 +5,7 @@ import { BiCheck, BiCopy } from "react-icons/bi";
 import ButtonApp from "../../../../shared/components/ButtonApp";
 import { useDepositInfo } from "../hooks/useDepositInfo";
 import { formatCryptoAddress } from "../../../../shared/utils/cryptoUtils";
+import type { TransactionStatus } from "../../../history/ui/components/TileHistory";
 
 const DepositInfoPage = () => {
   const { buyData, isLoadingOrderData, onContinue, error, orderId } =
@@ -15,6 +16,43 @@ const DepositInfoPage = () => {
 
   const baseUrl = window.location.origin;
   const paymentLink = `${baseUrl}/deposit-order/${orderId}`;
+  const status: TransactionStatus = buyData?.status || "pending";
+
+  // Configuración de textos según status
+  const getStatusConfig = (status: TransactionStatus) => {
+    switch (status) {
+      case "completed":
+        return {
+          title: "¡Pago realizado!",
+          subtitle: "Se ha completado tu compra exitosamente",
+          showBankDetails: true,
+          showTransferMessage: false,
+          showAmounts: true,
+          buttonText: "Continuar",
+        };
+      case "canceled":
+        return {
+          title: "Pago cancelado",
+          subtitle: "Tu transacción ha sido cancelada",
+          showBankDetails: true,
+          showTransferMessage: false,
+          showAmounts: true,
+          buttonText: "Volver",
+        };
+      case "pending":
+      default:
+        return {
+          title: "Completa tu compra",
+          subtitle: "Transfiere los fondos a la siguiente cuenta bancaria",
+          showBankDetails: true,
+          showTransferMessage: true,
+          showAmounts: true,
+          buttonText: "Continuar",
+        };
+    }
+  };
+
+  const statusConfig = getStatusConfig(status);
 
   const handleCopyClabe = () => {
     navigator.clipboard.writeText(buyData?.clabe || "");
@@ -63,144 +101,153 @@ const DepositInfoPage = () => {
             {/* Título principal */}
             <div className="text-center mb-6 w-full py-2">
               <h1 className="text-2xl font-bold text-[#020F1E]">
-                Completa tu compra
+                {statusConfig.title}
               </h1>
               <p className="text-sm text-gray-500 mt-2">
-                Transfiere los fondos a la siguiente cuenta bancaria
+                {statusConfig.subtitle}
               </p>
             </div>
 
             {/* Información de cuenta bancaria */}
-            <div className="w-full max-w-xs">
-              {/* CLABE */}
-              <TileApp
-                title="CLABE"
-                subtitle={buyData?.clabe || "—"}
-                subtitleClassName="text-sm font-mono text-[#020F1E] break-all"
-                titleClassName="text-base text-[#666666]"
-                className="mb-3"
-                trailing={
-                  <button
-                    onClick={handleCopyClabe}
-                    className="
-                    flex items-center justify-center
-                    w-10 h-10
-                    rounded-full
-                    bg-blue-100
-                    hover:bg-blue-200
-                    transition-colors duration-200
-                    cursor-pointer
-                    flex-shrink-0
-                  "
-                    title="Copiar CLABE"
-                  >
-                    {isCopiedClabe ? (
-                      <BiCheck className="w-5 h-5 text-green-600" />
-                    ) : (
-                      <BiCopy className="w-5 h-5 text-blue-600" />
-                    )}
-                  </button>
-                }
-              />
-              <TileApp
-                title="Link de cobro"
-                titleClassName="text-base text-[#666666]"
-                className="mb-3"
-                trailing={
-                  <button
-                    onClick={handleCopyPaymentLink}
-                    className="
-                                        flex items-center justify-center
-                                        w-10 h-10
-                                        rounded-full
-                                        bg-blue-100
-                                        hover:bg-blue-200
-                                        transition-colors duration-200
-                                        cursor-pointer
-                                        flex-shrink-0
-                                    "
-                    title="Copiar link de cobro"
-                  >
-                    {isCopiedLink ? (
-                      <BiCheck className="w-5 h-5 text-green-600" />
-                    ) : (
-                      <BiCopy className="w-5 h-5 text-blue-600" />
-                    )}
-                  </button>
-                }
-              />
+            {statusConfig.showBankDetails && (
+              <div className="w-full max-w-xs">
+                {/* CLABE */}
+                <TileApp
+                  title="CLABE"
+                  subtitle={buyData?.clabe || "—"}
+                  subtitleClassName="text-sm font-mono text-[#020F1E] break-all"
+                  titleClassName="text-base text-[#666666]"
+                  className="mb-3"
+                  trailing={
+                    <button
+                      onClick={handleCopyClabe}
+                      className="
+                      flex items-center justify-center
+                      w-10 h-10
+                      rounded-full
+                      bg-blue-100
+                      hover:bg-blue-200
+                      transition-colors duration-200
+                      cursor-pointer
+                      flex-shrink-0
+                    "
+                      title="Copiar CLABE"
+                    >
+                      {isCopiedClabe ? (
+                        <BiCheck className="w-5 h-5 text-green-600" />
+                      ) : (
+                        <BiCopy className="w-5 h-5 text-blue-600" />
+                      )}
+                    </button>
+                  }
+                />
+                <TileApp
+                  title="Link de cobro"
+                  titleClassName="text-base text-[#666666]"
+                  className="mb-3"
+                  trailing={
+                    <button
+                      onClick={handleCopyPaymentLink}
+                      className="
+                                          flex items-center justify-center
+                                          w-10 h-10
+                                          rounded-full
+                                          bg-blue-100
+                                          hover:bg-blue-200
+                                          transition-colors duration-200
+                                          cursor-pointer
+                                          flex-shrink-0
+                                      "
+                      title="Copiar link de cobro"
+                    >
+                      {isCopiedLink ? (
+                        <BiCheck className="w-5 h-5 text-green-600" />
+                      ) : (
+                        <BiCopy className="w-5 h-5 text-blue-600" />
+                      )}
+                    </button>
+                  }
+                />
 
-              {/* Beneficiario */}
-              <TileApp
-                title="A nombre de"
-                titleClassName="text-base text-[#666666]"
-                trailing={
-                  <span className="text-base font-semibold text-[#020F1E]">
-                    {buyData?.beneficiaryName || "—"}
-                  </span>
-                }
-                className="mb-3"
-              />
+                {/* Beneficiario */}
+                <TileApp
+                  title="A nombre de"
+                  titleClassName="text-base text-[#666666]"
+                  trailing={
+                    <span className="text-base font-semibold text-[#020F1E]">
+                      {buyData?.beneficiaryName || "—"}
+                    </span>
+                  }
+                  className="mb-3"
+                />
+              </div>
+            )}
 
-              {/* Monto a enviar (Fiat) */}
-              <TileApp
-                title="Monto a enviar"
-                titleClassName="text-base text-[#666666]"
-                trailing={
-                  <span className="text-base font-semibold text-[#020F1E]">
-                    {buyData?.amountFiat || "—"} MXN
-                  </span>
-                }
-                className="mb-3"
-              />
+            {/* Información de montos y red - Condicional según config */}
+            {statusConfig.showAmounts && (
+              <div className="w-full max-w-xs">
+                {/* Monto a enviar (Fiat) */}
+                <TileApp
+                  title="Monto a enviar"
+                  titleClassName="text-base text-[#666666]"
+                  trailing={
+                    <span className="text-base font-semibold text-[#020F1E]">
+                      {buyData?.amountFiat || "—"} MXN
+                    </span>
+                  }
+                  className="mb-3"
+                />
 
-              {/* Recibirás (Crypto) */}
-              <TileApp
-                title={`Recibirás (${buyData?.tokenSymbol || "—"})`}
-                titleClassName="text-base text-[#666666]"
-                trailing={
-                  <span className="text-base font-semibold text-[#020F1E]">
-                    {buyData?.amountToken || "—"}
-                  </span>
-                }
-                className="mb-3"
-              />
+                {/* Recibirás (Crypto) */}
+                <TileApp
+                  title={`Recibirás (${buyData?.tokenSymbol || "—"})`}
+                  titleClassName="text-base text-[#666666]"
+                  trailing={
+                    <span className="text-base font-semibold text-[#020F1E]">
+                      {buyData?.amountToken || "—"}
+                    </span>
+                  }
+                  className="mb-3"
+                />
 
-              {/* Red */}
-              <TileApp
-                title="Red"
-                titleClassName="text-base text-[#666666]"
-                trailing={
-                  <span className="text-base font-semibold text-[#020F1E]">
-                    {buyData?.networkName || "—"}
-                  </span>
-                }
-                className="mb-3"
-              />
+                {/* Red */}
+                <TileApp
+                  title="Red"
+                  titleClassName="text-base text-[#666666]"
+                  trailing={
+                    <span className="text-base font-semibold text-[#020F1E]">
+                      {buyData?.networkName || "—"}
+                    </span>
+                  }
+                  className="mb-3"
+                />
 
-              {/* ID de orden */}
-              <TileApp
-                title="ID de orden"
-                titleClassName="text-base text-[#666666]"
-                trailing={
-                  <span className="text-xs font-mono text-[#666666]">
-                    {formatCryptoAddress(orderId || "—", "medium")}
-                  </span>
-                }
-              />
-            </div>
+                {/* ID de orden */}
+                <TileApp
+                  title="ID de orden"
+                  titleClassName="text-base text-[#666666]"
+                  trailing={
+                    <span className="text-xs font-mono text-[#666666]">
+                      {formatCryptoAddress(orderId || "—", "medium")}
+                    </span>
+                  }
+                />
+              </div>
+            )}
           </div>
 
           {/* Footer - fijo al final */}
           <div className="flex-shrink-0 space-y-3 border-t border-gray-200 pt-4 mt-4">
-            <div className="px-2">
-              <p className="text-sm text-[#666666] text-center">
-                Realiza la transferencia y confirma una vez completada
-              </p>
-            </div>
+            {statusConfig.showTransferMessage && (
+              <div className="px-2">
+                <p className="text-sm text-[#666666] text-center">
+                  Realiza la transferencia y confirma una vez completada
+                </p>
+              </div>
+            )}
 
             <ButtonApp
-              text="Continuar"
+              text={statusConfig.buttonText}
               textSize="text-sm"
               paddingVertical="py-2"
               isMobile={true}

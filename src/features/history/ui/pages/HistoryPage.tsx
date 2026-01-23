@@ -212,6 +212,7 @@ const HistoryPage: React.FC = () => {
                     transactionId: transaction.transactionId,
                     walletAddress: transaction.capaWallet,
                     name: transaction.name,
+                    status: parseTransactionStatus(transaction.status!),
                   })
                 }
               />
@@ -234,6 +235,7 @@ const HistoryPage: React.FC = () => {
                     transactionId: transaction.transactionId,
                     clabe: transaction.capaClabe,
                     name: transaction.name,
+                    status: parseTransactionStatus(transaction.status!),
                   });
                 }}
               />
@@ -293,6 +295,7 @@ const HistoryPage: React.FC = () => {
               id: depositInfoData?.transactionId || "",
               clabe: depositInfoData?.clabe || "",
               beneficiaryName: depositInfoData?.name || "",
+              status: depositInfoData?.status || "pending",
             }}
           />
         </ModalWrapper>

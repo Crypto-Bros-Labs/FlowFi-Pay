@@ -4,6 +4,7 @@ import { formatCryptoAddress } from "../../../../shared/utils/cryptoUtils";
 import type { Amounts, SellData } from "../../data/local/sellLocalService";
 import sellRepository from "../../data/repositories/sellRepository";
 import { useNavigate } from "react-router-dom";
+import { parseTransactionStatus } from "../../../../shared/utils/historyUtils";
 
 export const useWithdrawalInfoPage = () => {
   // ✅ Obtener el id de la ruta
@@ -38,6 +39,7 @@ export const useWithdrawalInfoPage = () => {
           kycUrl: "https://example.com/kyc",
           destinationWalletAddress: `ethereum:${sellInfoData.capaWallet}`,
           id: id,
+          status: parseTransactionStatus(sellInfoData.status || "pending"),
         };
 
         const amountsData = {
