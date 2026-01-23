@@ -113,6 +113,7 @@ const HistoryPage: React.FC = () => {
   return (
     <div className="flex flex-col h-full">
       <AppHeader
+        onBack={() => navigate("/main")}
         rightActions={[
           {
             icon: IoPerson,
