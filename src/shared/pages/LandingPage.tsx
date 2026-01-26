@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ButtonApp from "../components/ButtonApp";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import WhatsAppFAB from "../components/WhatsAppFAB";
 // import MainPage from '../../features/charge/ui/pages/MainPage';
 import testPage from "/images/app_test.png";
 
@@ -87,7 +88,7 @@ const LandingPage: React.FC = () => {
               <p className="text-lg md:text-xl lg:text-2xl text-slate-600 max-w-2xl mx-auto lg:mx-0">
                 Conectamos billeteras cripto con el sistema bancario.{" "}
                 <span className="text-blue-600 font-semibold">
-                Gestiona cobros, nómina y compra-vende USDC 
+                  Gestiona cobros, nómina y compra-vende USDC
                 </span>{" "}
                 con total liquidez.{" "}
               </p>
@@ -278,6 +279,7 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </section>
+        <WhatsAppFAB />
         <Footer />
       </div>
     </div>
