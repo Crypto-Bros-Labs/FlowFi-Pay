@@ -25,8 +25,10 @@ const MainPage: React.FC = () => {
     onHandleReceive,
     onHandleBuySell,
     isLoading,
+    /* 
     onHandleSellWld,
     wldToken,
+    */
   } = useMain();
 
   const {
@@ -226,7 +228,7 @@ const MainPage: React.FC = () => {
             }}
           />
         </div>
-
+        {/* Botón Vender WLD 
         <div className="w-full mb-2">
           <TileButton
             icon={
@@ -243,6 +245,7 @@ const MainPage: React.FC = () => {
             }}
           />
         </div>
+        */}
       </div>
     </div>
   );
