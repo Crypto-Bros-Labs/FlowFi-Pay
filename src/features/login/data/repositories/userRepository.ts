@@ -12,6 +12,10 @@ class UserRepository {
     userUuid: string;
     phone: string;
     fullName: string;
+    accountType: string;
+    rfc: string;
+    razonSocial?: string;
+    nombreComercial?: string;
     image: string;
   }): Promise<boolean> {
     try {
@@ -57,12 +61,12 @@ class UserRepository {
 
   async uploadUserPicture(
     formData: FormData,
-    userUuid: string
+    userUuid: string,
   ): Promise<boolean> {
     try {
       const response = await userApiService.uploadUserPicture(
         formData,
-        userUuid
+        userUuid,
       );
       console.log("Upload user picture response:", response);
 

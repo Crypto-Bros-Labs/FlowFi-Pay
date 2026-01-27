@@ -393,6 +393,8 @@ export const useProfile = () => {
           fullName: newName,
           image: profileImage || "",
           phone: userData.phone || "",
+          rfc: "",
+          accountType: "",
         });
       }
     } catch (error) {
