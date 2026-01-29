@@ -12,10 +12,9 @@ class UserRepository {
     userUuid: string;
     phone: string;
     fullName: string;
-    accountType: string;
-    rfc: string;
-    razonSocial?: string;
-    nombreComercial?: string;
+    type: string;
+    corporateName?: string;
+    businessName?: string;
     image: string;
   }): Promise<boolean> {
     try {

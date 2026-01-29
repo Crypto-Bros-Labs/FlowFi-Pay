@@ -186,7 +186,7 @@ export const useSignup = () => {
     return true;
   };
 
-  const validateRfc = (rfc: string): boolean => {
+  /* const validateRfc = (rfc: string): boolean => {
     const trimmedRfc = rfc.trim();
 
     if (trimmedRfc.length === 0) {
@@ -202,7 +202,7 @@ export const useSignup = () => {
 
     setRfcError(null);
     return true;
-  };
+  }; */
 
   const validateRazonSocial = (razon: string): boolean => {
     const trimmedRazon = razon.trim();
@@ -262,11 +262,9 @@ export const useSignup = () => {
     // Validaciones específicas según tipo de cuenta
     if (accountType === "individual") {
       if (!validateFullname(fullname)) return;
-      if (!validateRfc(rfc)) return;
     } else {
       if (!validateRazonSocial(razonSocial)) return;
       if (!validateNombreComercial(nombreComercial)) return;
-      if (!validateRfc(rfc)) return;
     }
 
     setIsLoading(true);
@@ -277,13 +275,11 @@ export const useSignup = () => {
       const response = await userRepository.updateUser({
         userUuid: userData.userUuid || "",
         phone: `${countryCode}${phone}`,
-        fullName: accountType === "individual" ? fullname : razonSocial,
+        fullName: fullname,
         image: "",
-        accountType,
-        rfc,
-        razonSocial: accountType === "empresa" ? razonSocial : undefined,
-        nombreComercial:
-          accountType === "empresa" ? nombreComercial : undefined,
+        type: accountType === "individual" ? "INDIVIDUAL" : "BUSINESS",
+        corporateName: accountType === "empresa" ? razonSocial : undefined,
+        businessName: accountType === "empresa" ? nombreComercial : undefined,
       });
 
       if (response) {

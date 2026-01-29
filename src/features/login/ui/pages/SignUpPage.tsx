@@ -17,8 +17,8 @@ const SignUpPage: React.FC = () => {
     phoneError,
     countryCode,
     countryCodeError,
-    rfc,
-    rfcError,
+    // rfc,
+    // rfcError,
     razonSocial,
     razonSocialError,
     nombreComercial,
@@ -30,7 +30,7 @@ const SignUpPage: React.FC = () => {
     handleEmailChange,
     handlePhoneChange,
     handleCountryCodeChange,
-    handleRfcChange,
+    // handleRfcChange,
     handleRazonSocialChange,
     handleNombreComercialChange,
     handleUpdateUser,
@@ -118,7 +118,7 @@ const SignUpPage: React.FC = () => {
             />
           </div>
 
-          {/* Input de RFC */}
+          {/* Input de RFC 
           <div className="mb-3">
             <InputApp
               label="RFC"
@@ -130,6 +130,7 @@ const SignUpPage: React.FC = () => {
               disabled={isLoading}
             />
           </div>
+          */}
         </>
       )}
 
@@ -175,7 +176,7 @@ const SignUpPage: React.FC = () => {
             />
           </div>
 
-          {/* Input de RFC */}
+          {/* Input de RFC 
           <div className="mb-3">
             <InputApp
               label="RFC"
@@ -187,6 +188,7 @@ const SignUpPage: React.FC = () => {
               disabled={isLoading}
             />
           </div>
+          */}
         </>
       )}
 
@@ -268,7 +270,6 @@ const SignUpPage: React.FC = () => {
             isLoading ||
             !phone ||
             !countryCode ||
-            !rfc ||
             (accountType === "individual"
               ? !fullname
               : !razonSocial || !nombreComercial)
