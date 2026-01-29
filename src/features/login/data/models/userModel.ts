@@ -38,8 +38,8 @@ export interface UserPictureResponse {
 
 export type KycStatusResponse = {
   status: string;
-  kycDetails: string;
-  kycUrl: string;
+  verificationDetails: string;
+  verificationUrl: string;
 };
 
 export type TeamMemberRequest = {

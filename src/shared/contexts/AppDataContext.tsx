@@ -166,7 +166,7 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
           formatedBalance: parseFloat(userData.data.formatBalance) || 0.0,
           balance: parseFloat(userData.data.balance) || 0.0,
           kycStatus: kycData.status || "",
-          kycUrl: kycData.kycUrl || "",
+          kycUrl: kycData.verificationUrl || "",
         };
 
         setUserData(newUserData);

@@ -94,8 +94,8 @@ class UserRepository {
       console.error("Get KYC status failed:", error);
       return {
         status: "INVALID",
-        kycDetails: "",
-        kycUrl: "",
+        verificationDetails: "",
+        verificationUrl: "",
       };
     }
   }

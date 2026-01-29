@@ -36,7 +36,7 @@ class UserService {
 
   async getKycStatus(userUuid: string): Promise<KycStatusResponse> {
     const response = await axiosWithAuthInstance.get(
-      `/user/kyc/info/${userUuid}`,
+      `/user/verification/info/${userUuid}`,
     );
     return response.data.data;
   }
