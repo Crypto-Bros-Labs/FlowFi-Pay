@@ -108,132 +108,136 @@ const DepositInfoPage = () => {
               </p>
             </div>
 
-            {/* Información de cuenta bancaria */}
-            {statusConfig.showBankDetails && (
-              <div className="w-full max-w-xs">
-                {/* CLABE */}
-                <TileApp
-                  title="CLABE"
-                  subtitle={buyData?.clabe || "—"}
-                  subtitleClassName="text-sm font-mono text-[#020F1E] break-all"
-                  titleClassName="text-base text-[#666666]"
-                  className="mb-3"
-                  trailing={
-                    <button
-                      onClick={handleCopyClabe}
-                      className="
-                      flex items-center justify-center
-                      w-10 h-10
-                      rounded-full
-                      bg-blue-100
-                      hover:bg-blue-200
-                      transition-colors duration-200
-                      cursor-pointer
-                      flex-shrink-0
-                    "
-                      title="Copiar CLABE"
-                    >
-                      {isCopiedClabe ? (
-                        <BiCheck className="w-5 h-5 text-green-600" />
-                      ) : (
-                        <BiCopy className="w-5 h-5 text-blue-600" />
-                      )}
-                    </button>
-                  }
-                />
-                <TileApp
-                  title="Link de cobro"
-                  titleClassName="text-base text-[#666666]"
-                  className="mb-3"
-                  trailing={
-                    <button
-                      onClick={handleCopyPaymentLink}
-                      className="
-                                          flex items-center justify-center
-                                          w-10 h-10
-                                          rounded-full
-                                          bg-blue-100
-                                          hover:bg-blue-200
-                                          transition-colors duration-200
-                                          cursor-pointer
-                                          flex-shrink-0
-                                      "
-                      title="Copiar link de cobro"
-                    >
-                      {isCopiedLink ? (
-                        <BiCheck className="w-5 h-5 text-green-600" />
-                      ) : (
-                        <BiCopy className="w-5 h-5 text-blue-600" />
-                      )}
-                    </button>
-                  }
-                />
+            {/* Información de cuenta bancaria y montos - Reorganizado */}
+            <div className="w-full max-w-xs">
+              {statusConfig.showBankDetails && (
+                <>
+                  {/* CLABE - PRIMERO */}
+                  <TileApp
+                    title="CLABE"
+                    subtitle={buyData?.clabe || "—"}
+                    subtitleClassName="text-sm font-mono text-[#020F1E] break-all"
+                    titleClassName="text-base text-[#666666]"
+                    className="mb-3"
+                    trailing={
+                      <button
+                        onClick={handleCopyClabe}
+                        className="
+                        flex items-center justify-center
+                        w-10 h-10
+                        rounded-full
+                        bg-blue-100
+                        hover:bg-blue-200
+                        transition-colors duration-200
+                        cursor-pointer
+                        flex-shrink-0
+                      "
+                        title="Copiar CLABE"
+                      >
+                        {isCopiedClabe ? (
+                          <BiCheck className="w-5 h-5 text-green-600" />
+                        ) : (
+                          <BiCopy className="w-5 h-5 text-blue-600" />
+                        )}
+                      </button>
+                    }
+                  />
 
-                {/* Beneficiario */}
-                <TileApp
-                  title="A nombre de"
-                  titleClassName="text-base text-[#666666]"
-                  trailing={
-                    <span className="text-base font-semibold text-[#020F1E]">
-                      {buyData?.beneficiaryName || "—"}
-                    </span>
-                  }
-                  className="mb-3"
-                />
-              </div>
-            )}
+                  {/* Beneficiario - SEGUNDO */}
+                  <TileApp
+                    title="A nombre de"
+                    titleClassName="text-base text-[#666666]"
+                    trailing={
+                      <span className="text-base font-semibold text-[#020F1E]">
+                        {buyData?.beneficiaryName || "—"}
+                      </span>
+                    }
+                    className="mb-3"
+                  />
+                </>
+              )}
 
-            {/* Información de montos y red - Condicional según config */}
-            {statusConfig.showAmounts && (
-              <div className="w-full max-w-xs">
-                {/* Monto a enviar (Fiat) */}
-                <TileApp
-                  title="Monto a enviar"
-                  titleClassName="text-base text-[#666666]"
-                  trailing={
-                    <span className="text-base font-semibold text-[#020F1E]">
-                      {buyData?.amountFiat || "—"} MXN
-                    </span>
-                  }
-                  className="mb-3"
-                />
+              {/* Información de montos y red */}
+              {statusConfig.showAmounts && (
+                <>
+                  {/* Red - TERCERO */}
+                  <TileApp
+                    title="Red"
+                    titleClassName="text-base text-[#666666]"
+                    trailing={
+                      <span className="text-base font-semibold text-[#020F1E]">
+                        {buyData?.networkName || "—"}
+                      </span>
+                    }
+                    className="mb-3"
+                  />
 
-                {/* Recibirás (Crypto) */}
-                <TileApp
-                  title={`Recibirás (${buyData?.tokenSymbol || "—"})`}
-                  titleClassName="text-base text-[#666666]"
-                  trailing={
-                    <span className="text-base font-semibold text-[#020F1E]">
-                      {buyData?.amountToken || "—"}
-                    </span>
-                  }
-                  className="mb-3"
-                />
+                  {/* Monto Token primero - CUARTO */}
+                  <TileApp
+                    title={`Recibirás (${buyData?.tokenSymbol || "—"})`}
+                    titleClassName="text-base text-[#666666]"
+                    trailing={
+                      <span className="text-base font-semibold text-[#020F1E]">
+                        {buyData?.amountToken || "—"}
+                      </span>
+                    }
+                    className="mb-3"
+                  />
 
-                {/* Red */}
-                <TileApp
-                  title="Red"
-                  titleClassName="text-base text-[#666666]"
-                  trailing={
-                    <span className="text-base font-semibold text-[#020F1E]">
-                      {buyData?.networkName || "—"}
-                    </span>
-                  }
-                  className="mb-3"
-                />
+                  {/* Monto a enviar (Fiat) - QUINTO */}
+                  <TileApp
+                    title="Monto a enviar"
+                    titleClassName="text-base text-[#666666]"
+                    trailing={
+                      <span className="text-base font-semibold text-[#020F1E]">
+                        {buyData?.amountFiat || "—"} MXN
+                      </span>
+                    }
+                    className="mb-3"
+                  />
 
-                {/* ID de orden */}
-                <TileApp
-                  title="ID de orden"
-                  titleClassName="text-base text-[#666666]"
-                  trailing={
-                    <span className="text-xs font-mono text-[#666666]">
-                      {formatCryptoAddress(orderId || "—", "medium")}
-                    </span>
-                  }
-                />
-              </div>
-            )}
+                  {/* Link de cobro - SEXTO */}
+                  <TileApp
+                    title="Link de cobro"
+                    titleClassName="text-base text-[#666666]"
+                    className="mb-3"
+                    trailing={
+                      <button
+                        onClick={handleCopyPaymentLink}
+                        className="
+                        flex items-center justify-center
+                        w-10 h-10
+                        rounded-full
+                        bg-blue-100
+                        hover:bg-blue-200
+                        transition-colors duration-200
+                        cursor-pointer
+                        flex-shrink-0
+                      "
+                        title="Copiar link de cobro"
+                      >
+                        {isCopiedLink ? (
+                          <BiCheck className="w-5 h-5 text-green-600" />
+                        ) : (
+                          <BiCopy className="w-5 h-5 text-blue-600" />
+                        )}
+                      </button>
+                    }
+                  />
+
+                  {/* ID de orden */}
+                  <TileApp
+                    title="ID de orden"
+                    titleClassName="text-base text-[#666666]"
+                    trailing={
+                      <span className="text-xs font-mono text-[#666666]">
+                        {formatCryptoAddress(orderId || "—", "medium")}
+                      </span>
+                    }
+                  />
+                </>
+              )}
+            </div>
           </div>
 
           {/* Footer - fijo al final */}

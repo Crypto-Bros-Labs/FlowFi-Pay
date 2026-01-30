@@ -59,7 +59,6 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
   const baseUrl = window.location.origin;
   const paymentLink = `${baseUrl}/deposit-order/${orderIdValue}`;
 
-  // Configuración de textos según status
   const getStatusConfig = (status: TransactionStatus) => {
     switch (status) {
       case "completed":
@@ -113,7 +112,6 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
     }, 2000);
   };
 
-  // ✅ Función para cancelar transacción
   const handleCancelTransaction = async () => {
     setIsCancelLoading(true);
     try {
@@ -135,78 +133,40 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-[1.25rem] w-full max-h-[80vh] md:max-h-[90vh] max-w-md p-4 flex flex-col border-2 border-[#3E5EF5] shadow-lg">
+    <div className="bg-white rounded-[1.25rem] w-full max-h-[80vh] md:max-h-[90vh] max-w-md p-3 flex flex-col border-2 border-[#3E5EF5] shadow-lg">
       {/* Header */}
       <HeaderModal isModal={true} onBack={onClose} onClose={onClose} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Título principal - FIJO */}
-        <div className="text-center border-b border-gray-100 flex-shrink-0">
-          <h1 className="text-xl font-bold text-[#020F1E]">
+        <div className="text-center border-b border-gray-100 flex-shrink-0 pb-2">
+          <h1 className="text-lg font-bold text-[#020F1E]">
             {statusConfig.title}
           </h1>
-          <p className="text-sm text-gray-500 mt-2">{statusConfig.subtitle}</p>
+          <p className="text-xs text-gray-500 mt-1">{statusConfig.subtitle}</p>
         </div>
 
         {/* Contenido scrollable */}
-        <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center">
-          {/* Información de cuenta bancaria */}
-          <div className="w-full max-w-xs mt-10 md:mt-1">
+        <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center px-4 py-3">
+          <div className="w-full max-w-xs space-y-1">
             {statusConfig.showBankDetails && (
               <>
-                {/* CLABE */}
+                {/* CLABE - PRIMERO */}
                 <TileApp
                   title="CLABE"
                   subtitle={clabeValue}
-                  subtitleClassName="text-sm font-mono text-[#020F1E] break-all"
-                  titleClassName="text-base text-[#666666]"
-                  className="mb-3"
+                  subtitleClassName="text-xs font-mono text-[#020F1E] break-all"
+                  titleClassName="text-sm text-[#666666]"
                   trailing={
                     <button
                       onClick={handleCopyClabe}
-                      className="
-                        flex items-center justify-center
-                        w-10 h-10
-                        rounded-full
-                        bg-blue-100
-                        hover:bg-blue-200
-                        transition-colors duration-200
-                        cursor-pointer
-                        flex-shrink-0
-                      "
+                      className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 hover:bg-blue-200 transition-colors duration-200 cursor-pointer flex-shrink-0"
                       title="Copiar CLABE"
                     >
                       {isCopiedClabe ? (
-                        <BiCheck className="w-5 h-5 text-green-600" />
+                        <BiCheck className="w-4 h-4 text-green-600" />
                       ) : (
-                        <BiCopy className="w-5 h-5 text-blue-600" />
-                      )}
-                    </button>
-                  }
-                />
-                <TileApp
-                  title="Link de cobro"
-                  titleClassName="text-base text-[#666666]"
-                  className="mb-3"
-                  trailing={
-                    <button
-                      onClick={handleCopyPaymentLink}
-                      className="
-                        flex items-center justify-center
-                        w-10 h-10
-                        rounded-full
-                        bg-blue-100
-                        hover:bg-blue-200
-                        transition-colors duration-200
-                        cursor-pointer
-                        flex-shrink-0
-                      "
-                      title="Copiar link de cobro"
-                    >
-                      {isCopiedLink ? (
-                        <BiCheck className="w-5 h-5 text-green-600" />
-                      ) : (
-                        <BiCopy className="w-5 h-5 text-blue-600" />
+                        <BiCopy className="w-4 h-4 text-blue-600" />
                       )}
                     </button>
                   }
@@ -215,60 +175,75 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
                 {/* Beneficiario */}
                 <TileApp
                   title="A nombre de"
-                  titleClassName="text-base text-[#666666]"
+                  titleClassName="text-sm text-[#666666]"
                   trailing={
-                    <span className="text-base font-semibold text-[#020F1E]">
+                    <span className="text-sm font-semibold text-[#020F1E]">
                       {beneficiaryNameValue || "—"}
                     </span>
                   }
-                  className="mb-3"
                 />
               </>
             )}
 
-            {/* Información de montos y red - Siempre visible */}
+            {/* Información de montos y red */}
             {statusConfig.showAmounts && (
               <>
-                {/* Monto a enviar (Fiat) */}
-                <TileApp
-                  title="Monto a enviar"
-                  titleClassName="text-base text-[#666666]"
-                  trailing={
-                    <span className="text-base font-semibold text-[#020F1E]">
-                      {amountFiat} MXN
-                    </span>
-                  }
-                  className="mb-3"
-                />
-
-                {/* Recibirás (Crypto) */}
-                <TileApp
-                  title={`Recibirás (${tokenSymbol})`}
-                  titleClassName="text-base text-[#666666]"
-                  trailing={
-                    <span className="text-base font-semibold text-[#020F1E]">
-                      {amountToken}
-                    </span>
-                  }
-                  className="mb-3"
-                />
-
                 {/* Red */}
                 <TileApp
                   title="Red"
-                  titleClassName="text-base text-[#666666]"
+                  titleClassName="text-sm text-[#666666]"
                   trailing={
-                    <span className="text-base font-semibold text-[#020F1E]">
+                    <span className="text-sm font-semibold text-[#020F1E]">
                       {networkName}
                     </span>
                   }
-                  className="mb-3"
+                />
+
+                {/* Monto Token primero */}
+                <TileApp
+                  title={`Recibirás (${tokenSymbol})`}
+                  titleClassName="text-sm text-[#666666]"
+                  trailing={
+                    <span className="text-sm font-semibold text-[#020F1E]">
+                      {amountToken}
+                    </span>
+                  }
+                />
+
+                {/* Monto Fiat */}
+                <TileApp
+                  title="Monto a enviar"
+                  titleClassName="text-sm text-[#666666]"
+                  trailing={
+                    <span className="text-sm font-semibold text-[#020F1E]">
+                      {amountFiat} MXN
+                    </span>
+                  }
+                />
+
+                {/* Link de cobro */}
+                <TileApp
+                  title="Link de cobro"
+                  titleClassName="text-sm text-[#666666]"
+                  trailing={
+                    <button
+                      onClick={handleCopyPaymentLink}
+                      className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 hover:bg-blue-200 transition-colors duration-200 cursor-pointer flex-shrink-0"
+                      title="Copiar link"
+                    >
+                      {isCopiedLink ? (
+                        <BiCheck className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <BiCopy className="w-4 h-4 text-blue-600" />
+                      )}
+                    </button>
+                  }
                 />
 
                 {/* ID de orden */}
                 <TileApp
                   title="ID de orden"
-                  titleClassName="text-base text-[#666666]"
+                  titleClassName="text-xs text-[#666666]"
                   trailing={
                     <span className="text-xs font-mono text-[#666666]">
                       {formatCryptoAddress(orderIdValue || "—", "medium")}
@@ -280,15 +255,14 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
           </div>
         </div>
 
-        {/* Footer - fijo al final */}
-        <div className="flex-shrink-0 space-y-3 border-t border-gray-200 pt-4 mt-4">
+        {/* Footer */}
+        <div className="flex-shrink-0 space-y-2 border-t border-gray-200 pt-2 mt-2">
           {statusConfig.showTransferMessage && (
-            <div className="px-2">
-              <p className="text-sm text-[#666666] text-center">
-                Realiza la transferencia y confirma una vez completada
-              </p>
-            </div>
+            <p className="text-xs text-[#666666] text-center px-2">
+              Realiza la transferencia y confirma una vez completada
+            </p>
           )}
+          {/* Botón continuar */}
           <div className="mb-2">
             <ButtonApp
               text={statusConfig.buttonText}
@@ -299,7 +273,7 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
             />
           </div>
 
-          {/* ✅ Botón cancelar - Solo para pending */}
+          {/* Botón cancelar */}
           {status === "pending" && (
             <ButtonApp
               text="Cancelar"

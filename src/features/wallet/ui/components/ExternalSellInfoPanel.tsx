@@ -31,7 +31,6 @@ const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
   const [isCopied, setIsCopied] = useState(false);
   const [isCopiedLink, setIsCopiedLink] = useState(false);
 
-  // ✅ Variables dinámicas que priorizan sellData pero usan withdrawalInfo como fallback
   const walletAddress =
     sellData?.destinationWalletAddress || withdrawalInfo?.walletAddress || "";
   const orderId = sellData?.orderUuid || withdrawalInfo?.orderId || "";
@@ -43,7 +42,6 @@ const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
   const status: TransactionStatus =
     sellData?.status || withdrawalInfo?.status || "pending";
 
-  // Configuración de textos según status
   const getStatusConfig = (status: TransactionStatus) => {
     switch (status) {
       case "completed":
@@ -89,7 +87,6 @@ const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
     navigator.clipboard.writeText(walletAddress);
     setIsCopied(true);
 
-    // ✅ Resetear el estado después de 2 segundos
     setTimeout(() => {
       setIsCopied(false);
     }, 2000);
@@ -108,141 +105,117 @@ const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-[1.25rem] w-full max-h-[80vh] md:max-h-[90vh] max-w-md p-4 flex flex-col border-2 border-[#3E5EF5] shadow-lg">
-      {/* Header - sin scroll */}
+    <div className="bg-white rounded-[1.25rem] w-full max-h-[80vh] md:max-h-[90vh] max-w-md p-3 flex flex-col border-2 border-[#3E5EF5] shadow-lg">
+      {/* Header */}
       <HeaderModal isModal={true} onBack={onClose} onClose={onClose} />
+
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Título principal - FIJO */}
-        <div className="text-center border-b border-gray-100 flex-shrink-0">
-          <h1 className="text-xl font-bold text-[#020F1E]">
+        <div className="text-center border-b border-gray-100 flex-shrink-0 pb-2">
+          <h1 className="text-lg font-bold text-[#020F1E]">
             {statusConfig.title}
           </h1>
-          <p className="text-sm text-gray-500 mt-2">{statusConfig.subtitle}</p>
+          <p className="text-xs text-gray-500 mt-1">{statusConfig.subtitle}</p>
         </div>
 
-        {/* Contenido scrollable - Solo QR e info */}
-        <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center px-6">
-          {/* QR Code - Condicional según status */}
+        {/* Contenido scrollable */}
+        <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center px-4 py-3">
+          {/* QR Code - PRIMERO */}
           {statusConfig.showQRCode && (
-            <div className="flex flex-col items-center mt-25 md:mt-1">
-              <QRCode data={qrData} size={150} className="mb-2" />
+            <div className="flex flex-col items-center w-full mb-3">
+              <QRCode data={qrData} size={100} className="mb-1" />
               <p className="text-xs text-gray-500 text-center">
-                Escanea para enviar crypto a esta dirección
+                Escanea para enviar crypto
               </p>
             </div>
           )}
 
           {/* Información de montos y red */}
           {statusConfig.showWalletDetails && (
-            <div className="w-full max-w-xs">
+            <div className="w-full max-w-xs space-y-1">
+              {/* Red */}
+              <TileApp
+                title="Red"
+                titleClassName="text-sm text-[#666666]"
+                trailing={
+                  <span className="text-sm font-semibold text-[#020F1E]">
+                    {networkName}
+                  </span>
+                }
+              />
+
+              {/* Dirección */}
               <TileApp
                 title={formatCryptoAddressCustom(walletAddress, 15, 4)}
-                titleClassName="text-base text-[#666666]"
-                className="mb-1"
+                titleClassName="text-xs text-[#666666]"
                 trailing={
                   <button
                     onClick={handleCopyAddress}
-                    className="
-                                          flex items-center justify-center
-                                          w-10 h-10
-                                          rounded-full
-                                          bg-blue-100
-                                          hover:bg-blue-200
-                                          transition-colors duration-200
-                                          cursor-pointer
-                                          flex-shrink-0
-                                      "
+                    className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 hover:bg-blue-200 transition-colors duration-200 cursor-pointer flex-shrink-0"
                     title="Copiar dirección"
                   >
                     {isCopied ? (
-                      <BiCheck className="w-5 h-5 text-green-600" />
+                      <BiCheck className="w-4 h-4 text-green-600" />
                     ) : (
-                      <BiCopy className="w-5 h-5 text-blue-600" />
+                      <BiCopy className="w-4 h-4 text-blue-600" />
                     )}
                   </button>
                 }
               />
+
+              {/* Monto Token */}
+              <TileApp
+                title={`Monto (${tokenSymbol})`}
+                titleClassName="text-sm text-[#666666]"
+                trailing={
+                  <span className="text-sm font-semibold text-[#020F1E]">
+                    {amountToken}
+                  </span>
+                }
+              />
+
+              {/* Monto Fiat */}
+              <TileApp
+                title="Monto (Fiat)"
+                titleClassName="text-sm text-[#666666]"
+                trailing={
+                  <span className="text-sm font-semibold text-[#020F1E]">
+                    {amountFiat} MXN
+                  </span>
+                }
+              />
+
+              {/* Link de cobro */}
               <TileApp
                 title="Link de cobro"
-                titleClassName="text-base text-[#666666]"
-                className="mb-3"
+                titleClassName="text-sm text-[#666666]"
                 trailing={
                   <button
                     onClick={handleCopyPaymentLink}
-                    className="
-                                          flex items-center justify-center
-                                          w-10 h-10
-                                          rounded-full
-                                          bg-blue-100
-                                          hover:bg-blue-200
-                                          transition-colors duration-200
-                                          cursor-pointer
-                                          flex-shrink-0
-                                      "
-                    title="Copiar link de cobro"
+                    className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 hover:bg-blue-200 transition-colors duration-200 cursor-pointer flex-shrink-0"
+                    title="Copiar link"
                   >
                     {isCopiedLink ? (
-                      <BiCheck className="w-5 h-5 text-green-600" />
+                      <BiCheck className="w-4 h-4 text-green-600" />
                     ) : (
-                      <BiCopy className="w-5 h-5 text-blue-600" />
+                      <BiCopy className="w-4 h-4 text-blue-600" />
                     )}
                   </button>
-                }
-              />
-              <TileApp
-                title="Monto"
-                titleClassName="text-base text-[#666666]"
-                trailing={
-                  <>
-                    <span className="text-base font-semibold text-[#020F1E]">
-                      {amountFiat} MXN
-                    </span>
-                  </>
-                }
-                className="mb-3"
-              />
-
-              <TileApp
-                title={`Monto (${tokenSymbol})`}
-                titleClassName="text-base text-[#666666]"
-                trailing={
-                  <>
-                    <span className="text-base font-semibold text-[#020F1E]">
-                      {amountToken}
-                    </span>
-                  </>
-                }
-                className="mb-3"
-              />
-
-              <TileApp
-                title="Red"
-                titleClassName="text-base text-[#666666]"
-                trailing={
-                  <>
-                    <span className="text-base font-semibold text-[#020F1E]">
-                      {networkName}
-                    </span>
-                  </>
                 }
               />
             </div>
           )}
         </div>
 
-        {/* Footer - sin scroll (leyenda y botones) */}
-        <div className="flex-shrink-0 space-y-3">
-          {/* Leyenda - Condicional según status */}
+        {/* Footer */}
+        <div className="flex-shrink-0 space-y-2 border-t border-gray-200 pt-2 mt-2">
           {statusConfig.showLegend && (
-            <div className="px-4">
-              <p className="text-sm text-[#666666] text-center">
-                {statusConfig.legendText}
-              </p>
-            </div>
+            <p className="text-xs text-[#666666] text-center px-2">
+              {statusConfig.legendText}
+            </p>
           )}
-
+          {/* Botón continuar */}
           <div className="mb-2">
-            {/* Botón continuar */}
             <ButtonApp
               text={statusConfig.buttonText}
               textSize="text-sm"
@@ -252,7 +225,7 @@ const ExternalSellInfoPanel: React.FC<SellInfoPanelProps> = ({
             />
           </div>
 
-          {/* Botón cancelar - Solo para pending */}
+          {/* Botón cancelar */}
           {statusConfig.showCancelButton && (
             <ButtonApp
               text="Cancelar"

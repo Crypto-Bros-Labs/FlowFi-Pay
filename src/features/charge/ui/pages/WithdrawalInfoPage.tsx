@@ -73,7 +73,6 @@ const WithdrawalInfoPage = () => {
     navigator.clipboard.writeText(walletAddress);
     setIsCopied(true);
 
-    // ✅ Resetear el estado después de 2 segundos
     setTimeout(() => {
       setIsCopied(false);
     }, 2000);
@@ -126,7 +125,7 @@ const WithdrawalInfoPage = () => {
                 )}
               </div>
 
-              {/* QR Code - Condicional según status */}
+              {/* QR Code - PRIMERO */}
               {statusConfig.showQRCode && (
                 <div className="mb-6 flex flex-col items-center">
                   <QRCode data={qrData} size={150} className="mb-2" />
@@ -136,9 +135,22 @@ const WithdrawalInfoPage = () => {
                 </div>
               )}
 
-              {/* Información de montos y red */}
+              {/* Información de montos y red - Reorganizado */}
               {statusConfig.showWalletDetails && (
                 <div className="w-full max-w-xs">
+                  {/* Red - SEGUNDO */}
+                  <TileApp
+                    title="Red"
+                    titleClassName="text-base text-[#666666]"
+                    trailing={
+                      <span className="text-base font-semibold text-[#020F1E]">
+                        {networkName}
+                      </span>
+                    }
+                    className="mb-3"
+                  />
+
+                  {/* Dirección - TERCERO */}
                   <TileApp
                     title={formatCryptoAddressCustom(walletAddress, 15, 4)}
                     titleClassName="text-base text-[#666666]"
@@ -147,15 +159,15 @@ const WithdrawalInfoPage = () => {
                       <button
                         onClick={handleCopyAddress}
                         className="
-                                      flex items-center justify-center
-                                      w-10 h-10
-                                      rounded-full
-                                      bg-blue-100
-                                      hover:bg-blue-200
-                                      transition-colors duration-200
-                                      cursor-pointer
-                                      flex-shrink-0
-                                  "
+                        flex items-center justify-center
+                        w-10 h-10
+                        rounded-full
+                        bg-blue-100
+                        hover:bg-blue-200
+                        transition-colors duration-200
+                        cursor-pointer
+                        flex-shrink-0
+                      "
                         title="Copiar dirección"
                       >
                         {isCopied ? (
@@ -166,23 +178,48 @@ const WithdrawalInfoPage = () => {
                       </button>
                     }
                   />
+
+                  {/* Monto Token - CUARTO */}
+                  <TileApp
+                    title={`Monto (${selectedToken})`}
+                    titleClassName="text-base text-[#666666]"
+                    trailing={
+                      <span className="text-base font-semibold text-[#020F1E]">
+                        {amounts?.amountToken}
+                      </span>
+                    }
+                    className="mb-3"
+                  />
+
+                  {/* Monto Fiat - QUINTO */}
+                  <TileApp
+                    title="Monto (Fiat)"
+                    titleClassName="text-base text-[#666666]"
+                    trailing={
+                      <span className="text-base font-semibold text-[#020F1E]">
+                        {amounts?.amountFiat} MXN
+                      </span>
+                    }
+                    className="mb-3"
+                  />
+
+                  {/* Link de cobro - SEXTO */}
                   <TileApp
                     title="Link de cobro"
                     titleClassName="text-base text-[#666666]"
-                    className="mb-3"
                     trailing={
                       <button
                         onClick={handleCopyPaymentLink}
                         className="
-                                          flex items-center justify-center
-                                          w-10 h-10
-                                          rounded-full
-                                          bg-blue-100
-                                          hover:bg-blue-200
-                                          transition-colors duration-200
-                                          cursor-pointer
-                                          flex-shrink-0
-                                      "
+                        flex items-center justify-center
+                        w-10 h-10
+                        rounded-full
+                        bg-blue-100
+                        hover:bg-blue-200
+                        transition-colors duration-200
+                        cursor-pointer
+                        flex-shrink-0
+                      "
                         title="Copiar link de cobro"
                       >
                         {isCopiedLink ? (
@@ -191,43 +228,6 @@ const WithdrawalInfoPage = () => {
                           <BiCopy className="w-5 h-5 text-blue-600" />
                         )}
                       </button>
-                    }
-                  />
-                  <TileApp
-                    title="Monto (Fiat)"
-                    titleClassName="text-base text-[#666666]"
-                    trailing={
-                      <>
-                        <span className="text-base font-semibold text-[#020F1E]">
-                          {amounts?.amountFiat} MXN
-                        </span>
-                      </>
-                    }
-                    className="mb-3"
-                  />
-
-                  <TileApp
-                    title={`Monto (${selectedToken})`}
-                    titleClassName="text-base text-[#666666]"
-                    trailing={
-                      <>
-                        <span className="text-base font-semibold text-[#020F1E]">
-                          {amounts?.amountToken}
-                        </span>
-                      </>
-                    }
-                    className="mb-3"
-                  />
-
-                  <TileApp
-                    title="Red"
-                    titleClassName="text-base text-[#666666]"
-                    trailing={
-                      <>
-                        <span className="text-base font-semibold text-[#020F1E]">
-                          {networkName}
-                        </span>
-                      </>
                     }
                   />
                 </div>

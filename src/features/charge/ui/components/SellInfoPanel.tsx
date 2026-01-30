@@ -33,14 +33,7 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({
   sellInfoData,
   orderId,
 }) => {
-  const {
-    qrData,
-    amounts,
-    /*cancelTransaction,
-        isCancelLoading,
-        walletData,
-                */
-  } = useSellInfo();
+  const { qrData, amounts } = useSellInfo();
 
   const { isLoadingUserData, walletAddress, fullName } = useProfile();
 
@@ -61,7 +54,6 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({
     navigator.clipboard.writeText(walletAddress);
     setIsCopied(true);
 
-    // ✅ Resetear el estado después de 2 segundos
     setTimeout(() => {
       setIsCopied(false);
     }, 2000);
@@ -77,8 +69,8 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-[1.25rem] w-full h-[80vh] md:h-[90vh] max-w-md p-4 flex flex-col border-2 border-[#3E5EF5] shadow-lg">
-      {/* Header - sin scroll */}
+    <div className="bg-white rounded-[1.25rem] w-full max-h-[80vh] md:max-h-[90vh] max-w-md p-3 flex flex-col border-2 border-[#3E5EF5] shadow-lg">
+      {/* Header */}
       <HeaderModal isModal={true} onBack={onClose} onClose={onClose} />
 
       {isLoadingUserData ? (
@@ -90,143 +82,117 @@ const SellInfoPanel: React.FC<SellInfoPanelProps> = ({
         </div>
       ) : (
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Contenido scrollable */}
-          <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center p-2">
-            {/* Título principal */}
-            <div className="text-center mb-2 w-full py-2">
-              <h1 className="text-xl font-bold text-[#020F1E]">
-                ¡Realiza el pago!
-              </h1>
-            </div>
+          {/* Título */}
+          <div className="text-center flex-shrink-0 pb-2 border-b border-gray-100">
+            <h1 className="text-lg font-bold text-[#020F1E]">
+              ¡Realiza el pago!
+            </h1>
+          </div>
 
-            {/* QR Code */}
-            <div className="mb-6 flex flex-col items-center w-full">
-              <QRCode data={qrData} size={150} className="mb-2" />
+          {/* Contenido scrollable */}
+          <div className="flex-1 overflow-y-auto flex flex-col items-center justify-center px-4 py-3">
+            {/* QR Code - PRIMERO */}
+            <div className="flex flex-col items-center w-full mb-3">
+              <QRCode data={qrData} size={100} className="mb-1" />
               <p className="text-xs text-gray-500 text-center">
-                Escanea para enviar crypto a esta dirección
+                Escanea para enviar crypto
               </p>
             </div>
 
-            {/* Información de montos y red */}
-            <div className="w-full max-w-xs">
+            {/* Información organizada */}
+            <div className="w-full max-w-xs space-y-1">
+              {/* Red */}
+              <TileApp
+                title="Red"
+                titleClassName="text-sm text-[#666666]"
+                trailing={
+                  <span className="text-sm font-semibold text-[#020F1E]">
+                    {networkName}
+                  </span>
+                }
+              />
+
+              {/* Dirección */}
               <TileApp
                 title={formatCryptoAddressCustom(walletAddress, 15, 4)}
-                titleClassName="text-base text-[#666666]"
-                className="mb-3"
+                titleClassName="text-xs text-[#666666]"
+                className="truncate"
                 trailing={
                   <button
                     onClick={handleCopyAddress}
-                    className="
-                                        flex items-center justify-center
-                                        w-10 h-10
-                                        rounded-full
-                                        bg-blue-100
-                                        hover:bg-blue-200
-                                        transition-colors duration-200
-                                        cursor-pointer
-                                        flex-shrink-0
-                                    "
+                    className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 hover:bg-blue-200 transition-colors duration-200 cursor-pointer flex-shrink-0"
                     title="Copiar dirección"
                   >
                     {isCopied ? (
-                      <BiCheck className="w-5 h-5 text-green-600" />
+                      <BiCheck className="w-4 h-4 text-green-600" />
                     ) : (
-                      <BiCopy className="w-5 h-5 text-blue-600" />
+                      <BiCopy className="w-4 h-4 text-blue-600" />
                     )}
                   </button>
                 }
               />
+
+              {/* Monto Token */}
+              <TileApp
+                title={`Monto (${tokenSymbol})`}
+                titleClassName="text-sm text-[#666666]"
+                trailing={
+                  <span className="text-sm font-semibold text-[#020F1E]">
+                    {amountToken}
+                  </span>
+                }
+              />
+
+              {/* Monto Fiat */}
+              <TileApp
+                title="Monto (Fiat)"
+                titleClassName="text-sm text-[#666666]"
+                trailing={
+                  <span className="text-sm font-semibold text-[#020F1E]">
+                    {amountFiat} MXN
+                  </span>
+                }
+              />
+
+              {/* Link de cobro */}
               <TileApp
                 title="Link de cobro"
-                titleClassName="text-base text-[#666666]"
-                className="mb-3"
+                titleClassName="text-sm text-[#666666]"
                 trailing={
                   <button
                     onClick={handleCopyPaymentLink}
-                    className="
-                                        flex items-center justify-center
-                                        w-10 h-10
-                                        rounded-full
-                                        bg-blue-100
-                                        hover:bg-blue-200
-                                        transition-colors duration-200
-                                        cursor-pointer
-                                        flex-shrink-0
-                                    "
-                    title="Copiar link de cobro"
+                    className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 hover:bg-blue-200 transition-colors duration-200 cursor-pointer flex-shrink-0"
+                    title="Copiar link"
                   >
                     {isCopiedLink ? (
-                      <BiCheck className="w-5 h-5 text-green-600" />
+                      <BiCheck className="w-4 h-4 text-green-600" />
                     ) : (
-                      <BiCopy className="w-5 h-5 text-blue-600" />
+                      <BiCopy className="w-4 h-4 text-blue-600" />
                     )}
                   </button>
                 }
               />
-              <TileApp
-                title="Monto (Fiat)"
-                titleClassName="text-base text-[#666666]"
-                trailing={
-                  <>
-                    <span className="text-base font-semibold text-[#020F1E]">
-                      {amountFiat} MXN
-                    </span>
-                  </>
-                }
-                className="mb-3"
-              />
 
-              <TileApp
-                title={`Monto (${tokenSymbol})`}
-                titleClassName="text-base text-[#666666]"
-                trailing={
-                  <>
-                    <span className="text-base font-semibold text-[#020F1E]">
-                      {amountToken}
-                    </span>
-                  </>
-                }
-                className="mb-3"
-              />
-
-              <TileApp
-                title="Red"
-                titleClassName="text-base text-[#666666]"
-                trailing={
-                  <>
-                    <span className="text-base font-semibold text-[#020F1E]">
-                      {networkName}
-                    </span>
-                  </>
-                }
-              />
-
+              {/* Cajero (condicional) */}
               {fullName != name && name && (
                 <TileApp
                   title="Cajero"
-                  titleClassName="text-base text-[#666666]"
+                  titleClassName="text-sm text-[#666666]"
                   trailing={
-                    <>
-                      <span className="text-base font-semibold text-[#020F1E]">
-                        {name}
-                      </span>
-                    </>
+                    <span className="text-sm font-semibold text-[#020F1E]">
+                      {name}
+                    </span>
                   }
                 />
               )}
             </div>
           </div>
 
-          {/* Footer - sin scroll (fijo al final) */}
-          <div className="flex-shrink-0 space-y-3 border-t border-gray-200 pt-4 mt-4">
-            {/* Leyenda */}
-            <div className="px-2">
-              <p className="text-sm text-[#666666] text-center">
-                Muestra este QR a tu cliente para completar el cobro
-              </p>
-            </div>
-
-            {/* Botón continuar */}
+          {/* Footer */}
+          <div className="flex-shrink-0 space-y-2 border-t border-gray-200 pt-2 mt-2">
+            <p className="text-xs text-[#666666] text-center px-2">
+              Muestra este QR a tu cliente para completar el cobro
+            </p>
             <ButtonApp
               text="Continuar"
               textSize="text-sm"
