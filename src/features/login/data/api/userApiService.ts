@@ -19,7 +19,7 @@ class UserService {
   }
 
   async getUser(userUuid: string): Promise<UserData> {
-    const response = await axiosWithAuthInstance.get(`/user/info/${userUuid}`);
+    const response = await axiosInstance.get(`/user/info/${userUuid}`);
     return response.data;
   }
 
