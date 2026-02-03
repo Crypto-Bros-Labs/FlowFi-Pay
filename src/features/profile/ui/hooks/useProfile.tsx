@@ -33,11 +33,12 @@ export const useProfile = () => {
   const balance = userData?.balance || 0.0;
   const kycStatus = userData?.kycStatus || "";
   const kycUrl = userData?.kycUrl || "";
+  const verificationType = userData?.role === "BUSINESS" ? "KYB" : "KYC";
 
   const kycStatusInfo = useMemo(
     () => ({
       APPROVED: {
-        label: "KYC Verificado",
+        label: `${verificationType} Verificado`,
         bgColor: "bg-green-100",
         bgTransparent: "bg-green-50/30",
         textColor: "text-green-800",
@@ -46,7 +47,7 @@ export const useProfile = () => {
         icon: "✓",
       },
       REVIEW: {
-        label: "KYC en Proceso",
+        label: `${verificationType} en Proceso`,
         bgColor: "bg-yellow-100",
         bgTransparent: "bg-yellow-50/30",
         textColor: "text-yellow-800",
@@ -55,7 +56,7 @@ export const useProfile = () => {
         icon: "⏳",
       },
       DECLINED: {
-        label: "KYC Rechazado",
+        label: `${verificationType} Rechazado`,
         bgColor: "bg-red-100",
         bgTransparent: "bg-red-50/30",
         textColor: "text-red-800",
@@ -64,40 +65,37 @@ export const useProfile = () => {
         icon: "✗",
       },
       UNKNOWN: {
-        label: "KYC No Iniciado",
+        label: `${verificationType} No Iniciado`,
         bgColor: "bg-gray-100",
         bgTransparent: "bg-gray-50/30",
         textColor: "text-gray-800",
-        description:
-          "No has iniciado tu proceso de verificación. Debes completar el KYC para realizar ciertas operaciones.",
+        description: `No has iniciado tu proceso de verificación. Debes completar el ${verificationType} para realizar ciertas operaciones.`,
         icon: "?",
       },
       INVALID: {
-        label: "KYC No Disponible",
+        label: `${verificationType} No Disponible`,
         bgColor: "bg-gray-100",
         bgTransparent: "bg-gray-50/30",
         textColor: "text-gray-800",
-        description:
-          "El servicio de verificación KYC no está disponible en este momento. Por favor, intenta más tarde o contacta al soporte.",
+        description: `El servicio de verificación ${verificationType} no está disponible en este momento. Por favor, intenta más tarde o contacta al soporte.`,
         icon: "!",
       },
     }),
-    [],
+    [verificationType],
   );
 
   const openKycUrl = useCallback(() => {
     if (!kycUrl || !kycUrl.trim()) {
       showDialog({
         title: "Error",
-        subtitle:
-          "No pudimos cargar la URL del KYC. Recarga la página e intenta de nuevo o intenta más tarde.",
+        subtitle: `No pudimos cargar la URL del ${verificationType}. Recarga la página e intenta de nuevo o intenta más tarde.`,
         nextText: "Entendido",
         hideBack: true,
       });
       return;
     }
     window.open(kycUrl, "_blank");
-  }, [kycUrl, showDialog]);
+  }, [kycUrl, showDialog, verificationType]);
 
   // ✅ Handle único para mostrar información del KYC
   const handleKycStatusInfo = useCallback(() => {
@@ -107,33 +105,33 @@ export const useProfile = () => {
 
     const dialogConfig: Record<string, DialogOptions> = {
       APPROVED: {
-        title: "KYC Verificado",
+        title: `${verificationType} Verificado`,
         subtitle: info.description,
         nextText: "Aceptar",
         hideBack: true,
       },
       REVIEW: {
-        title: "KYC en Proceso",
+        title: `${verificationType} en Proceso`,
         subtitle: info.description,
         nextText: "Aceptar",
         hideBack: true,
       },
       DECLINED: {
-        title: "KYC Rechazado",
+        title: `${verificationType} Rechazado`,
         subtitle: info.description,
         nextText: "Reintentar",
         backText: "Cancelar",
         onNext: openKycUrl,
       },
       UNKNOWN: {
-        title: "KYC No Iniciado",
+        title: `${verificationType} No Iniciado`,
         subtitle: info.description,
-        nextText: "Iniciar KYC",
+        nextText: `Iniciar ${verificationType}`,
         backText: "Más tarde",
         onNext: openKycUrl,
       },
       INVALID: {
-        title: "KYC No Disponible",
+        title: `${verificationType} No Disponible`,
         subtitle: info.description,
         nextText: "Entendido",
         hideBack: true,
@@ -142,7 +140,7 @@ export const useProfile = () => {
 
     const config = dialogConfig[kycStatus] || dialogConfig.UNKNOWN;
     showDialog(config);
-  }, [kycStatus, kycStatusInfo, openKycUrl, showDialog]);
+  }, [kycStatus, kycStatusInfo, openKycUrl, showDialog, verificationType]);
 
   const logOut = () => {
     showDialog({
