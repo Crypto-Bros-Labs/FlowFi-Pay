@@ -156,6 +156,10 @@ export const useMain = () => {
     });
   };
 
+  const onHandleCross = () => {
+    navigate("/select-account/origin");
+  };
+
   return {
     goToSelectToken,
     isAccountOptionsLoading: isLoadingAccounts,
@@ -170,5 +174,6 @@ export const useMain = () => {
     dynamicTokens,
     wldToken,
     onHandleSellWld,
+    onHandleCross,
   };
 };

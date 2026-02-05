@@ -28,6 +28,7 @@ import authLocalService from "./features/login/data/local/authLocalService";
 import userLocalService from "./features/login/data/local/userLocalService";
 import DepositInfoPage from "./features/charge/ui/pages/DepositInfoPage";
 import WithdrawalInfoPage from "./features/charge/ui/pages/WithdrawalInfoPage";
+import SelectAccountPage from "./features/wallet/ui/pages/SelectAccountPage";
 
 function App() {
   useEffect(() => {
@@ -174,6 +175,17 @@ function App() {
                     allowedRoles={["USER", "EMPLOYEE", "BUSINESS"]}
                   >
                     <SelectWalletDynamicPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/select-account/:type"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["USER", "EMPLOYEE", "BUSINESS"]}
+                  >
+                    <SelectAccountPage />
                   </ProtectedRoute>
                 }
               />
