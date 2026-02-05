@@ -29,6 +29,7 @@ const MainPage: React.FC = () => {
     onHandleSellWld,
     wldToken,
     */
+    onHandleCross,
   } = useMain();
 
   const {
@@ -246,6 +247,27 @@ const MainPage: React.FC = () => {
           />
         </div>
         */}
+
+        {/* Boton Cross - próximamente */}
+        <div className="w-full mb-2">
+          <TileButton
+            icon={
+              <img
+                src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png"
+                className="w-6 h-6 text-blue-600"
+              />
+            }
+            title="Cross Ramp"
+            subtitle="Hacia y desde cualquier cuenta bancaria"
+            onClick={() => {
+              if (kycStatus !== "APPROVED") {
+                handleKycStatusInfo();
+              } else {
+                onHandleCross();
+              }
+            }}
+          />
+        </div>
       </div>
     </div>
   );

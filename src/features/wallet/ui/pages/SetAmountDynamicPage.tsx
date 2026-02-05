@@ -25,6 +25,8 @@ export interface SetAmountDynamicPageProps {
   showSwitchCoin?: boolean;
   typeTransaction?: TransactionType;
   externalAddress?: boolean;
+  accountOriginId?: string | number;
+  accountTargetId?: string | number;
   onContinue?: (amount: string, token: DynamicToken) => void;
 }
 
@@ -46,6 +48,10 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
   const onContinue = props.onContinue || location.state?.onContinue;
   const externalAddress =
     props.externalAddress ?? location.state?.externalAddress;
+  const accountOriginId =
+    props.accountOriginId ?? location.state?.accountOriginId;
+  const accountTargetId =
+    props.accountTargetId ?? location.state?.accountTargetId;
 
   const {
     amountFiat,
@@ -81,7 +87,13 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
     closeSellModal,
     handleContinueTransaction,
     minimumAmountMessage,
-  } = useSetAmountDynamic(token, typeTransaction, externalAddress);
+  } = useSetAmountDynamic(
+    token,
+    typeTransaction,
+    externalAddress,
+    accountOriginId,
+    accountTargetId,
+  );
 
   const { formatedBalance } = useProfile();
 

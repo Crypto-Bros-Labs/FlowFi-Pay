@@ -14,7 +14,7 @@ import type { BuyInfoData } from "../components/BuyInfoPanel";
 import type { SellData } from "../../../charge/data/local/sellLocalService";
 import { parseTransactionStatus } from "../../../../shared/utils/historyUtils";
 
-export type TransactionType = "transfer" | "buy" | "sell";
+export type TransactionType = "transfer" | "buy" | "sell" | "cross";
 export type CurrencyMode = "fiat" | "crypto";
 
 export interface SendCryptoResponseData {
@@ -28,6 +28,8 @@ export interface SetAmountDynamicPageParams {
   showSwitchCoin?: boolean;
   typeTransaction: TransactionType;
   externalAddress?: boolean;
+  accountOriginId?: string | number;
+  accountTargetId?: string | number;
   onContinue?: (amount: string, token: DynamicToken) => void;
   redirectPath?: string;
 }
@@ -38,6 +40,8 @@ export const useSetAmountDynamic = (
   token: DynamicToken,
   typeTransaction: TransactionType,
   externalAddress?: boolean,
+  accountOriginId?: string | number,
+  accountTargetId?: string | number,
 ) => {
   const isWLDToken = token.symbol.toUpperCase() === "WLD";
 
@@ -259,7 +263,10 @@ export const useSetAmountDynamic = (
           setIsQuoteLoading(false);
         }
         return;
-      } else if (typeTransaction === "transfer") {
+      } else if (
+        typeTransaction === "transfer" ||
+        typeTransaction === "cross"
+      ) {
         if (editingMode === "fiat") {
           const numericAmount = parseFloat(fiatAmount);
           if (!numericAmount || numericAmount <= 0) {
@@ -786,6 +793,17 @@ export const useSetAmountDynamic = (
       } finally {
         setIsLoading(false);
       }
+    } else if (typeTransaction === "cross") {
+      if (!isValidAmount || isQuoteLoading) return;
+
+      // Aquí iría la lógica para manejar transacciones cross-chain
+      console.log("Procesando transacción cross-chain...");
+      console.log({
+        amountFiat,
+        amountToken,
+        accountOriginId,
+        accountTargetId,
+      });
     }
   }, [
     typeTransaction,
@@ -800,6 +818,8 @@ export const useSetAmountDynamic = (
     navigate,
     externalAddress,
     fullName,
+    accountOriginId,
+    accountTargetId,
   ]);
 
   const handleCloseTransferModal = useCallback(() => {
