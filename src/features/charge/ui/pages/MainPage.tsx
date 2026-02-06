@@ -47,7 +47,8 @@ const MainPage: React.FC = () => {
   // ✅ Determinar si es cashier
   const isCashier = role?.toUpperCase() === "CASHIER";
   // ✅ Determinar si es admin
-  const isAdmin = role?.toUpperCase() === "USER";
+  const isAdmin =
+    role?.toUpperCase() === "USER" || role?.toUpperCase() === "BUSINESS";
 
   if (isAccountOptionsLoading || isLoading || isLoadingUserData) {
     return (

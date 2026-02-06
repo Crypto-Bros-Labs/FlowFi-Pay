@@ -148,7 +148,9 @@ function App() {
               <Route
                 path="/set-amount-dynamic"
                 element={
-                  <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
+                  <ProtectedRoute
+                    allowedRoles={["USER", "EMPLOYEE", "BUSINESS"]}
+                  >
                     <SetAmountDynamicPage />
                   </ProtectedRoute>
                 }
@@ -157,7 +159,9 @@ function App() {
               <Route
                 path="/select-token-dynamic"
                 element={
-                  <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
+                  <ProtectedRoute
+                    allowedRoles={["USER", "EMPLOYEE", "BUSINESS"]}
+                  >
                     <SelectTokenDynamicPage />
                   </ProtectedRoute>
                 }
@@ -166,7 +170,9 @@ function App() {
               <Route
                 path="/select-wallet-dynamic"
                 element={
-                  <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
+                  <ProtectedRoute
+                    allowedRoles={["USER", "EMPLOYEE", "BUSINESS"]}
+                  >
                     <SelectWalletDynamicPage />
                   </ProtectedRoute>
                 }
@@ -175,7 +181,9 @@ function App() {
               <Route
                 path="wallet/qr-scanner"
                 element={
-                  <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
+                  <ProtectedRoute
+                    allowedRoles={["USER", "EMPLOYEE", "BUSINESS"]}
+                  >
                     <QRScannerPage />
                   </ProtectedRoute>
                 }
@@ -184,7 +192,9 @@ function App() {
               <Route
                 path="/receive"
                 element={
-                  <ProtectedRoute allowedRoles={["USER", "EMPLOYEE"]}>
+                  <ProtectedRoute
+                    allowedRoles={["USER", "EMPLOYEE", "BUSINESS"]}
+                  >
                     <ReceivePage />
                   </ProtectedRoute>
                 }
@@ -193,7 +203,7 @@ function App() {
               <Route
                 path="/team"
                 element={
-                  <ProtectedRoute allowedRoles={["USER"]}>
+                  <ProtectedRoute allowedRoles={["USER", "BUSINESS"]}>
                     <TeamPage />
                   </ProtectedRoute>
                 }
@@ -202,7 +212,7 @@ function App() {
               <Route
                 path="/add-member"
                 element={
-                  <ProtectedRoute allowedRoles={["USER"]}>
+                  <ProtectedRoute allowedRoles={["USER", "BUSINESS"]}>
                     <AddMemberPage />
                   </ProtectedRoute>
                 }
