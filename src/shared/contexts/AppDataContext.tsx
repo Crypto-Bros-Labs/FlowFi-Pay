@@ -19,6 +19,23 @@ interface BankAccount {
   accountNumber: string;
 }
 
+interface USABankAccount {
+  id: string;
+  accountNumber: string;
+  routingNumber: string;
+  accountHolder: {
+    type: "INDIVIDUAL" | "BUSINESS";
+    businessName: string;
+    firstName: string;
+    lastName: string;
+  };
+  address: {
+    streetLine1: string;
+    city: string;
+    state: string;
+  };
+}
+
 interface UserData {
   fullName: string;
   role: string;
@@ -39,6 +56,9 @@ interface AppDataContextType {
   // Account Options (Wallets + Banks)
   walletAddresses: WalletAddress[];
   bankAccounts: BankAccount[];
+  usaBankAccounts: USABankAccount[];
+  selectedUsaBankAccount: USABankAccount | null;
+  setSelectedUsaBankAccount: (account: USABankAccount | null) => void;
   isLoadingAccounts: boolean;
   refetchAccounts: () => Promise<void>;
 
@@ -81,6 +101,9 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const [walletAddresses, setWalletAddresses] = useState<WalletAddress[]>([]);
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
+  const [usaBankAccounts, setUsaBankAccounts] = useState<USABankAccount[]>([]);
+  const [selectedUsaBankAccount, setSelectedUsaBankAccount] =
+    useState<USABankAccount | null>(null);
   const [isLoadingAccounts, setIsLoadingAccounts] = useState(false);
 
   const [userData, setUserData] = useState<UserData | null>(null);
@@ -130,7 +153,7 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
       }));
       setWalletAddresses(formattedWallets);
 
-      // Fetch Banks
+      // Fetch Banks México
       const bankResponse = await bankRepository.getBankAccounts(userUuid);
       if (bankResponse.success && bankResponse.data) {
         const bankAccountsData = bankResponse.data.map((account) => ({
@@ -140,6 +163,49 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
         }));
         setBankAccounts(bankAccountsData);
       }
+
+      // TODO: Reemplazar con datos reales de la API
+      // Fetch Banks USA - MOCK DATA
+      const mockUSABankAccounts: USABankAccount[] = [
+        {
+          id: "usa-bank-1",
+          accountNumber: "123456789",
+          routingNumber: "012345678",
+          accountHolder: {
+            type: "INDIVIDUAL",
+            businessName: "",
+            firstName: "Juan",
+            lastName: "Pérez",
+          },
+          address: {
+            streetLine1: "123 Maple Avenue",
+            city: "Miami",
+            state: "FL",
+          },
+        },
+        {
+          id: "usa-bank-2",
+          accountNumber: "987654321",
+          routingNumber: "987654321",
+          accountHolder: {
+            type: "BUSINESS",
+            businessName: "Tech Solutions Inc.",
+            firstName: "María",
+            lastName: "García",
+          },
+          address: {
+            streetLine1: "456 Oak Street",
+            city: "New York",
+            state: "NY",
+          },
+        },
+      ];
+      setUsaBankAccounts(mockUSABankAccounts);
+      // Cuando haya datos reales de API, usa esto:
+      // const usaBankResponse = await bankRepository.getUSABankAccounts(userUuid);
+      // if (usaBankResponse.success && usaBankResponse.data) {
+      //   setUsaBankAccounts(usaBankResponse.data);
+      // }
     } catch (error) {
       console.error("Error fetching accounts:", error);
     } finally {
@@ -204,6 +270,8 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
       setTokens([]);
       setWalletAddresses([]);
       setBankAccounts([]);
+      setUsaBankAccounts([]);
+      setSelectedUsaBankAccount(null);
       setUserData(null);
       setProfileImage(null);
       setFullName("");
@@ -222,6 +290,9 @@ export const AppDataProvider: React.FC<{ children: React.ReactNode }> = ({
     refetchTokens: fetchTokens,
     walletAddresses,
     bankAccounts,
+    usaBankAccounts,
+    selectedUsaBankAccount,
+    setSelectedUsaBankAccount,
     isLoadingAccounts,
     refetchAccounts: fetchAccounts,
     userData,
