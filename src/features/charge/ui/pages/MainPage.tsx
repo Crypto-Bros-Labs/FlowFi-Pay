@@ -164,6 +164,7 @@ const MainPage: React.FC = () => {
             icon={<GoArrowUpRight className="w-5 h-5 text-blue-600" />}
             label="Enviar"
             onClick={onHandleSend}
+            disabled
           />
 
           {/* Botón Recibir */}
@@ -171,6 +172,7 @@ const MainPage: React.FC = () => {
             icon={<GoArrowDownLeft className="w-5 h-5 text-blue-600" />}
             label="Recibir"
             onClick={onHandleReceive}
+            disabled
           />
 
           {/* Botón Depositar */}
@@ -192,6 +194,7 @@ const MainPage: React.FC = () => {
                 onHandleWithdraw();
               }
             }}
+            disabled
           />
         </div>
       </div>
