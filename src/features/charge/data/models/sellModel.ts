@@ -47,11 +47,29 @@ export interface QuoteData {
   isCryptoResponse: boolean;
 }
 
+export interface CrossQuoteData {
+  providerUuid: string;
+  sourceCurrencyUuid: string;
+  targetCurrencyUuid: string;
+  sourceAmount: number;
+  targetAmount?: number;
+}
+
 export interface QuoteResponse {
   exactFiatAmount: number;
   displayFiatAmount: string;
   exactCryptoAmount: number;
   displayCryptoAmount: string;
+}
+
+export interface CrossQuoteResponse {
+  sourceAmount: number;
+  sourceCurrency: string;
+  targetAmount: number;
+  targetCurrency: string;
+  rate: number;
+  spread: number;
+  flow: string;
 }
 
 export type RecoveryOrderData = {
@@ -62,3 +80,28 @@ export type RecoveryOrderData = {
   tokenAmount: string;
   exchangeValue: number;
 };
+
+export interface CrossRampData {
+  userUuid: string;
+  sourceCurrencyUuid: string;
+  targetCurrencyUuid: string;
+  liquidityProviderUuid: string;
+  sourceAmount: number;
+  targetAmount: number;
+  quoteId?: string;
+  bankAccountCountry?: string;
+  bankAccountUuid: string;
+  accountType?: string;
+  documentIdentifier?: string;
+}
+
+export interface CrossRampResponse {
+  details: string;
+  verificationUrl: string;
+  sourceCurrency: string;
+  sourceAmount: string;
+  targetCurrency: string;
+  targetAmount: string;
+  transactionId: string;
+  orderUuid: string;
+}

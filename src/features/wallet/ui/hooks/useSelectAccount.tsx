@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 
 interface UseSelectAccountProps {
@@ -24,11 +24,36 @@ export const useSelectAccount = ({
     location.state?.accountTargetId || "",
   );
 
+  // ✅ Determinar el tipo de cuenta origen (MX o US)
+  const accountOriginType = useMemo(() => {
+    if (!accountOriginId) return null;
+    // Aquí necesitarías obtener el tipo basado en accountOriginId
+    // Por ahora lo pasamos desde el state
+    return location.state?.accountOriginType || null;
+  }, [accountOriginId, location.state?.accountOriginType]);
+
   const title = isOrigin ? "Cuenta origen" : "Cuenta destino";
 
   const description = isOrigin
     ? "Selecciona la cuenta desde donde se realizará la transferencia. Esta será la cuenta de origen de donde saldrán los fondos."
     : "Selecciona la cuenta destino donde se recibirán los fondos. Esta cuenta recibirá el dinero de la transferencia.";
+
+  // ✅ Determinar qué secciones mostrar
+  const showMexicanAccounts = useMemo(() => {
+    // Si es origin, mostrar ambas
+    if (isOrigin) return true;
+    // Si es target y se seleccionó origen mexicano, ocultarlo
+    if (accountOriginType === "MX") return false;
+    return true;
+  }, [isOrigin, accountOriginType]);
+
+  const showUSAccounts = useMemo(() => {
+    // Si es origin, mostrar ambas
+    if (isOrigin) return true;
+    // Si es target y se seleccionó origen estadounidense, ocultarlo
+    if (accountOriginType === "US") return false;
+    return true;
+  }, [isOrigin, accountOriginType]);
 
   const handleMexicanAccountSelect = useCallback(
     (accountId: string | number) => {
@@ -63,17 +88,18 @@ export const useSelectAccount = ({
         accountTargetId,
       });
       if (isOrigin) {
-        // ✅ Navegar a /select-account/target con el accountOriginId guardado
         navigate("/select-account/target", {
           state: {
             accountOriginId,
+            accountOriginType: accountOriginId.toString().includes("MX")
+              ? "MX"
+              : "US",
             accountTargetId: accountTargetId,
           },
           replace: true,
         });
         console.log("Navegando a seleccionar cuenta destino");
       } else {
-        // ✅ Navegar a la siguiente página
         navigate("/set-amount-dynamic", {
           state: {
             title: "Cross",
@@ -84,6 +110,7 @@ export const useSelectAccount = ({
             typeTransaction: "cross",
             accountOriginId,
             accountTargetId,
+            targetCountry: accountOriginType === "MX" ? "US" : "MX",
           },
           replace: true,
         });
@@ -91,7 +118,14 @@ export const useSelectAccount = ({
         console.log("Navegando a establecer monto");
       }
     }
-  }, [canContinue, isOrigin, accountOriginId, accountTargetId, navigate]);
+  }, [
+    canContinue,
+    isOrigin,
+    accountOriginId,
+    accountTargetId,
+    navigate,
+    accountOriginType,
+  ]);
 
   return {
     title,
@@ -103,5 +137,8 @@ export const useSelectAccount = ({
     handleUSAccountSelect,
     handleContinue,
     canContinue,
+    showMexicanAccounts,
+    showUSAccounts,
+    accountOriginType,
   };
 };

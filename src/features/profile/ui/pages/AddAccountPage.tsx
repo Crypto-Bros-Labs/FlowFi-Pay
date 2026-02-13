@@ -208,6 +208,20 @@ const AddAccountPage: React.FC = () => {
             />
           </div>
 
+          <div className="mb-3">
+            <InputApp
+              label="Banco"
+              type="text"
+              placeholder="Bank of America"
+              value={usaAccount.bankName}
+              onChange={(e) =>
+                handleUsaAccountChange("bankName", e.target.value)
+              }
+              error={errors.bankName}
+              disabled={isLoading}
+            />
+          </div>
+
           {/* Datos del titular */}
           {usaAccount.accountType === "BUSINESS" && (
             <div className="mb-3">

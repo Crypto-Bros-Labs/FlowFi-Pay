@@ -16,6 +16,7 @@ interface Bank {
 interface USAAccountData {
   accountNumber: string;
   routingNumber: string;
+  bankName: string;
   firstName: string;
   lastName: string;
   streetLine1: string;
@@ -25,6 +26,8 @@ interface USAAccountData {
   postalCode: string;
   accountType: "INDIVIDUAL" | "BUSINESS";
   businessName: string;
+  accountSubType: "SAVINGS" | "CHECKING";
+  documentIdentifier: string;
 }
 
 export const useAddAccount = () => {
@@ -40,6 +43,7 @@ export const useAddAccount = () => {
   const [usaAccount, setUsaAccount] = useState<USAAccountData>({
     accountNumber: "",
     routingNumber: "",
+    bankName: "",
     firstName: "",
     lastName: "",
     streetLine1: "",
@@ -49,6 +53,8 @@ export const useAddAccount = () => {
     postalCode: "",
     accountType: "INDIVIDUAL",
     businessName: "",
+    accountSubType: "CHECKING",
+    documentIdentifier: "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -159,6 +165,23 @@ export const useAddAccount = () => {
       newErrors.businessName = "El nombre del negocio es requerido";
     }
 
+    if (!usaAccount.documentIdentifier.trim()) {
+      newErrors.documentIdentifier =
+        "El identificador del documento es requerido";
+    } else if (
+      usaAccount.accountType === "INDIVIDUAL" &&
+      !/^[A-Z0-9]{3,}$/.test(usaAccount.documentIdentifier)
+    ) {
+      newErrors.documentIdentifier =
+        "El identificador del documento para cuentas individuales debe ser alfanumérico y tener al menos 3 caracteres";
+    } else if (usaAccount.documentIdentifier.length < 5) {
+      newErrors.documentIdentifier =
+        "El identificador debe tener al menos 5 caracteres";
+    }
+
+    if (!usaAccount.accountSubType.trim()) {
+      newErrors.accountSubType = "El tipo de cuenta es requerido";
+    }
     return newErrors;
   };
 
@@ -276,12 +299,30 @@ export const useAddAccount = () => {
         const userUuid =
           (await userRepository.getCurrentUserData())?.userUuid ||
           "default-uuid";
-        const response = await bankRepository.addBankAccount({
+        const response = await bankRepository.addUsaBankAccount({
           userUuid,
-          // TODO adaptar datos de USA al formato que espera el backend
-          clabe: clabeValue,
-          bankName: autoDetectedBankName,
-          country: "MX",
+          accountIdentifier: usaAccount.accountNumber,
+          routingNumber: usaAccount.routingNumber,
+          bankName: usaAccount.bankName,
+          accountType: usaAccount.accountSubType,
+          documentIdentifier: usaAccount.documentIdentifier,
+          accountHolder: {
+            type: usaAccount.accountType,
+            businessName:
+              usaAccount.accountType === "BUSINESS"
+                ? usaAccount.businessName
+                : "",
+            firstName: usaAccount.firstName,
+            lastName: usaAccount.lastName,
+          },
+          address: {
+            country: "US",
+            state: usaAccount.state,
+            city: usaAccount.city,
+            streetLine1: usaAccount.streetLine1,
+            streetLine2: usaAccount.streetLine2,
+            postalCode: usaAccount.postalCode,
+          },
         });
 
         if (response.success && response.data) {
@@ -296,6 +337,9 @@ export const useAddAccount = () => {
           setUsaAccount({
             accountNumber: "",
             routingNumber: "",
+            accountSubType: "CHECKING",
+            documentIdentifier: "",
+            bankName: "",
             firstName: "",
             lastName: "",
             streetLine1: "",
@@ -336,6 +380,8 @@ export const useAddAccount = () => {
         usaAccount.city &&
         usaAccount.state &&
         usaAccount.postalCode &&
+        usaAccount.accountSubType &&
+        usaAccount.documentIdentifier &&
         (usaAccount.accountType === "INDIVIDUAL" ||
           (usaAccount.accountType === "BUSINESS" && usaAccount.businessName));
 

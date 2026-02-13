@@ -1,3 +1,4 @@
+import type { UsaBankAccountResponse } from "../../features/profile/data/models/bankModel";
 import type { ComboBoxOption } from "../components/ComboBoxApp";
 import TileApp from "../components/TileApp";
 import { formatCryptoAddress } from "./cryptoUtils";
@@ -13,23 +14,6 @@ interface BankAccount {
   id: string;
   bankName: string;
   accountNumber: string;
-}
-
-interface USABankAccount {
-  id: string;
-  accountNumber: string;
-  routingNumber: string;
-  accountHolder: {
-    type: "INDIVIDUAL" | "BUSINESS";
-    businessName: string;
-    firstName: string;
-    lastName: string;
-  };
-  address: {
-    streetLine1: string;
-    city: string;
-    state: string;
-  };
 }
 
 // Crear opciones para wallets
@@ -118,17 +102,17 @@ export const createBankOptions = (
 
 // Crear opciones para bancos USA
 export const createUSABankOptions = (
-  banks: USABankAccount[],
+  banks: UsaBankAccountResponse[],
   onAddBank?: () => void,
 ): ComboBoxOption[] => [
   ...banks.map((bank) => {
-    const holderName =
-      bank.accountHolder.type === "BUSINESS"
-        ? bank.accountHolder.businessName
-        : `${bank.accountHolder.firstName} ${bank.accountHolder.lastName}`;
+    const holderName = bank.bankName;
+    //  bank.accountHolder.type === "BUSINESS"
+    //    ? bank.accountHolder.businessName
+    //        : `${bank.accountHolder.firstName} ${bank.accountHolder.lastName}`;
 
     return {
-      id: bank.id,
+      id: bank.USBankInformationUuid,
       component: (
         <TileApp
           title="Banco USA"
@@ -157,7 +141,7 @@ export const createUSABankOptions = (
                 Routing: {bank.routingNumber}
               </span>
               <span className="text-xs font-medium text-[#666666] truncate">
-                **** {bank.accountNumber.slice(-4)}
+                **** {bank.accountIdentifier.slice(-4)}
               </span>
             </div>
           }
@@ -199,4 +183,4 @@ const createAddOption = (
   ),
 });
 
-export type { WalletAddress, BankAccount, USABankAccount };
+export type { WalletAddress, BankAccount };

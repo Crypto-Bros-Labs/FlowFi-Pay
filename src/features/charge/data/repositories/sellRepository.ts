@@ -4,6 +4,8 @@ import sellLocalService, {
 } from "../local/sellLocalService";
 import { sellApiService } from "../api/sellApiService";
 import type {
+  CrossQuoteData,
+  CrossRampData,
   OffRampData,
   OffRampResponse,
   OnRampData,
@@ -135,6 +137,24 @@ class SellRepository {
     }
   }
 
+  async createCrossRamp(data: CrossRampData): Promise<{
+    success: boolean;
+    id: string | null;
+    crossLink: string | null;
+  }> {
+    try {
+      const response = await sellApiService.createCrossRamp(data);
+      return {
+        success: true,
+        id: response.orderUuid,
+        crossLink: response.verificationUrl,
+      };
+    } catch (error) {
+      console.error("Failed to create cross-ramp:", error);
+      return { success: false, id: null, crossLink: null };
+    }
+  }
+
   async createRecoveryOrder(
     recoveryOrder: RecoveryOrderData,
   ): Promise<{ success: boolean; orderUuid: string }> {
@@ -174,6 +194,24 @@ class SellRepository {
       return depositOrder;
     } catch (error) {
       console.error("Failed to get deposit order by ID:", error);
+      throw error;
+    }
+  }
+
+  async getCrossQuote(
+    data: CrossQuoteData,
+  ): Promise<{ success: boolean; targetAmount: string }> {
+    try {
+      const response = await sellApiService.getCrossQuote(data);
+      if (response) {
+        return {
+          success: true,
+          targetAmount: response.targetAmount.toString(),
+        };
+      }
+      return { success: false, targetAmount: "" };
+    } catch (error) {
+      console.error("Failed to get cross quote:", error);
       throw error;
     }
   }

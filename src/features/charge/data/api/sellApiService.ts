@@ -8,6 +8,10 @@ import type {
   WithdrawalOrderModel,
 } from "../../../history/data/models/historyModel";
 import type {
+  CrossQuoteData,
+  CrossQuoteResponse,
+  CrossRampData,
+  CrossRampResponse,
   OffRampData,
   OffRampResponse,
   OnRampData,
@@ -28,17 +32,25 @@ class SellApiService {
     return response.data.data;
   }
 
-  /*async getQuote(data: QuoteData): Promise<QuoteResponse> {
-        const response = await axiosWithAuthInstance.get(`/flow/off-ramp/quoting/${data.providerUuid}`, {
-            params: {
-                from: data.fromUuuid,
-                to: data.toUuid,
-                amount: data.amountFiat
-                
-            }
-        });
-        return response.data.data;
-    }*/
+  async createCrossRamp(data: CrossRampData): Promise<CrossRampResponse> {
+    const response = await axiosWithAuthInstance.post("/flow/cross-ramp", data);
+    return response.data.data;
+  }
+
+  async getCrossQuote(data: CrossQuoteData): Promise<CrossQuoteResponse> {
+    const response = await axiosWithAuthInstance.get(
+      `/flow/cross-ramp/quoting/${data.providerUuid}`,
+      {
+        params: {
+          sourceCurrencyUuid: data.sourceCurrencyUuid,
+          targetCurrencyUuid: data.targetCurrencyUuid,
+          sourceAmount: data.sourceAmount,
+          targetAmount: data.targetAmount,
+        },
+      },
+    );
+    return response.data.data;
+  }
 
   async getQuote(data: QuoteData): Promise<QuoteResponse> {
     const response = await axiosWithAuthInstance.get(

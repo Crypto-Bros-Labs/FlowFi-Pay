@@ -35,13 +35,14 @@ export interface SetAmountDynamicPageParams {
 }
 
 const MXN_UUID = "92b61c69-a81f-475a-9bc7-37c85efc74c6";
+const USD_UUID = "2100fd2e-c36a-4fca-a1d0-3230b4425d23";
 
 export const useSetAmountDynamic = (
   token: DynamicToken,
   typeTransaction: TransactionType,
   externalAddress?: boolean,
-  accountOriginId?: string | number,
   accountTargetId?: string | number,
+  targetCountry?: "US" | "MX",
 ) => {
   const isWLDToken = token.symbol.toUpperCase() === "WLD";
 
@@ -95,7 +96,7 @@ export const useSetAmountDynamic = (
     const numericFiatAmount = parseFloat(amountFiat);
     console.log("Validando balance:", { formatedBalance, numericAmount });
     if (formatedBalance < numericAmount) {
-      if (typeTransaction != "buy") {
+      if (typeTransaction != "buy" && typeTransaction != "cross") {
         setErrorBalance(
           "Fondos insuficientes, la cantidad excede tu balance disponible.",
         );
@@ -263,10 +264,63 @@ export const useSetAmountDynamic = (
           setIsQuoteLoading(false);
         }
         return;
-      } else if (
-        typeTransaction === "transfer" ||
-        typeTransaction === "cross"
-      ) {
+      } else if (typeTransaction === "cross") {
+        setIsQuoteLoading(true);
+        setQuoteError(null);
+
+        try {
+          if (editingMode === "fiat") {
+            const numericAmount = parseFloat(fiatAmount);
+            if (!numericAmount || numericAmount <= 0) {
+              setAmountFiat("0");
+              return;
+            }
+            // ✅ Usar la API para obtener el quote automáticamente
+            const response = await sellRepository.getCrossQuote({
+              providerUuid: "237b0541-5521-4fda-8bba-05ee4d484795",
+              sourceCurrencyUuid: MXN_UUID,
+              targetCurrencyUuid: USD_UUID,
+              sourceAmount: numericAmount,
+            });
+            if (response.success && response.targetAmount) {
+              setAmountToken(response.targetAmount);
+            } else {
+              setQuoteError("Error obteniendo cotización");
+              setAmountFiat("0");
+            }
+          } else {
+            const numericAmount = parseFloat(cryptoAmount);
+            if (!numericAmount || numericAmount <= 0) {
+              setAmountToken("0.00");
+              return;
+            }
+            // ✅ Usar la API para obtener el quote automáticamente
+            const response = await sellRepository.getCrossQuote({
+              providerUuid: "237b0541-5521-4fda-8bba-05ee4d484795",
+              sourceCurrencyUuid: USD_UUID,
+              targetCurrencyUuid: MXN_UUID,
+              sourceAmount: numericAmount,
+            });
+            if (response.success && response.targetAmount) {
+              setAmountFiat(response.targetAmount);
+            } else {
+              setQuoteError("Error obteniendo cotización");
+              setAmountFiat("0");
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching quote:", error);
+          setQuoteError("Error obteniendo cotización");
+          if (isWLDToken) {
+            setAmountToken("10");
+          } else {
+            setAmountFiat("0");
+          }
+        } finally {
+          setIsQuoteLoading(false);
+        }
+        return;
+      } else if (typeTransaction === "transfer") {
         if (editingMode === "fiat") {
           const numericAmount = parseFloat(fiatAmount);
           if (!numericAmount || numericAmount <= 0) {
@@ -796,14 +850,60 @@ export const useSetAmountDynamic = (
     } else if (typeTransaction === "cross") {
       if (!isValidAmount || isQuoteLoading) return;
 
-      // Aquí iría la lógica para manejar transacciones cross-chain
-      console.log("Procesando transacción cross-chain...");
-      console.log({
-        amountFiat,
-        amountToken,
-        accountOriginId,
-        accountTargetId,
-      });
+      setIsLoading(true);
+
+      try {
+        const userUuid =
+          (await userRepository.getCurrentUserData())?.userUuid ||
+          "default-uuid";
+
+        const response = await sellRepository.createCrossRamp({
+          userUuid: userUuid,
+          sourceCurrencyUuid: targetCountry === "US" ? MXN_UUID : USD_UUID,
+          targetCurrencyUuid: targetCountry === "US" ? USD_UUID : MXN_UUID,
+          liquidityProviderUuid: "default-liquidity-provider",
+          sourceAmount:
+            parseFloat(targetCountry === "US" ? amountFiat : amountToken) || 0,
+          targetAmount:
+            parseFloat(targetCountry === "US" ? amountToken : amountFiat) || 0,
+          bankAccountCountry: targetCountry,
+          bankAccountUuid: accountTargetId
+            ? String(accountTargetId)
+            : "default-bank-account",
+        });
+
+        if (response.success) {
+          setBuyResponse({
+            amountFiat: amountFiat,
+            amountToken: amountToken,
+            tokenSymbol: token.symbol,
+            networkName: token.network,
+            id: response.id || "",
+            orderId: response.id || "",
+            clabe: response.crossLink || "",
+            beneficiaryName: fullName || "",
+            status: parseTransactionStatus("pending"),
+          });
+          setShowModalBuyResult(true);
+        } else {
+          showDialog({
+            title: "Error al procesar compra",
+            subtitle: "No pudimos procesar tu solicitud. Intenta de nuevo.",
+            nextText: "Aceptar",
+            hideBack: true,
+          });
+        }
+      } catch (error) {
+        console.error("Error processing buy:", error);
+        showDialog({
+          title: "Error",
+          subtitle: "Algo salió mal. Intenta de nuevo.",
+          nextText: "Aceptar",
+          hideBack: true,
+        });
+      } finally {
+        setIsLoading(false);
+      }
     }
   }, [
     typeTransaction,
@@ -818,8 +918,8 @@ export const useSetAmountDynamic = (
     navigate,
     externalAddress,
     fullName,
-    accountOriginId,
     accountTargetId,
+    targetCountry,
   ]);
 
   const handleCloseTransferModal = useCallback(() => {

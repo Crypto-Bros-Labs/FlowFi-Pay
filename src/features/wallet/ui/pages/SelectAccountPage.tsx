@@ -34,6 +34,8 @@ const SelectAccountPage: React.FC<SelectAccountPageProps> = ({
     handleUSAccountSelect,
     handleContinue,
     canContinue,
+    showMexicanAccounts,
+    showUSAccounts,
   } = useSelectAccount({ isOrigin });
 
   return (
@@ -71,18 +73,44 @@ const SelectAccountPage: React.FC<SelectAccountPageProps> = ({
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto py-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {/* Cuentas Mexicanas */}
-          <AccountSelectionSection
-            label="Cuentas Mexicanas (MXN)"
-            onAccountSelect={handleMexicanAccountSelect}
-            selectedAccountId={selectedAccountId}
-          />
+          {showMexicanAccounts && (
+            <AccountSelectionSection
+              label="Cuentas Mexicanas (MXN)"
+              onAccountSelect={handleMexicanAccountSelect}
+              selectedAccountId={selectedAccountId}
+              accountOriginType="MX"
+            />
+          )}
+
+          {/* Mensaje cuando se ocultan cuentas mexicanas */}
+          {!showMexicanAccounts && !isOrigin && (
+            <div className="px-2 mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-xs text-blue-600">
+                ✓ Cuenta origen mexicana seleccionada - Mostrando solo cuentas
+                estadounidenses
+              </p>
+            </div>
+          )}
 
           {/* Cuentas Estadounidenses */}
-          <AccountSelectionSection
-            label="Cuentas Estadounidenses (USD)"
-            onAccountSelect={handleUSAccountSelect}
-            selectedAccountId={selectedAccountId}
-          />
+          {showUSAccounts && (
+            <AccountSelectionSection
+              label="Cuentas Estadounidenses (USD)"
+              onAccountSelect={handleUSAccountSelect}
+              selectedAccountId={selectedAccountId}
+              accountOriginType="US"
+            />
+          )}
+
+          {/* Mensaje cuando se ocultan cuentas estadounidenses */}
+          {!showUSAccounts && !isOrigin && (
+            <div className="px-2 mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-xs text-blue-600">
+                ✓ Cuenta origen estadounidense seleccionada - Mostrando solo
+                cuentas mexicanas
+              </p>
+            </div>
+          )}
 
           {/* Mostrar cuenta seleccionada */}
           {selectedAccountId && (
