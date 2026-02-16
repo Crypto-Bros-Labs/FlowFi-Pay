@@ -12,7 +12,6 @@ export const useSelectAccount = ({
   const location = useLocation();
   const params = useParams<{ type?: "origin" | "target" }>();
 
-  // ✅ Determinar isOrigin desde parámetros o props
   const isOrigin =
     isOriginProp !== undefined ? isOriginProp : params.type === "origin";
 
@@ -20,17 +19,16 @@ export const useSelectAccount = ({
   const [accountOriginId, setAccountOriginId] = useState<string | number>(
     location.state?.accountOriginId || "",
   );
+
+  const [accountOrigin, setAccountOrigin] = useState<string | null>(null);
+
+  const [accountOriginType, setAccountOriginType] = useState<
+    "MX" | "US" | null
+  >(location.state?.accountOriginType || null);
   const [accountTargetId, setAccountTargetId] = useState<string | number>(
     location.state?.accountTargetId || "",
   );
-
-  // ✅ Determinar el tipo de cuenta origen (MX o US)
-  const accountOriginType = useMemo(() => {
-    if (!accountOriginId) return null;
-    // Aquí necesitarías obtener el tipo basado en accountOriginId
-    // Por ahora lo pasamos desde el state
-    return location.state?.accountOriginType || null;
-  }, [accountOriginId, location.state?.accountOriginType]);
+  const [accountTarget, setAccountTarget] = useState<string | null>(null);
 
   const title = isOrigin ? "Cuenta origen" : "Cuenta destino";
 
@@ -56,28 +54,35 @@ export const useSelectAccount = ({
   }, [isOrigin, accountOriginType]);
 
   const handleMexicanAccountSelect = useCallback(
-    (accountId: string | number) => {
+    (accountId: string | number, accountName?: string) => {
       if (isOrigin) {
         setAccountOriginId(accountId);
+        setAccountOrigin(accountName || null);
+        setAccountOriginType("MX");
       } else {
         setAccountTargetId(accountId);
+        setAccountTarget(accountName || null);
       }
     },
     [isOrigin],
   );
 
   const handleUSAccountSelect = useCallback(
-    (accountId: string | number) => {
+    (accountId: string | number, accountName?: string) => {
       if (isOrigin) {
         setAccountOriginId(accountId);
+        setAccountOrigin(accountName || null);
+        setAccountOriginType("US");
       } else {
         setAccountTargetId(accountId);
+        setAccountTarget(accountName || null);
       }
     },
     [isOrigin],
   );
 
   const selectedAccountId = isOrigin ? accountOriginId : accountTargetId;
+  const selectedAccount = isOrigin ? accountOrigin : accountTarget;
   const canContinue = selectedAccountId !== "";
 
   const handleContinue = useCallback(() => {
@@ -85,15 +90,14 @@ export const useSelectAccount = ({
       console.log("Continuar con:", {
         isOrigin,
         accountOriginId,
+        accountOriginType,
         accountTargetId,
       });
       if (isOrigin) {
         navigate("/select-account/target", {
           state: {
             accountOriginId,
-            accountOriginType: accountOriginId.toString().includes("MX")
-              ? "MX"
-              : "US",
+            accountOriginType,
             accountTargetId: accountTargetId,
           },
           replace: true,
@@ -122,23 +126,24 @@ export const useSelectAccount = ({
     canContinue,
     isOrigin,
     accountOriginId,
+    accountOriginType,
     accountTargetId,
     navigate,
-    accountOriginType,
   ]);
 
   return {
     title,
     description,
     accountOriginId,
+    accountOriginType,
     accountTargetId,
     selectedAccountId,
+    selectedAccount,
     handleMexicanAccountSelect,
     handleUSAccountSelect,
     handleContinue,
     canContinue,
     showMexicanAccounts,
     showUSAccounts,
-    accountOriginType,
   };
 };

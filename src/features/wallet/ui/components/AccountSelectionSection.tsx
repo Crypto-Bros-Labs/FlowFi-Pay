@@ -6,7 +6,7 @@ import ComboBoxApp, {
 
 interface AccountSelectionSectionProps {
   label: string;
-  onAccountSelect?: (accountId: string | number) => void;
+  onAccountSelect?: (accountId: string | number, accountName?: string) => void;
   selectedAccountId?: string | number;
   accountOriginType?: "MX" | "US";
 }
@@ -27,7 +27,7 @@ const AccountSelectionSection: React.FC<AccountSelectionSectionProps> = ({
 
   const handleSelect = (option: ComboBoxOption) => {
     if (onAccountSelect) {
-      onAccountSelect(option.id);
+      onAccountSelect(option.id, option.account);
     }
   };
 

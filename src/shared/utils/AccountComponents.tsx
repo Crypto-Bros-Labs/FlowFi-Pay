@@ -62,6 +62,7 @@ export const createBankOptions = (
 ): ComboBoxOption[] => [
   ...banks.map((bank) => ({
     id: bank.id,
+    account: bank.accountNumber,
     component: (
       <TileApp
         title="Banco"
@@ -112,7 +113,8 @@ export const createUSABankOptions = (
     //        : `${bank.accountHolder.firstName} ${bank.accountHolder.lastName}`;
 
     return {
-      id: bank.USBankInformationUuid,
+      id: bank.usBankInfoUuid,
+      account: bank.accountIdentifier,
       component: (
         <TileApp
           title="Banco USA"

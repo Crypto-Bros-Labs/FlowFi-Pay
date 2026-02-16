@@ -43,9 +43,25 @@ export interface UsaBankData {
 }
 
 export interface UsaBankAccountResponse {
-  USBankInformationUuid: string;
+  userUuid: string;
+  usBankInfoUuid: string;
+  accountType: string;
+  documentIdentifier: string;
+  accountHolder: {
+    type: string;
+    businessName: string;
+    firstName: string;
+    lastName: string;
+  };
+  address: {
+    country: string;
+    state: string;
+    city: string;
+    streetLine1: string;
+    streetLine2: string;
+    postalCode: string;
+  };
   accountIdentifier: string;
   routingNumber: string;
   bankName: string;
-  country: string;
 }

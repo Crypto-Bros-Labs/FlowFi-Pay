@@ -46,7 +46,9 @@ export const useSetAmountDynamic = (
 ) => {
   const isWLDToken = token.symbol.toUpperCase() === "WLD";
 
-  const [amountFiat, setAmountFiat] = useState<string>("0");
+  const [amountFiat, setAmountFiat] = useState<string>(
+    targetCountry === "MX" ? "0" : "300",
+  );
   const [amountToken, setAmountToken] = useState<string>(
     isWLDToken ? "10" : "0.00",
   );
@@ -69,9 +71,13 @@ export const useSetAmountDynamic = (
       ? "crypto"
       : typeTransaction === "sell"
         ? "fiat"
-        : currency === "USD"
-          ? "crypto"
-          : "fiat",
+        : typeTransaction === "cross"
+          ? targetCountry === "MX"
+            ? "crypto"
+            : "fiat"
+          : currency === "USD"
+            ? "crypto"
+            : "fiat",
   );
   // ✅ Estados para manejo de errores y respuesta de transferencia
   const [transferError, setTransferError] = useState<string>("");

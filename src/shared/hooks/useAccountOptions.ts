@@ -65,7 +65,7 @@ export const useAccountOptions = () => {
   const handleUsaBankSelect = (option: ComboBoxOption) => {
     if (option.id === "add-cuenta-usa") return;
     const selectedAccount = usaBankAccounts.find(
-      (acc) => acc.USBankInformationUuid === option.id,
+      (acc) => acc.usBankInfoUuid === option.id,
     );
     if (selectedAccount) {
       setSelectedUsaBankAccount(selectedAccount);

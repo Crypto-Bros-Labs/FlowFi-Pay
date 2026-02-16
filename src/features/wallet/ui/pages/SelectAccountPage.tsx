@@ -30,6 +30,7 @@ const SelectAccountPage: React.FC<SelectAccountPageProps> = ({
     title,
     description,
     selectedAccountId,
+    selectedAccount,
     handleMexicanAccountSelect,
     handleUSAccountSelect,
     handleContinue,
@@ -113,7 +114,7 @@ const SelectAccountPage: React.FC<SelectAccountPageProps> = ({
           )}
 
           {/* Mostrar cuenta seleccionada */}
-          {selectedAccountId && (
+          {selectedAccount && (
             <div className="px-2 mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
               <p className="text-xs text-green-600 mb-1">
                 {isOrigin
@@ -121,7 +122,7 @@ const SelectAccountPage: React.FC<SelectAccountPageProps> = ({
                   : "Cuenta destino seleccionada:"}
               </p>
               <p className="text-sm font-medium text-green-700">
-                ID: {selectedAccountId}
+                Cuenta: {`**** ${String(selectedAccount).slice(-4)}`}
               </p>
             </div>
           )}
