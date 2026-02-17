@@ -267,6 +267,20 @@ const AddAccountPage: React.FC = () => {
             />
           </div>
 
+          <div className="mb-3">
+            <InputApp
+              label="Número de identificación (Passport, SSN, etc.)"
+              type="text"
+              placeholder="123-45-6789"
+              value={usaAccount.documentIdentifier}
+              onChange={(e) =>
+                handleUsaAccountChange("documentIdentifier", e.target.value)
+              }
+              error={errors.documentIdentifier}
+              disabled={isLoading}
+            />
+          </div>
+
           {/* Dirección */}
           <div className="mb-3">
             <InputApp

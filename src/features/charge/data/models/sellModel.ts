@@ -88,11 +88,8 @@ export interface CrossRampData {
   liquidityProviderUuid: string;
   sourceAmount: number;
   targetAmount: number;
-  quoteId?: string;
   bankAccountCountry?: string;
   bankAccountUuid: string;
-  accountType?: string;
-  documentIdentifier?: string;
 }
 
 export interface CrossRampResponse {
