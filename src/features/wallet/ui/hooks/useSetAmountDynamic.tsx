@@ -13,6 +13,7 @@ import { useProfile } from "../../../profile/ui/hooks/useProfile";
 import type { BuyInfoData } from "../components/BuyInfoPanel";
 import type { SellData } from "../../../charge/data/local/sellLocalService";
 import { parseTransactionStatus } from "../../../../shared/utils/historyUtils";
+import type { CrossRampInfoData } from "../components/CrossInfoPanel";
 
 export type TransactionType = "transfer" | "buy" | "sell" | "cross";
 export type CurrencyMode = "fiat" | "crypto";
@@ -92,6 +93,13 @@ export const useSetAmountDynamic = (
 
   const [errorBalance, setErrorBalance] = useState<string>("");
   const [minimumAmountMessage, setMinimumAmountMessage] = useState<string>("");
+
+  // Estados para cross-ramp
+  const [crossRampData, setCrossRampData] = useState<CrossRampInfoData | null>(
+    null,
+  );
+  const [showModalCrossRampResult, setShowModalCrossRampResult] =
+    useState(false);
 
   // Estados para comprar
   const [buyResponse, setBuyResponse] = useState<BuyInfoData | null>(null);
@@ -867,7 +875,7 @@ export const useSetAmountDynamic = (
           userUuid: userUuid,
           sourceCurrencyUuid: targetCountry === "US" ? MXN_UUID : USD_UUID,
           targetCurrencyUuid: targetCountry === "US" ? USD_UUID : MXN_UUID,
-          liquidityProviderUuid: "default-liquidity-provider",
+          liquidityProviderUuid: "237b0541-5521-4fda-8bba-05ee4d484795",
           sourceAmount:
             parseFloat(targetCountry === "US" ? amountFiat : amountToken) || 0,
           targetAmount:
@@ -879,28 +887,29 @@ export const useSetAmountDynamic = (
         });
 
         if (response.success) {
-          setBuyResponse({
-            amountFiat: amountFiat,
-            amountToken: amountToken,
-            tokenSymbol: token.symbol,
-            networkName: token.network,
+          setCrossRampData({
+            amountSource: targetCountry === "US" ? amountFiat : amountToken,
+            amountTarget: targetCountry === "US" ? amountToken : amountFiat,
+            countryTarget: targetCountry || "MX",
             id: response.id || "",
             orderId: response.id || "",
-            clabe: response.crossLink || "",
             beneficiaryName: fullName || "",
             status: parseTransactionStatus("pending"),
+            accountIdentifier: response.accountIdentifier || "",
+            bankName: response.bankName || "",
+            concept: response.concept || "",
           });
-          setShowModalBuyResult(true);
+          setShowModalCrossRampResult(true);
         } else {
           showDialog({
-            title: "Error al procesar compra",
+            title: "Error al procesar cross-ramp",
             subtitle: "No pudimos procesar tu solicitud. Intenta de nuevo.",
             nextText: "Aceptar",
             hideBack: true,
           });
         }
       } catch (error) {
-        console.error("Error processing buy:", error);
+        console.error("Error processing cross-ramp:", error);
         showDialog({
           title: "Error",
           subtitle: "Algo salió mal. Intenta de nuevo.",
@@ -953,6 +962,16 @@ export const useSetAmountDynamic = (
     navigate("/history");
   };
 
+  const handleCloseCrossRampModal = () => {
+    setShowModalCrossRampResult(false);
+    setCrossRampData(null);
+  };
+
+  const handleContinueCrossRamp = () => {
+    setShowModalCrossRampResult(false);
+    navigate("/history");
+  };
+
   return {
     amountFiat,
     setAmountFiat,
@@ -995,5 +1014,9 @@ export const useSetAmountDynamic = (
     sellInfoData,
     handleContinueBuy,
     minimumAmountMessage,
+    crossRampData,
+    showModalCrossRampResult,
+    handleCloseCrossRampModal,
+    handleContinueCrossRamp,
   };
 };

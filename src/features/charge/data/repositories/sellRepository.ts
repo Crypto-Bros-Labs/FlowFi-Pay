@@ -140,18 +140,28 @@ class SellRepository {
   async createCrossRamp(data: CrossRampData): Promise<{
     success: boolean;
     id: string | null;
-    crossLink: string | null;
+    accountIdentifier: string | null;
+    bankName: string | null;
+    concept: string | null;
   }> {
     try {
       const response = await sellApiService.createCrossRamp(data);
       return {
         success: true,
         id: response.orderUuid,
-        crossLink: response.verificationUrl,
+        accountIdentifier: response.sourceAccountIdentifier,
+        bankName: response.sourceBankName,
+        concept: response.sourceMessage,
       };
     } catch (error) {
       console.error("Failed to create cross-ramp:", error);
-      return { success: false, id: null, crossLink: null };
+      return {
+        success: false,
+        id: null,
+        accountIdentifier: null,
+        bankName: null,
+        concept: null,
+      };
     }
   }
 

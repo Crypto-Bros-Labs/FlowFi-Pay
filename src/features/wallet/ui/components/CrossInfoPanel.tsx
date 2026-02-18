@@ -1,60 +1,62 @@
 import React, { useState } from "react";
 import HeaderModal from "../../../../shared/components/HeaderModal";
 import ButtonApp from "../../../../shared/components/ButtonApp";
-import { useBuyInfo } from "../hooks/useBuyInfo";
 import TileApp from "../../../../shared/components/TileApp";
-import type { Token } from "../../../charge/data/local/tokenLocalService";
 import { BiCheck, BiCopy } from "react-icons/bi";
 import { formatCryptoAddress } from "../../../../shared/utils/cryptoUtils";
 import type { TransactionStatus } from "../../../history/ui/components/TileHistory";
 import historyRepository from "../../../history/data/repositories/historyRepository";
 
-export interface BuyInfoData {
-  amountFiat: string;
-  amountToken: string;
-  tokenSymbol: string;
-  networkName: string;
+export interface CrossRampInfoData {
+  amountSource: string;
+  amountTarget: string;
+  countryTarget: "MX" | "US";
   orderId: string;
   id: string;
-  clabe: string;
+  accountIdentifier: string;
   beneficiaryName: string;
+  bankName: string;
+  concept: string;
   status: TransactionStatus;
 }
 
-interface BuyInfoPanelProps {
+interface CrossInfoPanelProps {
   onClose?: () => void;
   onContinue?: () => void;
-  token?: Token;
-  buyInfoData?: BuyInfoData;
+  crossRampData?: CrossRampInfoData;
   orderId?: string;
-  clabe?: string;
+  accountIdentifier?: string;
   beneficiaryName?: string;
+  bankName?: string;
+  concept?: string;
 }
 
-const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
+const CrossInfoPanel: React.FC<CrossInfoPanelProps> = ({
   onClose,
   onContinue,
-  token,
-  buyInfoData,
+  crossRampData,
   orderId,
-  clabe,
+  accountIdentifier,
   beneficiaryName,
+  bankName,
+  concept,
 }) => {
-  const { amounts } = useBuyInfo();
-
-  const [isCopiedClabe, setIsCopiedClabe] = useState(false);
+  const [isCopiedAccount, setIsCopiedAccount] = useState(false);
   const [isCopiedLink, setIsCopiedLink] = useState(false);
   const [isCancelLoading, setIsCancelLoading] = useState(false);
 
-  const amountFiat = buyInfoData?.amountFiat || amounts?.amountFiat;
-  const amountToken = buyInfoData?.amountToken || amounts?.amountToken;
-  const tokenSymbol = buyInfoData?.tokenSymbol || token?.symbol;
-  const networkName = buyInfoData?.networkName || token?.network;
-  const orderIdValue = buyInfoData?.orderId || orderId;
-  const clabeValue = buyInfoData?.clabe || clabe;
-  const beneficiaryNameValue = buyInfoData?.beneficiaryName || beneficiaryName;
-  const status = buyInfoData?.status || "pending";
-  const transactionId = buyInfoData?.id || "";
+  const amountSource = crossRampData?.amountSource;
+  const amountTarget = crossRampData?.amountTarget;
+  const countryTarget = crossRampData?.countryTarget || "MX";
+  const orderIdValue = crossRampData?.orderId || orderId;
+  const accountIdentifierValue =
+    crossRampData?.accountIdentifier || accountIdentifier;
+  const beneficiaryNameValue =
+    crossRampData?.beneficiaryName || beneficiaryName;
+  const bankNameValue = crossRampData?.bankName || bankName;
+  const conceptValue = crossRampData?.concept || concept;
+  const status = crossRampData?.status || "pending";
+  const transactionId = crossRampData?.id || "";
 
   const baseUrl = window.location.origin;
   const paymentLink = `${baseUrl}/deposit-order/${orderIdValue}`;
@@ -63,8 +65,8 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
     switch (status) {
       case "completed":
         return {
-          title: "¡Pago realizado!",
-          subtitle: "Se ha completado tu compra exitosamente",
+          title: "¡Transferencia realizada!",
+          subtitle: "Se ha completado tu transferencia exitosamente",
           buttonText: "Continuar",
           showBankDetails: true,
           showTransferMessage: false,
@@ -72,7 +74,7 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
         };
       case "canceled":
         return {
-          title: "Pago cancelado",
+          title: "Transferencia cancelada",
           subtitle: "Tu transacción ha sido cancelada",
           buttonText: "Volver",
           showBankDetails: true,
@@ -82,7 +84,7 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
       case "pending":
       default:
         return {
-          title: "Completa tu compra",
+          title: "Completa tu transferencia",
           subtitle: "Transfiere los fondos a la siguiente cuenta bancaria",
           buttonText: "Continuar",
           showBankDetails: true,
@@ -94,12 +96,12 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
 
   const statusConfig = getStatusConfig(status);
 
-  const handleCopyClabe = () => {
-    navigator.clipboard.writeText(clabeValue || "");
-    setIsCopiedClabe(true);
+  const handleCopyAccountIdentifier = () => {
+    navigator.clipboard.writeText(accountIdentifierValue || "");
+    setIsCopiedAccount(true);
 
     setTimeout(() => {
-      setIsCopiedClabe(false);
+      setIsCopiedAccount(false);
     }, 2000);
   };
 
@@ -117,7 +119,7 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
     try {
       const result = await historyRepository.cancelTransaction(
         transactionId,
-        "ON_RAMP",
+        "CROSS_RAMP",
       );
       if (result.success) {
         console.log("Transacción cancelada con éxito");
@@ -151,19 +153,19 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
           <div className="w-full max-w-xs space-y-1">
             {statusConfig.showBankDetails && (
               <>
-                {/* CLABE - PRIMERO */}
+                {/* Identificador de cuenta */}
                 <TileApp
-                  title="CLABE"
-                  subtitle={clabeValue}
+                  title="Número de cuenta"
+                  subtitle={accountIdentifierValue}
                   subtitleClassName="text-xs font-mono text-[#020F1E] break-all"
                   titleClassName="text-sm text-[#666666]"
                   trailing={
                     <button
-                      onClick={handleCopyClabe}
+                      onClick={handleCopyAccountIdentifier}
                       className="flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 hover:bg-blue-200 transition-colors duration-200 cursor-pointer flex-shrink-0"
-                      title="Copiar CLABE"
+                      title="Copiar cuenta"
                     >
-                      {isCopiedClabe ? (
+                      {isCopiedAccount ? (
                         <BiCheck className="w-4 h-4 text-green-600" />
                       ) : (
                         <BiCopy className="w-4 h-4 text-blue-600" />
@@ -182,41 +184,63 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
                     </span>
                   }
                 />
+
+                {/* Banco */}
+                <TileApp
+                  title="Banco"
+                  titleClassName="text-sm text-[#666666]"
+                  trailing={
+                    <span className="text-sm font-semibold text-[#020F1E]">
+                      {bankNameValue || "—"}
+                    </span>
+                  }
+                />
+
+                {/* Concepto */}
+                <TileApp
+                  title="Concepto"
+                  titleClassName="text-sm text-[#666666]"
+                  trailing={
+                    <span className="text-sm font-semibold text-[#020F1E]">
+                      {conceptValue || "—"}
+                    </span>
+                  }
+                />
               </>
             )}
 
-            {/* Información de montos y red */}
+            {/* Información de montos y país destino */}
             {statusConfig.showAmounts && (
               <>
-                {/* Red */}
+                {/* País destino */}
                 <TileApp
-                  title="Red"
+                  title="País destino"
                   titleClassName="text-sm text-[#666666]"
                   trailing={
                     <span className="text-sm font-semibold text-[#020F1E]">
-                      {networkName}
+                      {countryTarget}
                     </span>
                   }
                 />
 
-                {/* Monto Token primero */}
-                <TileApp
-                  title={`Recibirás (${tokenSymbol})`}
-                  titleClassName="text-sm text-[#666666]"
-                  trailing={
-                    <span className="text-sm font-semibold text-[#020F1E]">
-                      {amountToken}
-                    </span>
-                  }
-                />
-
-                {/* Monto Fiat */}
+                {/* Monto origen */}
                 <TileApp
                   title="Monto a enviar"
                   titleClassName="text-sm text-[#666666]"
                   trailing={
                     <span className="text-sm font-semibold text-[#020F1E]">
-                      {amountFiat} MXN
+                      {amountSource}
+                    </span>
+                  }
+                />
+
+                {/* Monto destino */}
+                <TileApp
+                  title="Monto a recibir"
+                  titleClassName="text-sm text-[#666666]"
+                  trailing={
+                    <span className="text-sm font-semibold text-[#020F1E]">
+                      {amountTarget}
                     </span>
                   }
                 />
@@ -291,4 +315,4 @@ const BuyInfoPanel: React.FC<BuyInfoPanelProps> = ({
   );
 };
 
-export default BuyInfoPanel;
+export default CrossInfoPanel;

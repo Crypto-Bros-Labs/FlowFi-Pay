@@ -17,6 +17,7 @@ import { useProfile } from "../../../profile/ui/hooks/useProfile";
 import ModalWrapper from "../../../../shared/components/ModalWrapper";
 import BuyInfoPanel from "../components/BuyInfoPanel";
 import ExternalSellInfoPanel from "../components/ExternalSellInfoPanel";
+import CrossInfoPanel from "../components/CrossInfoPanel";
 
 export interface SetAmountDynamicPageProps {
   title?: string;
@@ -86,6 +87,10 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
     closeSellModal,
     handleContinueTransaction,
     minimumAmountMessage,
+    crossRampData,
+    showModalCrossRampResult,
+    handleCloseCrossRampModal,
+    handleContinueCrossRamp,
   } = useSetAmountDynamic(
     token,
     typeTransaction,
@@ -502,6 +507,16 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
             onContinue={handleContinueTransaction}
             sellData={sellInfoData ?? undefined}
             token={token}
+          />
+        </ModalWrapper>
+      )}
+
+      {showModalCrossRampResult && (
+        <ModalWrapper onClose={handleCloseCrossRampModal}>
+          <CrossInfoPanel
+            onClose={handleCloseCrossRampModal}
+            onContinue={handleContinueCrossRamp}
+            crossRampData={crossRampData!}
           />
         </ModalWrapper>
       )}

@@ -95,10 +95,9 @@ export interface CrossRampData {
 export interface CrossRampResponse {
   details: string;
   verificationUrl: string;
-  sourceCurrency: string;
-  sourceAmount: string;
-  targetCurrency: string;
-  targetAmount: string;
+  sourceAccountIdentifier: string;
+  sourceMessage: string;
+  sourceBankName: string;
   transactionId: string;
   orderUuid: string;
 }
