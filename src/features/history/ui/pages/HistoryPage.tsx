@@ -12,6 +12,7 @@ import SellInfoPanel from "../../../charge/ui/components/SellInfoPanel";
 import ModalWrapper from "../../../../shared/components/ModalWrapper";
 import ExternalSellInfoPanel from "../../../wallet/ui/components/ExternalSellInfoPanel";
 import BuyInfoPanel from "../../../wallet/ui/components/BuyInfoPanel";
+import CrossInfoPanel from "../../../wallet/ui/components/CrossInfoPanel";
 
 // Componente para las tarjetas de estadísticas
 const StatCard: React.FC<{
@@ -106,6 +107,10 @@ const HistoryPage: React.FC = () => {
     closeDepositModal,
     depositInfoData,
     openDepositModal,
+    showCrossRampInfoModal,
+    closeCrossRampModal,
+    crossRampInfoData,
+    openCrossRampModal,
   } = useHistory();
 
   const navigate = useNavigate();
@@ -244,6 +249,33 @@ const HistoryPage: React.FC = () => {
                   });
                 }}
               />
+            ) : "accountIdentifier" in transaction ? (
+              <TileHistory
+                key={transaction.createdAt}
+                status={parseTransactionStatus(transaction.status!)}
+                amount={Number(transaction.sourceAmount)}
+                id={transaction.transactionId}
+                type="CROSS_RAMP"
+                subtitle={formatDateRelative(transaction.createdAt)}
+                onCancelTransaction={() =>
+                  cancelTransaction(transaction.transactionId, "CROSS_RAMP")
+                }
+                onClick={() =>
+                  openCrossRampModal({
+                    amountSource: transaction.sourceAmount,
+                    amountTarget: transaction.targetAmount,
+                    countryTarget:
+                      transaction.targetCountry === "US" ? "US" : "MX",
+                    orderId: transaction.orderUuid,
+                    id: transaction.transactionId,
+                    accountIdentifier: transaction.accountIdentifier,
+                    beneficiaryName: transaction.beneficiaryName,
+                    bankName: transaction.sourceBankName,
+                    concept: transaction.concept,
+                    status: parseTransactionStatus(transaction.status!),
+                  })
+                }
+              />
             ) : (
               <TileHistory
                 key={transaction.createdAt}
@@ -282,6 +314,16 @@ const HistoryPage: React.FC = () => {
             onClose={closeWithdrawalModal}
             onContinue={closeWithdrawalModal}
             withdrawalInfo={withdrawalInfoData}
+          />
+        </ModalWrapper>
+      )}
+
+      {showCrossRampInfoModal && (
+        <ModalWrapper onClose={closeCrossRampModal}>
+          <CrossInfoPanel
+            onClose={closeCrossRampModal}
+            onContinue={closeCrossRampModal}
+            crossRampData={crossRampInfoData}
           />
         </ModalWrapper>
       )}

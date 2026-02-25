@@ -878,8 +878,6 @@ export const useSetAmountDynamic = (
           liquidityProviderUuid: "237b0541-5521-4fda-8bba-05ee4d484795",
           sourceAmount:
             parseFloat(targetCountry === "US" ? amountFiat : amountToken) || 0,
-          targetAmount:
-            parseFloat(targetCountry === "US" ? amountToken : amountFiat) || 0,
           bankAccountCountry: targetCountry,
           bankAccountUuid: accountTargetId
             ? String(accountTargetId)

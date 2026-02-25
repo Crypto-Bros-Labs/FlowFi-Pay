@@ -14,6 +14,7 @@ import type {
 } from "../models/sellModel";
 import { AxiosError } from "axios";
 import type {
+  CrossRampOrderModel,
   DepositOrderModel,
   RecoveryOrderModel,
   WithdrawalOrderModel,
@@ -204,6 +205,17 @@ class SellRepository {
       return depositOrder;
     } catch (error) {
       console.error("Failed to get deposit order by ID:", error);
+      throw error;
+    }
+  }
+
+  async getCrossRampOrderById(orderId: string): Promise<CrossRampOrderModel> {
+    try {
+      const crossRampOrder =
+        await sellApiService.getCrossRampOrderById(orderId);
+      return crossRampOrder;
+    } catch (error) {
+      console.error("Failed to get cross-ramp order by ID:", error);
       throw error;
     }
   }

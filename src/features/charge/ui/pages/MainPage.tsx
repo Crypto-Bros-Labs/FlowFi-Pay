@@ -15,6 +15,7 @@ import { useCurrency } from "../../../../shared/hooks/useCurrency";
 import ActionButton from "../../../../shared/components/ActionButton";
 import TileButton from "../../../../shared/components/TileButton";
 import BalanceCard from "../components/BalanceCard";
+import { HiOutlineArrowsRightLeft } from "react-icons/hi2";
 
 const MainPage: React.FC = () => {
   const {
@@ -256,10 +257,7 @@ const MainPage: React.FC = () => {
         <div className="w-full mb-2">
           <TileButton
             icon={
-              <img
-                src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png"
-                className="w-6 h-6 text-blue-600"
-              />
+              <HiOutlineArrowsRightLeft className="w-6 h-6 text-blue-600" />
             }
             title="Cross Ramp"
             subtitle="Hacia y desde cualquier cuenta bancaria"

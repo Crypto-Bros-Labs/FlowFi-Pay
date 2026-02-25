@@ -87,7 +87,7 @@ export interface CrossRampData {
   targetCurrencyUuid: string;
   liquidityProviderUuid: string;
   sourceAmount: number;
-  targetAmount: number;
+  targetAmount?: number;
   bankAccountCountry?: string;
   bankAccountUuid: string;
 }

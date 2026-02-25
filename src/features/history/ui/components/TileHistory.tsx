@@ -8,7 +8,7 @@ import { HiEllipsisVertical } from "react-icons/hi2";
 import { BiChevronRight } from "react-icons/bi";
 
 export type TransactionStatus = "completed" | "pending" | "canceled" | "order";
-export type TransactionType = "ON_RAMP" | "OFF_RAMP";
+export type TransactionType = "ON_RAMP" | "OFF_RAMP" | "CROSS_RAMP";
 
 interface TileHistoryProps {
   status: TransactionStatus;
@@ -39,7 +39,8 @@ const TileHistory: React.FC<TileHistoryProps> = ({
     type: TransactionType,
   ) => {
     const isOnRamp = type === "ON_RAMP";
-    const actionType = isOnRamp ? "Deposito" : "Retiro";
+    const isCrossRamp = type === "CROSS_RAMP";
+    const actionType = isOnRamp ? "Deposito" : isCrossRamp ? "Envio" : "Retiro";
 
     switch (status) {
       case "completed":

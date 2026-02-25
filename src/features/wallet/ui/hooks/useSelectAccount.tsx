@@ -110,7 +110,7 @@ export const useSelectAccount = ({
             token: {
               symbol: "USD",
             },
-            showSwitchCoin: true,
+            showSwitchCoin: false,
             typeTransaction: "cross",
             accountOriginId,
             accountTargetId,

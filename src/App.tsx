@@ -29,6 +29,7 @@ import userLocalService from "./features/login/data/local/userLocalService";
 import DepositInfoPage from "./features/charge/ui/pages/DepositInfoPage";
 import WithdrawalInfoPage from "./features/charge/ui/pages/WithdrawalInfoPage";
 import SelectAccountPage from "./features/wallet/ui/pages/SelectAccountPage";
+import CrossInfoPage from "./features/charge/ui/pages/CrossInfoPage";
 
 function App() {
   useEffect(() => {
@@ -56,6 +57,7 @@ function App() {
                 element={<WithdrawalInfoPage />}
               />
               <Route path="/deposit-order/:id" element={<DepositInfoPage />} />
+              <Route path="/cross-order/:id" element={<CrossInfoPage />} />
 
               {/* Rutas públicas (redirigen si está autenticado) */}
               <Route

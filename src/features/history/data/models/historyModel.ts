@@ -2,6 +2,7 @@ export interface HistoryResponse {
   chargingOrders: RecoveryOrderModel[];
   withdrawalOrders: WithdrawalOrderModel[];
   depositOrders: DepositOrderModel[];
+  crossOrders: CrossRampOrderModel[];
 }
 
 export type RecoveryOrderModel = {
@@ -46,4 +47,18 @@ export type DepositOrderModel = {
   createdAt: string;
   status?: string;
   capaClabe: string;
+};
+
+export type CrossRampOrderModel = {
+  sourceAmount: string;
+  targetAmount: string;
+  targetCountry: string;
+  orderUuid: string;
+  transactionId: string;
+  accountIdentifier: string;
+  beneficiaryName: string;
+  sourceBankName: string;
+  concept: string;
+  status?: string;
+  createdAt: string;
 };

@@ -9,7 +9,7 @@ import historyRepository from "../../../history/data/repositories/historyReposit
 
 export interface CrossRampInfoData {
   amountSource: string;
-  amountTarget: string;
+  amountTarget?: string;
   countryTarget: "MX" | "US";
   orderId: string;
   id: string;
@@ -59,7 +59,7 @@ const CrossInfoPanel: React.FC<CrossInfoPanelProps> = ({
   const transactionId = crossRampData?.id || "";
 
   const baseUrl = window.location.origin;
-  const paymentLink = `${baseUrl}/deposit-order/${orderIdValue}`;
+  const paymentLink = `${baseUrl}/cross-order/${orderIdValue}`;
 
   const getStatusConfig = (status: TransactionStatus) => {
     switch (status) {

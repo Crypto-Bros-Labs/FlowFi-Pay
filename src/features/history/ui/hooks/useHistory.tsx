@@ -2,12 +2,14 @@ import type {
   WithdrawalOrderModel,
   DepositOrderModel,
   RecoveryOrderModel,
+  CrossRampOrderModel,
 } from "../../data/models/historyModel";
 import historyRepository from "../../data/repositories/historyRepository";
 import userRepository from "../../../login/data/repositories/userRepository";
 import { useEffect, useState, useMemo } from "react";
 import type { SellInfoData } from "../../../charge/ui/components/SellInfoPanel";
 import type { TransactionStatus } from "../components/TileHistory";
+import type { CrossRampInfoData } from "../../../wallet/ui/components/CrossInfoPanel";
 
 export interface WithdrawalInfoData {
   amountFiat: string;
@@ -33,7 +35,6 @@ export interface DepositInfoData {
   status: TransactionStatus;
 }
 
-// Tipos para los filtros - agregamos 'all' como opción
 export type FilterPeriod =
   | "all"
   | "today"
@@ -43,7 +44,12 @@ export type FilterPeriod =
 
 export const useHistory = () => {
   const [history, setHistory] = useState<
-    (WithdrawalOrderModel | DepositOrderModel | RecoveryOrderModel)[]
+    (
+      | WithdrawalOrderModel
+      | DepositOrderModel
+      | RecoveryOrderModel
+      | CrossRampOrderModel
+    )[]
   >([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,12 +70,16 @@ export const useHistory = () => {
     DepositInfoData | undefined
   >(undefined);
 
-  // Constante para la conversión USD a MXN
+  const [showCrossRampInfoModal, setShowCrossRampInfoModal] =
+    useState<boolean>(false);
+  const [crossRampInfoData, setCrossRampInfoData] = useState<
+    CrossRampInfoData | undefined
+  >(undefined);
+
   const USD_TO_MXN_RATE = 18.39;
 
-  // Opciones de filtros - agregamos opción "Todos"
   const filterOptions = [
-    { key: "all" as FilterPeriod, label: "Todos" }, // ✅ Nueva opción
+    { key: "all" as FilterPeriod, label: "Todos" },
     { key: "today" as FilterPeriod, label: "Hoy" },
     { key: "thisWeek" as FilterPeriod, label: "Esta semana" },
     { key: "thisMonth" as FilterPeriod, label: "Este mes" },
@@ -96,14 +106,20 @@ export const useHistory = () => {
 
   const closeDepositModal = () => setShowDepositInfoModal(false);
 
-  // Función para obtener el rango de fechas según el filtro
+  const openCrossRampModal = (crossRampData: CrossRampInfoData) => {
+    setCrossRampInfoData(crossRampData);
+    setShowCrossRampInfoModal(true);
+  };
+
+  const closeCrossRampModal = () => setShowCrossRampInfoModal(false);
+
   const getDateRange = (filter: FilterPeriod) => {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     switch (filter) {
-      case "all": // ✅ Nuevo caso
-        return null; // Retornamos null para indicar "sin filtro"
+      case "all":
+        return null;
 
       case "today": {
         const endOfToday = new Date(today);
@@ -114,7 +130,7 @@ export const useHistory = () => {
       case "thisWeek": {
         const startOfWeek = new Date(today);
         const dayOfWeek = startOfWeek.getDay();
-        const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Lunes como primer día
+        const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
         startOfWeek.setDate(startOfWeek.getDate() - diff);
 
         const endOfWeek = new Date(startOfWeek);
@@ -142,15 +158,13 @@ export const useHistory = () => {
       }
 
       default:
-        return null; // ✅ Por defecto sin filtro
+        return null;
     }
   };
 
-  // Filtrar historial según el período seleccionado
   const filteredHistory = useMemo(() => {
     const dateRange = getDateRange(selectedFilter);
 
-    // ✅ Si no hay rango (filtro 'all'), devolvemos todo el historial
     if (!dateRange) {
       return history;
     }
@@ -179,15 +193,16 @@ export const useHistory = () => {
           ...order,
           status: "order",
         }));
-        // Combinar y ordenar por fecha (más reciente primero)
+
         const combinedHistory = [
           ...chargingOrdersWithStatus,
           ...(historyData.data?.withdrawalOrders || []),
           ...(historyData.data?.depositOrders || []),
+          ...(historyData.data?.crossOrders || []),
         ].sort((a, b) => {
           const dateA = new Date(a.createdAt).getTime();
           const dateB = new Date(b.createdAt).getTime();
-          return dateB - dateA; // Más reciente primero (descendente)
+          return dateB - dateA;
         });
 
         setHistory(combinedHistory);
@@ -220,7 +235,6 @@ export const useHistory = () => {
         transactionType,
       );
       if (result.success) {
-        // Refrescar el historial después de cancelar
         await fetchHistory();
       } else {
         setError(result.error || "Error al cancelar la transacción");
@@ -246,11 +260,9 @@ export const useHistory = () => {
     setError(null);
   };
 
-  // Cálculos de estadísticas usando el historial filtrado
   const statistics = useMemo(() => {
     const totalTransactions = filteredHistory.length;
 
-    // Filtrar transacciones con status "received" del historial filtrado
     const receivedTransactions = filteredHistory.filter(
       (transaction): transaction is DepositOrderModel | RecoveryOrderModel => {
         return (
@@ -265,7 +277,6 @@ export const useHistory = () => {
       return sum + (Number(transaction.cryptoAmount) || 0);
     }, 0);
 
-    // Convertir a MXN
     const totalReceivedMXN = totalReceivedUSD * USD_TO_MXN_RATE;
 
     return {
@@ -276,7 +287,6 @@ export const useHistory = () => {
     };
   }, [filteredHistory, USD_TO_MXN_RATE]);
 
-  // Función para cambiar el filtro
   const handleFilterChange = (filter: FilterPeriod) => {
     setSelectedFilter(filter);
   };
@@ -286,7 +296,7 @@ export const useHistory = () => {
   }, []);
 
   return {
-    history: filteredHistory, // Devolvemos el historial filtrado
+    history: filteredHistory,
     isLoading,
     error,
     refetch: fetchHistory,
@@ -294,16 +304,13 @@ export const useHistory = () => {
     clearError,
     cancelTransaction,
 
-    // Nuevas estadísticas (basadas en el filtro)
     statistics,
     usdToMxnRate: USD_TO_MXN_RATE,
 
-    // Nuevas propiedades para filtros
     selectedFilter,
     filterOptions,
     handleFilterChange,
 
-    // Propiedades para el modal de información de venta
     showSellInfoModal,
     openSellModal,
     closeSellModal,
@@ -318,5 +325,10 @@ export const useHistory = () => {
     showDepositInfoModal,
     openDepositModal,
     closeDepositModal,
+
+    crossRampInfoData,
+    showCrossRampInfoModal,
+    openCrossRampModal,
+    closeCrossRampModal,
   };
 };

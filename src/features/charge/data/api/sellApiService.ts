@@ -3,6 +3,7 @@ import {
   publicAxiosInstance,
 } from "../../../../shared/api/axiosService";
 import type {
+  CrossRampOrderModel,
   DepositOrderModel,
   RecoveryOrderModel,
   WithdrawalOrderModel,
@@ -97,6 +98,13 @@ class SellApiService {
       `/transactions/deposit-order/${orderId}`,
     );
     return response.data.data as DepositOrderModel;
+  }
+
+  async getCrossRampOrderById(orderId: string): Promise<CrossRampOrderModel> {
+    const response = await publicAxiosInstance.get(
+      `/transactions/cross-order/${orderId}`,
+    );
+    return response.data.data as CrossRampOrderModel;
   }
 
   async getUsdToMxnRate(): Promise<number> {
