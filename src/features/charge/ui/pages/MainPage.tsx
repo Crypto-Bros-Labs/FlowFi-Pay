@@ -219,7 +219,7 @@ const MainPage: React.FC = () => {
           <TileButton
             icon={
               <img
-                src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png"
+                src="https://s2.coinmarketcap.com/static/img/coins/200x200/3408.png"
                 className="w-6 h-6 text-blue-600"
               />
             }
