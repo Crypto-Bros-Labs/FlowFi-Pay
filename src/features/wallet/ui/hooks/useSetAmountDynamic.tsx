@@ -3,7 +3,6 @@ import type { DynamicToken } from "./useSelectTokenDynamic";
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { Check } from "lucide-react";
 import { walletRepository } from "../../data/repositories/walletRepository";
-// import sellRepository from "../../../charge/data/repositories/sellRepository";
 import { useDialog } from "../../../../shared/hooks/useDialog";
 import userRepository from "../../../login/data/repositories/userRepository";
 import { useCurrency } from "../../../../shared/hooks/useCurrency";
@@ -51,7 +50,7 @@ export const useSetAmountDynamic = (
     targetCountry === "MX" ? "0" : "300",
   );
   const [amountToken, setAmountToken] = useState<string>(
-    isWLDToken ? "10" : "0.00",
+    isWLDToken ? "10" : targetCountry === "MX" ? "100" : "0.00",
   );
   const [isLoading, setIsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -93,6 +92,7 @@ export const useSetAmountDynamic = (
 
   const [errorBalance, setErrorBalance] = useState<string>("");
   const [minimumAmountMessage, setMinimumAmountMessage] = useState<string>("");
+  const [commissionMessage, setCommissionMessage] = useState<string>("");
 
   // Estados para cross-ramp
   const [crossRampData, setCrossRampData] = useState<CrossRampInfoData | null>(
@@ -109,6 +109,7 @@ export const useSetAmountDynamic = (
     const numericAmount = parseFloat(amountToken);
     const numericFiatAmount = parseFloat(amountFiat);
     console.log("Validando balance:", { formatedBalance, numericAmount });
+
     if (formatedBalance < numericAmount) {
       if (typeTransaction != "buy" && typeTransaction != "cross") {
         setErrorBalance(
@@ -119,18 +120,43 @@ export const useSetAmountDynamic = (
       setErrorBalance("");
     }
 
-    if (numericFiatAmount < 250) {
-      if (typeTransaction != "transfer") {
-        const transactionText =
-          typeTransaction === "buy" ? "la compra" : "el retiro";
+    // Validación de monto mínimo diferenciada por tipo de transacción
+    if (typeTransaction === "cross") {
+      setCommissionMessage(
+        targetCountry === "MX"
+          ? "Hay una comisión fija de $15 USD"
+          : "Hay una comisión fija de $260 MXN",
+      );
+
+      if (numericAmount < 100) {
         setMinimumAmountMessage(
-          `El monto mínimo para ${transactionText} es de $250 MXN.`,
+          "Monto mínimo de transferencia debe ser superior a 100 USD",
         );
+      } else {
+        setMinimumAmountMessage("");
       }
     } else {
-      setMinimumAmountMessage("");
+      setCommissionMessage("");
+
+      if (numericFiatAmount < 250) {
+        if (typeTransaction != "transfer") {
+          const transactionText =
+            typeTransaction === "buy" ? "la compra" : "el retiro";
+          setMinimumAmountMessage(
+            `El monto mínimo para ${transactionText} es de $250 MXN.`,
+          );
+        }
+      } else {
+        setMinimumAmountMessage("");
+      }
     }
-  }, [amountToken, formatedBalance, typeTransaction, amountFiat]);
+  }, [
+    amountToken,
+    formatedBalance,
+    typeTransaction,
+    amountFiat,
+    targetCountry,
+  ]);
 
   // Estado para retirar
   const [kycUrl, setKycUrl] = useState<string | null>(null);
@@ -300,7 +326,7 @@ export const useSetAmountDynamic = (
               setAmountToken(response.targetAmount);
             } else {
               setQuoteError("Error obteniendo cotización");
-              setAmountFiat("0");
+              setAmountFiat("300");
             }
           } else {
             const numericAmount = parseFloat(cryptoAmount);
@@ -319,16 +345,16 @@ export const useSetAmountDynamic = (
               setAmountFiat(response.targetAmount);
             } else {
               setQuoteError("Error obteniendo cotización");
-              setAmountFiat("0");
+              setAmountToken("100");
             }
           }
         } catch (error) {
           console.error("Error fetching quote:", error);
           setQuoteError("Error obteniendo cotización");
-          if (isWLDToken) {
-            setAmountToken("10");
+          if (editingMode === "fiat") {
+            setAmountFiat("300");
           } else {
-            setAmountFiat("0");
+            setAmountToken("100");
           }
         } finally {
           setIsQuoteLoading(false);
@@ -878,6 +904,8 @@ export const useSetAmountDynamic = (
           liquidityProviderUuid: "237b0541-5521-4fda-8bba-05ee4d484795",
           sourceAmount:
             parseFloat(targetCountry === "US" ? amountFiat : amountToken) || 0,
+          targetAmount:
+            parseFloat(targetCountry === "US" ? amountToken : amountFiat) || 0,
           bankAccountCountry: targetCountry,
           bankAccountUuid: accountTargetId
             ? String(accountTargetId)
@@ -1016,5 +1044,6 @@ export const useSetAmountDynamic = (
     showModalCrossRampResult,
     handleCloseCrossRampModal,
     handleContinueCrossRamp,
+    commissionMessage,
   };
 };

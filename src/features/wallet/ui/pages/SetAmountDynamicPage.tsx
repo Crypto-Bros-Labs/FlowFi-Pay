@@ -91,6 +91,7 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
     showModalCrossRampResult,
     handleCloseCrossRampModal,
     handleContinueCrossRamp,
+    commissionMessage,
   } = useSetAmountDynamic(
     token,
     typeTransaction,
@@ -388,6 +389,14 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
         {errorBalance && !externalAddress && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-center">
             <p className="text-sm font-medium text-red-600">{errorBalance}</p>
+          </div>
+        )}
+        {/* ✅ Commission Message para Cross */}
+        {commissionMessage && (
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-center">
+            <p className="text-sm font-medium text-blue-600">
+              {commissionMessage}
+            </p>
           </div>
         )}
         {minimumAmountMessage && (
