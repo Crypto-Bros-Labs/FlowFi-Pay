@@ -166,7 +166,6 @@ const MainPage: React.FC = () => {
             icon={<GoArrowUpRight className="w-5 h-5 text-blue-600" />}
             label="Enviar"
             onClick={onHandleSend}
-            disabled
           />
 
           {/* Botón Recibir */}
@@ -174,7 +173,6 @@ const MainPage: React.FC = () => {
             icon={<GoArrowDownLeft className="w-5 h-5 text-blue-600" />}
             label="Recibir"
             onClick={onHandleReceive}
-            disabled
           />
 
           {/* Botón Depositar */}
@@ -182,7 +180,6 @@ const MainPage: React.FC = () => {
             icon={<PiHandDeposit className="w-5 h-5 text-gray-400" />}
             label="Depositar"
             onClick={() => {}}
-            disabled
           />
 
           {/* Botón Retirar */}
@@ -196,7 +193,6 @@ const MainPage: React.FC = () => {
                 onHandleWithdraw();
               }
             }}
-            disabled
           />
         </div>
       </div>
