@@ -2,17 +2,17 @@ import React from "react";
 import { IoPerson } from "react-icons/io5";
 import { BiHistory } from "react-icons/bi";
 import { MdGroups } from "react-icons/md";
-import { GoArrowDownLeft, GoArrowUpRight } from "react-icons/go";
-import { IoCashOutline } from "react-icons/io5";
+// import { GoArrowDownLeft, GoArrowUpRight } from "react-icons/go";
+// import { IoCashOutline } from "react-icons/io5";
 import { BiMoneyWithdraw } from "react-icons/bi";
-import { PiHandDeposit } from "react-icons/pi";
+// import { PiHandDeposit } from "react-icons/pi";
 import { LuQrCode } from "react-icons/lu";
 import AppHeader from "../../../../shared/components/AppHeader";
 import { useMain } from "../hooks/useMain";
 import { useAppBar } from "../../../../shared/hooks/useAppBar";
 import { useProfile } from "../../../profile/ui/hooks/useProfile";
 import { useCurrency } from "../../../../shared/hooks/useCurrency";
-import ActionButton from "../../../../shared/components/ActionButton";
+// import ActionButton from "../../../../shared/components/ActionButton";
 import TileButton from "../../../../shared/components/TileButton";
 import BalanceCard from "../components/BalanceCard";
 import { HiOutlineArrowsRightLeft } from "react-icons/hi2";
@@ -21,10 +21,13 @@ const MainPage: React.FC = () => {
   const {
     goToSelectToken,
     isAccountOptionsLoading,
+    /*
     onHandleSend,
     onHandleWithdraw,
     onHandleReceive,
+    */
     onHandleBuySell,
+
     isLoading,
     /* 
     onHandleSellWld,
@@ -159,23 +162,23 @@ const MainPage: React.FC = () => {
           kycStatusInfo={kycStatusInfo}
           onKycStatusClick={handleKycStatusInfo}
         />
-
+        {/*
         <div className="w-full flex justify-center gap-2">
-          {/* Botón Enviar */}
+          {// Botón Enviar }
           <ActionButton
             icon={<GoArrowUpRight className="w-5 h-5 text-blue-600" />}
             label="Enviar"
             onClick={onHandleSend}
           />
 
-          {/* Botón Recibir */}
+          {//Botón Recibir /}
           <ActionButton
             icon={<GoArrowDownLeft className="w-5 h-5 text-blue-600" />}
             label="Recibir"
             onClick={onHandleReceive}
           />
 
-          {/* Botón Depositar */}
+          {/* Botón Depositar /}
           <ActionButton
             icon={<PiHandDeposit className="w-5 h-5 text-gray-400" />}
             label="Depositar"
@@ -183,7 +186,7 @@ const MainPage: React.FC = () => {
             disabled
           />
 
-          {/* Botón Retirar */}
+          {/* Botón Retirar /}
           <ActionButton
             icon={<IoCashOutline className="w-5 h-5 text-blue-600" />}
             label="Retirar"
@@ -197,6 +200,7 @@ const MainPage: React.FC = () => {
             disabled
           />
         </div>
+      */}
       </div>
 
       {/* ✅ SECCIÓN CENTRAL - Botón Cobrar y sección de Compra/Venta */}
