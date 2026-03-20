@@ -6,6 +6,7 @@ import bankRepository from "../../data/repositories/bankRepository";
 import userRepository from "../../../login/data/repositories/userRepository";
 import { useNavigate } from "react-router-dom";
 import { useDialog } from "../../../../shared/hooks/useDialog";
+import { useAppData } from "../../../../shared/hooks/useAppData";
 
 interface Bank {
   id: string;
@@ -38,6 +39,8 @@ export const useAddAccount = () => {
   const [selectedBankId, setSelectedBankId] = useState<string>("");
   const [banks, setBanks] = useState<Bank[]>([]);
   const [autoDetectedBankName, setAutoDetectedBankName] = useState<string>("");
+
+  const { refetchAll } = useAppData();
 
   // Estados para USA
   const [usaAccount, setUsaAccount] = useState<USAAccountData>({
@@ -279,6 +282,8 @@ export const useAddAccount = () => {
             hideBack: true,
           });
 
+          refetchAll();
+
           setClabeValue("");
           setSelectedBankId("");
           setAutoDetectedBankName("");
@@ -333,6 +338,8 @@ export const useAddAccount = () => {
             onBack: () => navigate("/main"),
             hideBack: true,
           });
+
+          refetchAll();
 
           setUsaAccount({
             accountNumber: "",
