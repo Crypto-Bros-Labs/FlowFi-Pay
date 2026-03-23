@@ -222,13 +222,17 @@ class SellRepository {
 
   async getCrossQuote(
     data: CrossQuoteData,
-  ): Promise<{ success: boolean; targetAmount: string }> {
+  ): Promise<{ success: boolean; targetAmount: string; fixedFee?: string }> {
     try {
       const response = await sellApiService.getCrossQuote(data);
       if (response) {
+        const fixedFee = response.fees.find(
+          (fee) => fee.name === "fixed_fee",
+        )?.fee;
         return {
           success: true,
           targetAmount: response.targetAmount.toString(),
+          fixedFee: fixedFee,
         };
       }
       return { success: false, targetAmount: "" };

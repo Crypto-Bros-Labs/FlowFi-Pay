@@ -325,6 +325,11 @@ const SetAmountDynamicPage: React.FC<SetAmountDynamicPageProps> = (props) => {
                         <span className="text-lg text-gray-500 truncate max-w-[calc(100vw-8rem)] md:max-w-[calc(20vw-8rem)]">
                           {amountToken || "0.00"}
                         </span>
+                        {typeTransaction === "cross" && (
+                          <span className="text-lg text-gray-500 mr-2 truncate max-w-[calc(100vw-8rem)] md:max-w-[calc(20vw-8rem)] ml-2">
+                            {targetCountry === "US" ? "USD" : "MXN"}
+                          </span>
+                        )}
                         {isQuoteLoading && (
                           <svg
                             className="w-4 h-4 ml-2 animate-spin text-blue-600"

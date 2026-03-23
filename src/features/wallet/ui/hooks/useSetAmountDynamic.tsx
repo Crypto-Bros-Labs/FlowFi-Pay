@@ -100,6 +100,7 @@ export const useSetAmountDynamic = (
   );
   const [showModalCrossRampResult, setShowModalCrossRampResult] =
     useState(false);
+  const [crossFee, setCrossFee] = useState<string>("");
 
   // Estados para comprar
   const [buyResponse, setBuyResponse] = useState<BuyInfoData | null>(null);
@@ -124,8 +125,8 @@ export const useSetAmountDynamic = (
     if (typeTransaction === "cross") {
       setCommissionMessage(
         targetCountry === "MX"
-          ? "Hay una comisión fija de $15 USD"
-          : "Hay una comisión fija de $260 MXN",
+          ? "Hay una comisión fija de $" + crossFee + " USD"
+          : "Hay una comisión fija de $272.30 MXN",
       );
 
       if (numericAmount < 100) {
@@ -156,6 +157,7 @@ export const useSetAmountDynamic = (
     typeTransaction,
     amountFiat,
     targetCountry,
+    crossFee,
   ]);
 
   // Estado para retirar
@@ -324,9 +326,9 @@ export const useSetAmountDynamic = (
             });
             if (response.success && response.targetAmount) {
               setAmountToken(response.targetAmount);
+              setCrossFee(response.fixedFee || "260");
             } else {
               setQuoteError("Error obteniendo cotización");
-              setAmountFiat("300");
             }
           } else {
             const numericAmount = parseFloat(cryptoAmount);
@@ -343,19 +345,14 @@ export const useSetAmountDynamic = (
             });
             if (response.success && response.targetAmount) {
               setAmountFiat(response.targetAmount);
+              setCrossFee(response.fixedFee || "15");
             } else {
               setQuoteError("Error obteniendo cotización");
-              setAmountToken("100");
             }
           }
         } catch (error) {
           console.error("Error fetching quote:", error);
           setQuoteError("Error obteniendo cotización");
-          if (editingMode === "fiat") {
-            setAmountFiat("300");
-          } else {
-            setAmountToken("100");
-          }
         } finally {
           setIsQuoteLoading(false);
         }
@@ -1045,5 +1042,6 @@ export const useSetAmountDynamic = (
     handleCloseCrossRampModal,
     handleContinueCrossRamp,
     commissionMessage,
+    crossFee,
   };
 };

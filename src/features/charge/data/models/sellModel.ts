@@ -62,6 +62,13 @@ export interface QuoteResponse {
   displayCryptoAmount: string;
 }
 
+export interface Fee {
+  fee: string;
+  currency: string;
+  type: string;
+  name: string;
+}
+
 export interface CrossQuoteResponse {
   sourceAmount: number;
   sourceCurrency: string;
@@ -70,6 +77,7 @@ export interface CrossQuoteResponse {
   rate: number;
   spread: number;
   flow: string;
+  fees: Fee[];
 }
 
 export type RecoveryOrderData = {
