@@ -277,8 +277,8 @@ export const useAddAccount = () => {
           showDialog({
             title: "Cuenta Agregada",
             subtitle: `Cuenta de ${autoDetectedBankName} agregada exitosamente`,
-            onNext: () => navigate("/main"),
-            onBack: () => navigate("/main"),
+            onNext: () => navigate(-1),
+            onBack: () => navigate(-1),
             hideBack: true,
           });
 
@@ -334,8 +334,8 @@ export const useAddAccount = () => {
           showDialog({
             title: "Cuenta Agregada",
             subtitle: `Cuenta bancaria USA agregada exitosamente`,
-            onNext: () => navigate("/main"),
-            onBack: () => navigate("/main"),
+            onNext: () => navigate(-1),
+            onBack: () => navigate(-1),
             hideBack: true,
           });
 

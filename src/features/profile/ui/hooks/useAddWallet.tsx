@@ -293,7 +293,7 @@ export const useAddWallet = () => {
           nextText: "Aceptar",
           hideBack: true,
           onNext: () => {
-            navigate("/main");
+            navigate(-1);
           },
         });
         refetchAll();
