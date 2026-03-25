@@ -46,7 +46,7 @@ const AccountSelectionSection: React.FC<AccountSelectionSectionProps> = ({
         ) : (
           <button
             type="button"
-            onClick={handleAddBank}
+            onClick={() => handleAddBank()}
             className={`
                         w-full p-2.5 flex items-center justify-center gap-3
                         border border-[#666666] rounded-[10px]

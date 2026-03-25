@@ -54,7 +54,7 @@ export const useAccountOptions = () => {
 
   // ========== USA BANKS ==========
   const handleAddUsaBank = () => {
-    navigate("/add-account");
+    navigate("/add-account", { state: { country: "US" } });
   };
 
   const usaBankComboBoxOptions = createUSABankOptions(

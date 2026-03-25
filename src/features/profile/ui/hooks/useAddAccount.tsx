@@ -31,8 +31,11 @@ interface USAAccountData {
   documentIdentifier: string;
 }
 
-export const useAddAccount = () => {
-  const [accountCountry, setAccountCountry] = useState<"MX" | "US">("MX");
+export const useAddAccount = (initialCountry: "MX" | "US") => {
+  console.log("useAddAccount initialized with initialCountry:", initialCountry);
+  const [accountCountry, setAccountCountry] = useState<"MX" | "US">(
+    initialCountry,
+  );
 
   // Estados para CLABE (México)
   const [clabeValue, setClabeValue] = useState("");

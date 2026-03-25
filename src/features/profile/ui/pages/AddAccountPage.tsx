@@ -5,8 +5,15 @@ import InputApp from "../../../../shared/components/InputApp";
 import ButtonApp from "../../../../shared/components/ButtonApp";
 import { useAddAccount } from "../hooks/useAddAccount";
 import AppHeader from "../../../../shared/components/AppHeader";
+import { useLocation } from "react-router-dom";
 
 const AddAccountPage: React.FC = () => {
+  const location = useLocation();
+
+  const initialCountry = location.state?.country || "MX";
+
+  console.log("Initial country from location state:", initialCountry);
+
   const {
     accountCountry,
     setAccountCountry,
@@ -23,7 +30,7 @@ const AddAccountPage: React.FC = () => {
     isLoading,
     error,
     isFormValid,
-  } = useAddAccount();
+  } = useAddAccount(initialCountry);
 
   return (
     <div className="flex flex-col h-full p-4">
