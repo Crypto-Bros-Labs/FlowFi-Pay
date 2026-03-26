@@ -155,7 +155,7 @@ const CrossInfoPanel: React.FC<CrossInfoPanelProps> = ({
               <>
                 {/* Identificador de cuenta */}
                 <TileApp
-                  title="Número de cuenta"
+                  title={countryTarget === "US" ? "Clabe" : "Número de cuenta"}
                   subtitle={accountIdentifierValue}
                   subtitleClassName="text-xs font-mono text-[#020F1E] break-all"
                   titleClassName="text-sm text-[#666666]"
@@ -185,27 +185,29 @@ const CrossInfoPanel: React.FC<CrossInfoPanelProps> = ({
                   }
                 />
 
-                {/* Banco */}
-                <TileApp
-                  title="Banco"
-                  titleClassName="text-sm text-[#666666]"
-                  trailing={
-                    <span className="text-sm font-semibold text-[#020F1E]">
-                      {bankNameValue || "—"}
-                    </span>
-                  }
-                />
+                {countryTarget === "MX" && (
+                  <>
+                    <TileApp
+                      title="Banco"
+                      titleClassName="text-sm text-[#666666]"
+                      trailing={
+                        <span className="text-sm font-semibold text-[#020F1E]">
+                          {bankNameValue || "—"}
+                        </span>
+                      }
+                    />
 
-                {/* Concepto */}
-                <TileApp
-                  title="Concepto"
-                  titleClassName="text-sm text-[#666666]"
-                  trailing={
-                    <span className="text-sm font-semibold text-[#020F1E]">
-                      {conceptValue || "—"}
-                    </span>
-                  }
-                />
+                    <TileApp
+                      title="Concepto"
+                      titleClassName="text-sm text-[#666666]"
+                      trailing={
+                        <span className="text-sm font-semibold text-[#020F1E]">
+                          {conceptValue || "—"}
+                        </span>
+                      }
+                    />
+                  </>
+                )}
               </>
             )}
 

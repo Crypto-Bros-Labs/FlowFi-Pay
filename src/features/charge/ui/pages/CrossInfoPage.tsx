@@ -115,7 +115,11 @@ const CrossInfoPage = () => {
                 <>
                   {/* Número de cuenta - PRIMERO */}
                   <TileApp
-                    title="Número de cuenta"
+                    title={
+                      crossRampData?.countryTarget === "US"
+                        ? "Clabe"
+                        : "Número de cuenta"
+                    }
                     subtitle={crossRampData?.accountIdentifier || "—"}
                     subtitleClassName="text-sm font-mono text-[#020F1E] break-all"
                     titleClassName="text-base text-[#666666]"
@@ -156,29 +160,29 @@ const CrossInfoPage = () => {
                     className="mb-3"
                   />
 
-                  {/* Banco - TERCERO */}
-                  <TileApp
-                    title="Banco"
-                    titleClassName="text-base text-[#666666]"
-                    trailing={
-                      <span className="text-base font-semibold text-[#020F1E]">
-                        {crossRampData?.bankName || "—"}
-                      </span>
-                    }
-                    className="mb-3"
-                  />
+                  {crossRampData?.countryTarget === "MX" && (
+                    <>
+                      <TileApp
+                        title="Banco"
+                        titleClassName="text-sm text-[#666666]"
+                        trailing={
+                          <span className="text-sm font-semibold text-[#020F1E]">
+                            {crossRampData?.bankName || "—"}
+                          </span>
+                        }
+                      />
 
-                  {/* Concepto - CUARTO */}
-                  <TileApp
-                    title="Concepto"
-                    titleClassName="text-base text-[#666666]"
-                    trailing={
-                      <span className="text-base font-semibold text-[#020F1E]">
-                        {crossRampData?.concept || "—"}
-                      </span>
-                    }
-                    className="mb-3"
-                  />
+                      <TileApp
+                        title="Concepto"
+                        titleClassName="text-sm text-[#666666]"
+                        trailing={
+                          <span className="text-sm font-semibold text-[#020F1E]">
+                            {crossRampData?.concept || "—"}
+                          </span>
+                        }
+                      />
+                    </>
+                  )}
                 </>
               )}
 
