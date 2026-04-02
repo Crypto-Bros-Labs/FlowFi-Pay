@@ -55,9 +55,7 @@ const LoginPage: React.FC = () => {
       </div>
     </div>
   ) : (
-    <div className="flex flex-col items-center justify-center h-screen p-4">
-      <h1 className="text-2xl font-bold mb-4">¡Ups!</h1>
-    </div>
+    <div className="flex flex-col items-center justify-center h-screen p-4"></div>
   );
 };
 
