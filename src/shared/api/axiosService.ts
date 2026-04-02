@@ -1,5 +1,7 @@
 import axios from "axios";
 
+// Comment this variable to fix the app
+
 const baseURL = import.meta.env.VITE_API_URL;
 
 // Instancia con autenticación

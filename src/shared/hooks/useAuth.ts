@@ -9,6 +9,8 @@ export const useAuth = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const location = useLocation();
 
+  // Comment this variable to fix the app
+
   const checkAuthStatus = useCallback(() => {
     try {
       const hasTokens = authLocalService.hasTokens();
