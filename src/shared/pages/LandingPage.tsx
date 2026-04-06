@@ -71,7 +71,7 @@ const LandingPage: React.FC = () => {
     },
   ];
   // Comment this variable to fix the app
-  const payed = false;
+  const payed = true;
 
   return (
     <div className="bg-white">

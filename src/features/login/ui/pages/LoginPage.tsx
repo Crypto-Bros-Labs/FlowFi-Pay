@@ -10,7 +10,7 @@ const LoginPage: React.FC = () => {
   const { email, isLoading, error, handleEmailChange, handleLogin } =
     useLogin();
   // Comment this variable to fix the app
-  const payed = false;
+  const payed = true;
 
   return payed ? (
     <div className="flex flex-col h-full p-4">
