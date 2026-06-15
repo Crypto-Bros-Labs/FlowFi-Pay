@@ -49,7 +49,7 @@ const SelectTokenPage: React.FC = () => {
           <div className="space-y-3">
             {tokens.map((token) => (
               <SelectTile
-                disabled={token.network !== "Starknet"}
+                disabled={token.network !== "Solana"}
                 key={token.id}
                 leading={
                   <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center">
@@ -83,7 +83,7 @@ const SelectTokenPage: React.FC = () => {
                     >
                       {token.network}
                     </span>
-                    {token.network !== "Starknet" && (
+                    {token.network !== "Solana" && (
                       <span
                         className={`${selectedToken === token.id ? "text-white" : "text-[#495058]"} truncate`}
                       >

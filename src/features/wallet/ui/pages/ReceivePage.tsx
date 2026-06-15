@@ -126,7 +126,7 @@ const ReceivePage: React.FC = () => {
             {/* ✅ LEYENDA - Texto centrado */}
             <div className="flex flex-col items-center px-4">
                 <p className="text-sm font-medium text-gray-600 text-center leading-relaxed">
-                    Esta es tu dirección para recibir dinero de la red de Starknet
+                    Esta es tu dirección para recibir dinero de la red de Solana
                 </p>
             </div>
         </div>

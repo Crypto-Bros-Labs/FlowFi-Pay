@@ -13,7 +13,7 @@ export const useMain = () => {
     ...tokens
       .filter(
         (token) =>
-          token.network.toLowerCase() != "starknet" &&
+          token.network.toLowerCase() != "solana" &&
           token.symbol.toUpperCase() === "USDC",
       )
       .sort((a, b) => {
@@ -41,7 +41,7 @@ export const useMain = () => {
     .filter(
       (token) =>
         token.symbol.toUpperCase() === "USDC" &&
-        token.network.toLowerCase() === "starknet",
+        token.network.toLowerCase() === "solana",
     )
     .map((token) => ({
       id: token.uuid,
